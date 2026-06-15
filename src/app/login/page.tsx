@@ -18,7 +18,6 @@ export default function LoginPage() {
   const [emailError, setEmailError] = React.useState("");
   const [passwordError, setPasswordError] = React.useState("");
   const [errorMsg, setErrorMsg] = React.useState("");
-  const [isSeeding, setIsSeeding] = React.useState(false);
 
   const validate = () => {
     let isValid = true;
@@ -68,33 +67,18 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoSignIn = async () => {
-    setIsSeeding(true);
-    setErrorMsg("");
-    try {
-      const res = await fetch("/api/dev/seed", {
-        method: "POST",
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to seed demo data");
-      }
-      // Store demo user session with the key that auth listener expects
-      localStorage.setItem(
-        "_demo_auth_user",
-        JSON.stringify({
-          uid: "test-eco-user-id",
-          email: "test@ecoscore.com",
-          displayName: "Test Eco User",
-        })
-      );
-      router.push("/dashboard");
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setErrorMsg(msg || "Failed to log in with test credentials.");
-    } finally {
-      setIsSeeding(false);
-    }
+  const handleDemoSignIn = () => {
+    // Client-side only: write the demo session token so the auth listener
+    // can pick it up without any Firebase or backend call.
+    localStorage.setItem(
+      "_demo_auth_user",
+      JSON.stringify({
+        uid: "test-eco-user-id",
+        email: "test@ecoscore.com",
+        displayName: "Alex Rivera",
+      })
+    );
+    router.push("/dashboard");
   };
 
   return (
@@ -197,7 +181,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-                  Or continue with
+                  Or sign in with
                 </span>
               </div>
             </div>
@@ -230,19 +214,22 @@ export default function LoginPage() {
               Google
             </Button>
 
-            {process.env.NODE_ENV === "development" && (
-              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleDemoSignIn}
-                  disabled={isLoading || isSeeding}
-                  className="w-full bg-emerald-50/50 border-emerald-200/60 hover:bg-emerald-50 dark:bg-slate-900 dark:border-slate-800 text-emerald-700 dark:text-emerald-400 font-semibold"
-                >
-                  {isSeeding ? "Seeding Demo Data..." : "Seed & Sign In (Demo)"}
-                </Button>
-              </div>
-            )}
+            <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+              <p className="text-center text-xs text-slate-400 dark:text-slate-500 mb-3">
+                🌿 No account? Explore the full app instantly
+              </p>
+              <Button
+                id="demo-mode-btn"
+                type="button"
+                variant="outline"
+                onClick={handleDemoSignIn}
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-300 hover:from-emerald-100 hover:to-teal-100 dark:from-emerald-950/30 dark:to-teal-950/30 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 font-bold text-sm py-3 shadow-sm"
+              >
+                <Leaf className="mr-2 h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                Explore Demo Mode — No Login Required
+              </Button>
+            </div>
 
             <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
               New to EcoScore?{" "}
