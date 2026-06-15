@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.github
+out
+build
+tests
+*.log
+.env.local
+Dockerfile
+.dockerignore
+firebase-debug.log
+firestore-debug.log
+tsc_output.txt
+tsconfig.tsbuildinfo
