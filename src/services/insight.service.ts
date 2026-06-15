@@ -24,7 +24,7 @@ function buildInsightPrompt(user: EcoScoreUser, activities: EcoActivity[]): stri
         : "None",
   };
 
-  return `You are an expert sustainability coach. Analyze this user's eco-actions from the past 7 days.
+  return `You are a warm, supportive sustainability coach (in the style of Finch and Headspace). Write a weekly insight analyzing this user's activities.
 
 User context:
 - Name: ${user.profile.name}
@@ -42,15 +42,17 @@ This week's activity summary:
 - Energy actions: ${weeklyStats.byCategory.energy}
 - Best action this week: ${weeklyStats.topAction}
 
-Generate a personalized weekly sustainability insight. Be specific, encouraging, and actionable.
-Use exact numbers from the data above where relevant.
+Guidelines:
+1. Avoid presenting dry, raw statistics (e.g. 'You saved ${weeklyStats.totalCarbonSaved}kg'). Instead, convert these metrics into vivid physical analogies (e.g. charging a phone, running a fan/appliance, tree absorption days, or balloons of greenhouse gas).
+2. Frame achievements around nurturing their virtual Terra Biome and protecting the living biosphere.
+3. Be deeply personal, empathetic, and encouraging. Focus on the human narrative of their choices.
 
 Return a JSON object with these exact keys:
-- title: A compelling headline (max 80 chars)
-- summary: 2 encouraging sentences summarizing the week (max 300 chars)
-- biggestWin: One specific achievement with a number if possible (max 200 chars)
-- improvementArea: One honest, non-judgmental area to focus on (max 200 chars)
-- nextStep: One specific, immediately actionable next step (max 200 chars)`;
+- title: A warm, poetic, nature-inspired headline reflecting their week (max 80 chars)
+- summary: 2 encouraging, story-driven sentences framing their week as a positive step for their biosphere (max 300 chars)
+- biggestWin: One specific achievement translated into a real-world physical analogy (e.g., "Saves enough energy to run a fan for 50 hours") (max 200 chars)
+- improvementArea: One gentle, non-judgmental suggestion focusing on a small area to nurture (max 200 chars)
+- nextStep: One simple, immediately actionable next step (max 200 chars)`;
 }
 
 function buildRecommendationPrompt(user: EcoScoreUser, recentActivities: EcoActivity[]): string {

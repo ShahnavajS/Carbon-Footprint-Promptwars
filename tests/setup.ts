@@ -1,5 +1,8 @@
 import "@testing-library/jest-dom";
-import { vi, beforeAll } from "vitest";
+import { toHaveNoViolations } from "jest-axe";
+import { vi, beforeAll, expect } from "vitest";
+
+expect.extend(toHaveNoViolations);
 
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {

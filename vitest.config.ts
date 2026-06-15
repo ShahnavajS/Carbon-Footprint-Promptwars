@@ -15,14 +15,14 @@ export default defineConfig({
     globals: true,
     css: false,
     include: ["tests/unit/**/*.test.{ts,tsx}", "tests/integration/**/*.test.{ts,tsx}"],
-    exclude: ["tests/e2e/**", "node_modules"],
+    exclude: ["tests/e2e/**", "node_modules", ".next"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
-      exclude: ["node_modules/", "tests/", "next.config.ts"],
+      exclude: ["node_modules/", "tests/", ".next/", "next.config.ts"],
     },
   },
 });

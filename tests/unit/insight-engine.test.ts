@@ -199,6 +199,24 @@ describe("InsightEngine & Zod Schemas", () => {
         InsightService.generateAndSaveWeeklyInsight(mockUser, mockActivities)
       ).rejects.toThrow();
     });
+
+    it("propagates malformed Gemini JSON instead of saving partial insight data", async () => {
+      const { gemini } = await import("@/services/gemini");
+      vi.mocked(gemini.generateInsightJSON).mockResolvedValue("{not valid json");
+
+      await expect(
+        InsightService.generateAndSaveWeeklyInsight(mockUser, mockActivities)
+      ).rejects.toThrow();
+    });
+
+    it("propagates Gemini transport failures so callers can use fallback responses", async () => {
+      const { gemini } = await import("@/services/gemini");
+      vi.mocked(gemini.generateInsightJSON).mockRejectedValue(new Error("Gemini unavailable"));
+
+      await expect(
+        InsightService.generateAndSaveWeeklyInsight(mockUser, mockActivities)
+      ).rejects.toThrow("Gemini unavailable");
+    });
   });
 
   describe("InsightService — generateAndSaveRecommendations", () => {
@@ -235,6 +253,66 @@ describe("InsightEngine & Zod Schemas", () => {
       expect(result).toHaveLength(3);
       expect(result[0].action).toBe("Turn off AC 30 mins/day");
       expect(result[1].category).toBe("transport");
+    });
+
+    it("persists only the first 3 valid Gemini recommendations", async () => {
+      const { gemini } = await import("@/services/gemini");
+      vi.mocked(gemini.generateRecommendationsJSON).mockResolvedValue(
+        JSON.stringify([
+          {
+            action: "Turn off AC 30 mins/day",
+            reason: "Reduces cooling electricity.",
+            category: "energy",
+            estimatedCarbonSaved: 0.6,
+            estimatedPoints: 10,
+          },
+          {
+            action: "Take the bus twice",
+            reason: "Cuts commute fuel emissions.",
+            category: "transport",
+            estimatedCarbonSaved: 0.8,
+            estimatedPoints: 10,
+          },
+          {
+            action: "Cook at home",
+            reason: "Avoids delivery and restaurant overhead.",
+            category: "food",
+            estimatedCarbonSaved: 0.3,
+            estimatedPoints: 5,
+          },
+          {
+            action: "Extra recommendation should be ignored",
+            reason: "The product only surfaces three.",
+            category: "energy",
+            estimatedCarbonSaved: 0.4,
+            estimatedPoints: 5,
+          },
+        ])
+      );
+
+      const result = await InsightService.generateAndSaveRecommendations(mockUser, []);
+
+      expect(result).toHaveLength(3);
+      expect(result.map((rec) => rec.action)).not.toContain(
+        "Extra recommendation should be ignored"
+      );
+    });
+
+    it("rejects invalid recommendation scores returned by Gemini", async () => {
+      const { gemini } = await import("@/services/gemini");
+      vi.mocked(gemini.generateRecommendationsJSON).mockResolvedValue(
+        JSON.stringify([
+          {
+            action: "Impossible action",
+            reason: "Invalid points should fail schema validation.",
+            category: "energy",
+            estimatedCarbonSaved: 0.6,
+            estimatedPoints: "a lot",
+          },
+        ])
+      );
+
+      await expect(InsightService.generateAndSaveRecommendations(mockUser, [])).rejects.toThrow();
     });
   });
 });

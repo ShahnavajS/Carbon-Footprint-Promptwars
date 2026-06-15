@@ -2,7 +2,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { StreakService } from "@/services/streak.service";
 import { ActivityService, ACTIVITY_REWARDS } from "@/services/activity.service";
 import { UserRepository } from "@/repositories/user.repository";
+import { ChallengeRepository } from "@/repositories/challenge.repository";
 import { trackEvent } from "@/services/analytics";
+import { getDocs } from "firebase/firestore";
 import type { EcoScoreUser } from "@/domain/user/types";
 import type { EcoActivity } from "@/domain/activity/types";
 
@@ -216,5 +218,77 @@ describe("ActivityService.logActivity", () => {
         score: expect.objectContaining({ ecoScore: 1000 }),
       })
     );
+  });
+
+  it("completes a matching transport challenge once and applies bonus rewards", async () => {
+    const result = await ActivityService.logActivity("user_test_1", "transport", "Metro");
+
+    expect(ChallengeRepository.completeChallenge).toHaveBeenCalledWith(
+      "user_test_1",
+      "challenge_transport"
+    );
+    expect(result.challengeCompleted).toBe(true);
+
+    // Base Metro 15 points + transport challenge 15 points => score +6.
+    expect(UserRepository.updateUser).toHaveBeenCalledWith(
+      "user_test_1",
+      expect.objectContaining({
+        score: expect.objectContaining({
+          ecoScore: 656,
+          carbonSaved: 7.2,
+        }),
+      })
+    );
+    expect(trackEvent).toHaveBeenCalledWith(
+      "challenge_completed",
+      expect.objectContaining({
+        userId: "user_test_1",
+        challengeId: "challenge_transport",
+      })
+    );
+  });
+
+  it("does not award challenge bonus when the challenge completion already exists", async () => {
+    vi.mocked(getDocs).mockResolvedValueOnce({
+      docs: [
+        {
+          id: "challenge_transport",
+          data: () => ({ completed: true }),
+        },
+      ],
+    } as never);
+
+    const result = await ActivityService.logActivity("user_test_1", "transport", "Metro");
+
+    expect(ChallengeRepository.completeChallenge).not.toHaveBeenCalled();
+    expect(result.challengeCompleted).toBe(false);
+    expect(UserRepository.updateUser).toHaveBeenCalledWith(
+      "user_test_1",
+      expect.objectContaining({
+        score: expect.objectContaining({
+          ecoScore: 653,
+          carbonSaved: 6.2,
+        }),
+      })
+    );
+  });
+
+  it("fails fast when the user profile cannot be loaded", async () => {
+    vi.mocked(UserRepository.getUser).mockResolvedValueOnce(null);
+
+    await expect(ActivityService.logActivity("missing-user", "food", "Vegetarian Meal")).rejects.toThrow(
+      "User profile not found"
+    );
+  });
+
+  it("rejects unknown action types before writing activity data", async () => {
+    const { ActivityRepository: AR } = await import("@/repositories/activity.repository");
+
+    await expect(
+      ActivityService.logActivity("user_test_1", "food", "Imported Beef" as never)
+    ).rejects.toThrow("Reward values not defined");
+
+    expect(AR.logActivity).not.toHaveBeenCalled();
+    expect(UserRepository.updateUser).not.toHaveBeenCalled();
   });
 });

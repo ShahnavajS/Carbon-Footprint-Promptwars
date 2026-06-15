@@ -4,6 +4,9 @@
  */
 
 import { describe, it, expect, vi } from "vitest";
+import type { EcoActivity } from "@/domain/activity/types";
+import type { AiRecommendation } from "@/domain/insight/types";
+import type { EcoScoreUser } from "@/domain/user/types";
 
 // ============ Mock Utilities ============
 
@@ -39,6 +42,54 @@ export function mockUser(overrides = {}) {
   };
 }
 
+export function mockEcoScoreUser(overrides: Partial<EcoScoreUser> = {}): EcoScoreUser {
+  const base: EcoScoreUser = {
+    uid: "test-user-123",
+    profile: {
+      name: "Test User",
+      email: "test@example.com",
+      avatar: null,
+      city: "Bengaluru",
+      country: "India",
+      language: "en",
+    },
+    sustainability: {
+      dietType: "vegetarian",
+      transportType: "metro",
+      homeType: "apartment",
+    },
+    goals: {
+      reduceTransport: true,
+      reduceFood: true,
+      reduceEnergy: false,
+      buildHabits: false,
+      learnSustainability: false,
+    },
+    score: {
+      ecoScore: 500,
+      level: 2,
+      streak: 3,
+      bestStreak: 5,
+      lastActivityAt: new Date("2026-06-14T08:00:00.000Z").getTime(),
+      carbonSaved: 12.4,
+    },
+    metadata: {
+      createdAt: new Date("2026-06-01T08:00:00.000Z").getTime(),
+      updatedAt: new Date("2026-06-14T08:00:00.000Z").getTime(),
+    },
+  };
+
+  return {
+    ...base,
+    ...overrides,
+    profile: { ...base.profile, ...overrides.profile },
+    sustainability: { ...base.sustainability, ...overrides.sustainability },
+    goals: { ...base.goals, ...overrides.goals },
+    score: { ...base.score, ...overrides.score },
+    metadata: { ...base.metadata, ...overrides.metadata },
+  };
+}
+
 export function mockActivity(overrides = {}) {
   return {
     id: "activity-123",
@@ -50,6 +101,58 @@ export function mockActivity(overrides = {}) {
     distance: 10,
     createdAt: new Date(),
     ...overrides,
+  };
+}
+
+export function mockEcoActivity(overrides: Partial<EcoActivity> = {}): EcoActivity {
+  return {
+    id: "activity-123",
+    userId: "test-user-123",
+    category: "transport",
+    actionType: "Metro",
+    ecoPoints: 15,
+    carbonSaved: 1.2,
+    createdAt: new Date("2026-06-14T09:00:00.000Z").getTime(),
+    ...overrides,
+  };
+}
+
+export function mockRecommendation(overrides: Partial<AiRecommendation> = {}): AiRecommendation {
+  return {
+    id: "rec-123",
+    userId: "test-user-123",
+    category: "energy",
+    action: "Reduce AC usage by 30 minutes",
+    reason: "It trims home electricity emissions during peak cooling hours.",
+    estimatedCarbonSaved: 0.6,
+    estimatedPoints: 10,
+    accepted: null,
+    generatedAt: new Date("2026-06-14T10:00:00.000Z").getTime(),
+    ...overrides,
+  };
+}
+
+export function firestoreDoc<T extends Record<string, unknown>>(id: string, data: T) {
+  return {
+    id,
+    data: () => data,
+    exists: () => true,
+  };
+}
+
+export function firestoreMissingDoc(id = "missing-doc") {
+  return {
+    id,
+    data: () => undefined,
+    exists: () => false,
+  };
+}
+
+export function firestoreSnapshot<T extends Record<string, unknown>>(docs: Array<{ id: string; data: T }>) {
+  return {
+    docs: docs.map((doc) => firestoreDoc(doc.id, doc.data)),
+    empty: docs.length === 0,
+    size: docs.length,
   };
 }
 

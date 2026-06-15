@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { InstallAppBanner } from "@/components/ui/install-banner";
 import { trackEvent } from "@/services/analytics";
+import { TerraBiome } from "./_components/terra-biome";
+import { AnalogyEngine } from "@/lib/analogy-engine";
 import {
   Leaf,
   LogOut,
@@ -19,9 +21,7 @@ import {
   Sparkles,
   History,
   TrendingUp,
-  Plus,
   Flame,
-  Globe,
   Activity,
   CheckSquare,
   Zap,
@@ -109,7 +109,8 @@ export default function DashboardPage() {
     setLogSuccessMsg("");
     try {
       const result = await logAction(category, actionType);
-      let msg = `Logged ${actionType}! +${result.activity.ecoPoints} points.`;
+      const analogy = AnalogyEngine.getPrimaryAnalogyText(result.activity.carbonSaved);
+      let msg = `Logged ${actionType}! You saved ${result.activity.carbonSaved}kg of CO₂ — ${analogy}`;
       if (result.challengeCompleted) {
         msg += " 🎉 Daily Challenge completed! Double rewards added.";
       }
@@ -172,26 +173,6 @@ export default function DashboardPage() {
   // Carbon Budget progress calculations
   const monthlySavingsGoal = 100; // 100 kg CO2 target
   const carbonSavedSoFar = score.carbonSaved || 0;
-  const carbonSavedPercent = Math.min(
-    100,
-    Math.round((carbonSavedSoFar / monthlySavingsGoal) * 100)
-  );
-  const remainingSavings = Math.max(0, monthlySavingsGoal - carbonSavedSoFar);
-
-  // Carbon budget color configuration
-  let budgetColor = "text-red-500 dark:text-red-400";
-  let budgetRingClass = "stroke-red-500 dark:stroke-red-400";
-  let budgetBgClass = "bg-red-50 text-red-700 dark:bg-red-950/20 dark:text-red-400";
-
-  if (carbonSavedPercent >= 70) {
-    budgetColor = "text-emerald-600 dark:text-emerald-400";
-    budgetRingClass = "stroke-emerald-600 dark:stroke-emerald-400";
-    budgetBgClass = "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400";
-  } else if (carbonSavedPercent >= 30) {
-    budgetColor = "text-amber-500 dark:text-amber-400";
-    budgetRingClass = "stroke-amber-500 dark:stroke-amber-400";
-    budgetBgClass = "bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400";
-  }
 
   // Daily Challenge calculations
   const completedChallenges = challenges.filter((c) => c.completed).length;
@@ -282,14 +263,23 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* TERRA ECOSYSTEM COMPANION BIOME */}
+        <TerraBiome
+          ecoScore={score.ecoScore}
+          level={score.level}
+          streak={score.streak}
+          carbonSaved={carbonSavedSoFar}
+          monthlyGoal={monthlySavingsGoal}
+        />
+
         {/* TOP METRICS SECTION */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2">
           {/* 1. EcoScore Card */}
           <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  EcoScore
+                  EcoScore Vitality
                 </CardTitle>
                 <Award className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               </div>
@@ -321,7 +311,7 @@ export default function DashboardPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Current Streak
+                  Nurturing Streak
                 </CardTitle>
                 <Flame className="h-5 w-5 text-amber-500" />
               </div>
@@ -346,66 +336,6 @@ export default function DashboardPage() {
                   "Log an activity today to start a streak!"
                 )}
               </p>
-            </CardContent>
-          </Card>
-
-          {/* 3. Carbon Budget Progress */}
-          <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900 sm:col-span-2 lg:col-span-1">
-            <CardHeader className="pb-1">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Carbon Budget Savings
-                </CardTitle>
-                <Globe className="h-5 w-5 text-slate-400" />
-              </div>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between gap-4 py-2">
-              <div className="space-y-1">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold">{carbonSavedSoFar.toFixed(1)}</span>
-                  <span className="text-xs text-slate-400">/ 100 kg CO₂</span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  {remainingSavings.toFixed(1)} kg remaining to goal
-                </p>
-                <div
-                  className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${budgetBgClass}`}
-                >
-                  {carbonSavedPercent}% Completed
-                </div>
-              </div>
-
-              {/* Budget Savings Progress Ring */}
-              {/* circumference of r=34 = 2π×34 ≈ 213.6 — dashoffset drives fill */}
-              <div className="relative h-20 w-20 shrink-0">
-                <svg className="h-full w-full -rotate-90" viewBox="0 0 80 80">
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="34"
-                    className="stroke-slate-100 dark:stroke-slate-800"
-                    strokeWidth="6"
-                    fill="transparent"
-                  />
-                  <circle
-                    cx="40"
-                    cy="40"
-                    r="34"
-                    className={budgetRingClass}
-                    strokeWidth="6"
-                    fill="transparent"
-                    strokeLinecap="round"
-                    strokeDasharray={213.6}
-                    strokeDashoffset={213.6 * (1 - carbonSavedPercent / 100)}
-                    style={{ transition: "stroke-dashoffset 0.6s ease" }}
-                  />
-                </svg>
-                <div
-                  className={`absolute inset-0 flex items-center justify-center text-xs font-extrabold ${budgetColor}`}
-                >
-                  {carbonSavedPercent}%
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -513,8 +443,9 @@ export default function DashboardPage() {
                       <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
                         {rec.reason}
                       </p>
-                      <p className="text-[10px] text-emerald-600 font-semibold dark:text-emerald-400 mt-1">
-                        -{rec.estimatedCarbonSaved}kg CO₂ · +{rec.estimatedPoints} pts
+                      <p className="text-[10px] text-emerald-600 font-extrabold dark:text-emerald-400 mt-1">
+                        -{rec.estimatedCarbonSaved}kg CO₂ (+{rec.estimatedPoints} pts) ·{" "}
+                        {AnalogyEngine.getPrimaryAnalogyText(rec.estimatedCarbonSaved)}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1.5 shrink-0">
@@ -549,11 +480,12 @@ export default function DashboardPage() {
             <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900">
               <CardHeader>
                 <CardTitle className="text-lg font-bold flex items-center gap-2">
-                  <Plus className="h-5 w-5 text-emerald-600" />
-                  <span>Quick Log Activity</span>
+                  <Leaf className="h-5 w-5 text-emerald-600" />
+                  <span>Your Daily Care Ritual</span>
                 </CardTitle>
                 <CardDescription>
-                  Earn EcoPoints and reduce your carbon footprint in under 10 seconds.
+                  Nurture your Terra Biome and spare the atmosphere by completing small real-world
+                  actions.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -773,13 +705,19 @@ export default function DashboardPage() {
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right flex flex-col items-end">
                         <p className="text-xs font-bold text-slate-950 dark:text-white">
                           +{act.ecoPoints} EcoPoints
                         </p>
-                        <p className="text-[10px] text-emerald-600 font-bold dark:text-emerald-400 mt-0.5">
+                        <p className="text-[10px] text-emerald-600 font-extrabold dark:text-emerald-400 mt-0.5">
                           -{act.carbonReduction.toFixed(1)}kg CO₂ saved
                         </p>
+                        <span
+                          className="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 max-w-[200px] truncate block"
+                          title={AnalogyEngine.getPrimaryAnalogyText(act.carbonReduction)}
+                        >
+                          {AnalogyEngine.getPrimaryAnalogyText(act.carbonReduction)}
+                        </span>
                       </div>
                     </div>
                   ))}
