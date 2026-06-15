@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/loading";
 import { ArrowLeft, Calendar, History as HistoryIcon } from "lucide-react";
+import { AnalogyEngine } from "@/lib/analogy-engine";
 import type { EcoActivity, ActivityCategory } from "@/domain/activity/types";
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
@@ -193,13 +194,19 @@ export default function HistoryPage() {
                             {formatDateString(act.createdAt)}
                           </time>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right flex flex-col items-end">
                           <p className="text-xs font-extrabold text-slate-950 dark:text-white">
                             +{act.ecoPoints} pts
                           </p>
                           <p className="text-[10px] text-emerald-600 font-bold dark:text-emerald-400 mt-0.5">
                             -{act.carbonSaved.toFixed(1)}kg CO₂
                           </p>
+                          <span
+                            className="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 max-w-[200px] truncate block"
+                            title={AnalogyEngine.getPrimaryAnalogyText(act.carbonSaved)}
+                          >
+                            {AnalogyEngine.getPrimaryAnalogyText(act.carbonSaved)}
+                          </span>
                         </div>
                       </div>
                     </div>
