@@ -1,0 +1,261 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuthActions } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Leaf } from "lucide-react";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const { signInWithEmail, signInWithGoogle, isLoading, error: authError } = useAuthActions();
+
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [emailError, setEmailError] = React.useState("");
+  const [passwordError, setPasswordError] = React.useState("");
+  const [errorMsg, setErrorMsg] = React.useState("");
+  const [isSeeding, setIsSeeding] = React.useState(false);
+
+  const validate = () => {
+    let isValid = true;
+    setEmailError("");
+    setPasswordError("");
+    setErrorMsg("");
+
+    if (!email) {
+      setEmailError("Email is required");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      isValid = false;
+    }
+
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    } else if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    try {
+      await signInWithEmail(email, password);
+      router.push("/dashboard");
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      setErrorMsg(errorMsg || "Failed to sign in. Please verify your credentials.");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      router.push("/dashboard");
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      setErrorMsg(errorMsg || "Failed to sign in with Google.");
+    }
+  };
+
+  const handleDemoSignIn = async () => {
+    setIsSeeding(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/dev/seed", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to seed demo data");
+      }
+      // Store demo user session with the key that auth listener expects
+      localStorage.setItem(
+        "_demo_auth_user",
+        JSON.stringify({
+          uid: "test-eco-user-id",
+          email: "test@ecoscore.com",
+          displayName: "Test Eco User",
+        })
+      );
+      router.push("/dashboard");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setErrorMsg(msg || "Failed to log in with test credentials.");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-emerald-50 via-white to-teal-50 px-4 py-12 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400"
+          >
+            <Leaf className="h-8 w-8" />
+            <span>EcoScore</span>
+          </Link>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Welcome back
+          </h2>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Sign in to resume tracking your carbon goals.
+          </p>
+        </div>
+
+        <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
+          <CardHeader>
+            <CardTitle className="text-xl">Sign In</CardTitle>
+            <CardDescription>Enter your email and password or use Google OAuth.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {errorMsg && (
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/35 dark:text-red-400"
+              >
+                {errorMsg}
+              </div>
+            )}
+            {authError && !errorMsg && (
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/35 dark:text-red-400"
+              >
+                {authError}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  label="Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={emailError}
+                  disabled={isLoading}
+                  autoComplete="email"
+                  required
+                />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="password"
+                    className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                  >
+                    Password
+                  </label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={passwordError}
+                  disabled={isLoading}
+                  autoComplete="current-password"
+                  className="mt-1"
+                  required
+                />
+              </div>
+
+              <Button type="submit" className="w-full" isLoading={isLoading}>
+                Sign In
+              </Button>
+            </form>
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
+              className="w-full"
+            >
+              <svg className="mr-2 h-4 w-4" aria-hidden="true" viewBox="0 0 24 24">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                  fill="#EA4335"
+                />
+              </svg>
+              Google
+            </Button>
+
+            {process.env.NODE_ENV === "development" && (
+              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleDemoSignIn}
+                  disabled={isLoading || isSeeding}
+                  className="w-full bg-emerald-50/50 border-emerald-200/60 hover:bg-emerald-50 dark:bg-slate-900 dark:border-slate-800 text-emerald-700 dark:text-emerald-400 font-semibold"
+                >
+                  {isSeeding ? "Seeding Demo Data..." : "Seed & Sign In (Demo)"}
+                </Button>
+              </div>
+            )}
+
+            <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
+              New to EcoScore?{" "}
+              <Link
+                href="/signup"
+                className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300"
+              >
+                Create an account
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

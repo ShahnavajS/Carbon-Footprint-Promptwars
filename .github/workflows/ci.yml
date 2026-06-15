@@ -1,0 +1,60 @@
+name: EcoScore CI Pipeline
+
+on:
+  push:
+    branches: [main, master, dev]
+  pull_request:
+    branches: [main, master, dev]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Run Unit & Integration Tests
+        run: npm run test
+        env:
+          NEXT_PUBLIC_FIREBASE_API_KEY: "mock-api-key-value-12345"
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "ecoscore-mock.firebaseapp.com"
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: "ecoscore-mock"
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "ecoscore-mock.appspot.com"
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "123456789012"
+          NEXT_PUBLIC_FIREBASE_APP_ID: "1:123456789012:web:abcdef1234567890abcdef"
+          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: "G-ABCDE12345"
+          GEMINI_API_KEY: "mock-gemini-key-value-54321"
+          FIREBASE_PROJECT_ID: "ecoscore-mock"
+          FIREBASE_CLIENT_EMAIL: "firebase-adminsdk-mock@ecoscore-mock.iam.gserviceaccount.com"
+          FIREBASE_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC3\n-----END PRIVATE KEY-----\n"
+
+      - name: Verify production build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_FIREBASE_API_KEY: "mock-api-key-value-12345"
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "ecoscore-mock.firebaseapp.com"
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: "ecoscore-mock"
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "ecoscore-mock.appspot.com"
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "123456789012"
+          NEXT_PUBLIC_FIREBASE_APP_ID: "1:123456789012:web:abcdef1234567890abcdef"
+          NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: "G-ABCDE12345"
+          GEMINI_API_KEY: "mock-gemini-key-value-54321"
+          FIREBASE_PROJECT_ID: "ecoscore-mock"
+          FIREBASE_CLIENT_EMAIL: "firebase-adminsdk-mock@ecoscore-mock.iam.gserviceaccount.com"
+          FIREBASE_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC3\n-----END PRIVATE KEY-----\n"

@@ -1,102 +1,121 @@
-import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { FootprintEmptyState } from "./_components/footprint-empty-state";
+import { HeroCtas } from "./_components/hero-ctas";
+import { Leaf, BarChart2, Zap, ShieldCheck } from "lucide-react";
 
-export default function Home() {
+const features = [
+  {
+    icon: Leaf,
+    title: "Track Your Impact",
+    description:
+      "Log your daily activities across transportation, food, energy, shopping, and waste to understand your carbon footprint.",
+  },
+  {
+    icon: BarChart2,
+    title: "Visualise Progress",
+    description:
+      "See your footprint trends over time with clear, beautiful charts that make complex data easy to understand.",
+  },
+  {
+    icon: Zap,
+    title: "AI-Powered Insights",
+    description:
+      "Get personalised recommendations powered by Gemini AI to help you identify the highest-impact changes you can make.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Build Green Habits",
+    description:
+      "Turn sustainable choices into lasting habits with streaks, badges, and gamified challenges that keep you motivated.",
+  },
+];
+
+export default function HomePage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <div className="flex min-h-screen flex-col">
+      {/* Hero Section */}
+      <section
+        aria-labelledby="hero-heading"
+        className="relative flex flex-col items-center justify-center overflow-hidden bg-linear-to-br from-emerald-50 via-white to-teal-50 px-4 py-24 text-center dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950"
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-emerald-100/40 via-transparent to-transparent dark:from-emerald-900/20"
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <div className="relative z-10 max-w-3xl">
+          <span className="mb-4 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+            🌱 Now in Early Access
+          </span>
+          <h1
+            id="hero-heading"
+            className="mt-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl dark:text-white"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Your planet needs a{" "}
+            <span className="text-emerald-600 dark:text-emerald-400">score</span>
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-400">
+            EcoScore helps you measure, understand, and reduce your personal carbon footprint — one
+            habit at a time. Simple actions, meaningful impact.
+          </p>
+          <HeroCtas />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Features Section */}
+      <section
+        id="features-section"
+        aria-labelledby="features-heading"
+        className="mx-auto w-full max-w-6xl px-4 py-20"
+      >
+        <div className="text-center">
+          <h2
+            id="features-heading"
+            className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white"
+          >
+            Everything you need to go green
+          </h2>
+          <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
+            Science-backed carbon tracking meets beautiful design and smart AI.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <Card key={feature.title} className="transition-shadow hover:shadow-md">
+                <CardHeader>
+                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
+                    <Icon
+                      className="h-5 w-5 text-emerald-600 dark:text-emerald-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <CardTitle className="text-base">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Empty State Demo Section */}
+      <section aria-labelledby="demo-empty-heading" className="mx-auto w-full max-w-2xl px-4 pb-24">
+        <h2 id="demo-empty-heading" className="sr-only">
+          Dashboard Preview
+        </h2>
+        <FootprintEmptyState />
+      </section>
+
+      {/* Footer */}
+      <footer
+        role="contentinfo"
+        className="border-t border-slate-200 py-8 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400"
+      >
+        <p>© {new Date().getFullYear()} EcoScore. Built for a greener planet.</p>
       </footer>
     </div>
   );
