@@ -4,9 +4,9 @@ import * as React from "react";
 import Link from "next/link";
 import { useActivities } from "@/hooks/use-activities";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/loading";
-import { ArrowLeft, Calendar, History as HistoryIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { AnalogyEngine } from "@/lib/analogy-engine";
 import type { EcoActivity, ActivityCategory } from "@/domain/activity/types";
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
@@ -92,7 +92,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 dark:bg-slate-950 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-slate-50 p-4 dark:bg-slate-950 sm:p-6 lg:p-8 text-slate-900 dark:text-slate-100 pb-20">
       <div className="mx-auto max-w-2xl space-y-6">
         {/* Navigation Back */}
         <div>
@@ -105,17 +105,22 @@ export default function HistoryPage() {
           </Link>
         </div>
 
-        {/* History Card */}
-        <Card className="border-slate-200/60 shadow-lg dark:border-slate-800 bg-white dark:bg-slate-900">
-          <CardHeader className="space-y-4">
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <HistoryIcon className="h-5 w-5 text-emerald-600" />
-              <span>Activity History Log</span>
-            </CardTitle>
+        {/* Climate Journal Header */}
+        <div className="space-y-2">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">
+            Your Climate Journal
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+            A chronological timeline of every green ritual you completed. Each entry details the
+            real-world carbon equivalent saved for our biosphere.
+          </p>
+        </div>
 
-            {/* Category Filter Controls */}
+        {/* History Card */}
+        <Card className="border-slate-200/60 shadow-md dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+          <CardHeader className="space-y-4 border-b border-slate-100 dark:border-slate-850 bg-slate-50/50 dark:bg-slate-950/20 py-5">
             <div
-              className="flex flex-wrap items-center gap-1.5 pt-2"
+              className="flex flex-wrap items-center gap-1.5"
               role="group"
               aria-label="Category filters"
             >
@@ -129,10 +134,10 @@ export default function HistoryPage() {
                   key={val}
                   type="button"
                   onClick={() => setSelectedCategory(val as ActivityCategory | "all")}
-                  className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                  className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     selectedCategory === val
-                      ? "bg-emerald-600 text-white dark:bg-emerald-500"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                      ? "bg-emerald-600 text-white shadow-sm"
+                      : "bg-white border border-slate-200 text-slate-655 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-350 dark:border-slate-800"
                   }`}
                 >
                   {label}
@@ -140,11 +145,11 @@ export default function HistoryPage() {
               ))}
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="p-6">
             {error && (
               <div
                 role="alert"
-                className="rounded-lg bg-red-50 p-3 text-xs font-semibold text-red-600 dark:bg-red-950/20 dark:text-red-400"
+                className="rounded-2xl bg-red-50 p-4 text-xs font-semibold text-red-650 dark:bg-red-950/20 dark:text-red-400 mb-6 text-center"
               >
                 {error}
               </div>
@@ -152,37 +157,55 @@ export default function HistoryPage() {
 
             {/* Timeline logs */}
             {initialLoading && activitiesList.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 space-y-3">
+              <div className="flex flex-col items-center justify-center py-16 space-y-3">
                 <Spinner className="h-8 w-8 text-emerald-600" />
-                <p className="text-xs text-slate-400">Loading activity records...</p>
+                <p className="text-xs text-slate-400">Opening Climate Journal...</p>
               </div>
             ) : activitiesList.length === 0 ? (
-              <div className="text-center py-16 border border-dashed border-slate-200 rounded-xl dark:border-slate-800">
-                <Calendar className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-700" />
-                <h4 className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  No logs found
-                </h4>
-                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                  We couldn&apos;t find any activities matching the filter selection.
-                </p>
+              <div className="text-center py-16 border-2 border-dashed border-slate-200/60 rounded-2xl dark:border-slate-800 max-w-sm mx-auto space-y-4">
+                <svg
+                  className="mx-auto h-12 w-12 text-slate-300 dark:text-slate-700"
+                  viewBox="0 0 64 64"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="32"
+                    cy="32"
+                    r="28"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="3 3"
+                  />
+                  <path d="M22 32H42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-sm text-slate-750 dark:text-slate-350">
+                    No Logs Found
+                  </h4>
+                  <p className="text-xs text-slate-450 dark:text-slate-500 max-w-xs mx-auto leading-relaxed">
+                    You haven&apos;t logged any rituals in this category yet. Nurture your biome on
+                    the dashboard!
+                  </p>
+                </div>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="relative border-l-2 border-slate-200 pl-4 ml-2 dark:border-slate-800 space-y-6">
+              <div className="space-y-6">
+                <div className="relative border-l-2 border-slate-200/80 pl-6 ml-2 dark:border-slate-800 space-y-8">
                   {activitiesList.map((act) => (
                     <div key={act.id} className="relative group">
                       {/* Timeline dot marker */}
-                      <span className="absolute -left-[23px] top-1.5 flex h-2.5 w-2.5 rounded-full bg-emerald-600 ring-4 ring-white dark:ring-slate-900 dark:bg-emerald-500" />
+                      <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 rounded-full bg-emerald-650 ring-4 ring-white dark:ring-slate-900 dark:bg-emerald-500 transition-transform group-hover:scale-125" />
 
                       <div className="flex items-start justify-between gap-4">
-                        <div>
+                        <div className="space-y-1">
                           <span
-                            className={`inline-block text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wide mb-1 ${
+                            className={`inline-block text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider ${
                               act.category === "food"
-                                ? "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400"
+                                ? "bg-amber-50 text-amber-700 border border-amber-100/60 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/30"
                                 : act.category === "transport"
-                                  ? "bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400"
-                                  : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
+                                  ? "bg-blue-50 text-blue-700 border border-blue-100/60 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/30"
+                                  : "bg-emerald-50 text-emerald-700 border border-emerald-100/60 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30"
                             }`}
                           >
                             {act.category}
@@ -190,19 +213,19 @@ export default function HistoryPage() {
                           <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                             {act.actionType}
                           </h4>
-                          <time className="text-[10px] text-slate-400 dark:text-slate-500 block mt-0.5">
+                          <time className="text-[10px] text-slate-400 dark:text-slate-500 block">
                             {formatDateString(act.createdAt)}
                           </time>
                         </div>
-                        <div className="text-right flex flex-col items-end">
+                        <div className="text-right flex flex-col items-end gap-0.5">
                           <p className="text-xs font-extrabold text-slate-950 dark:text-white">
                             +{act.ecoPoints} pts
                           </p>
-                          <p className="text-[10px] text-emerald-600 font-bold dark:text-emerald-400 mt-0.5">
+                          <p className="text-[10px] text-emerald-650 font-bold dark:text-emerald-400">
                             -{act.carbonSaved.toFixed(1)}kg CO₂
                           </p>
                           <span
-                            className="text-[9px] text-slate-400 dark:text-slate-500 mt-0.5 max-w-[200px] truncate block"
+                            className="text-[9.5px] text-slate-450 dark:text-slate-500 mt-1 max-w-[200px] truncate block leading-snug font-medium"
                             title={AnalogyEngine.getPrimaryAnalogyText(act.carbonSaved)}
                           >
                             {AnalogyEngine.getPrimaryAnalogyText(act.carbonSaved)}
@@ -215,15 +238,15 @@ export default function HistoryPage() {
 
                 {/* Load More Button */}
                 {hasMore && (
-                  <div className="pt-4 text-center">
+                  <div className="pt-6 text-center border-t border-slate-100 dark:border-slate-850">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={loadMoreActivities}
                       isLoading={isLoadingMore}
-                      className="w-full sm:w-auto"
+                      className="w-full sm:w-auto rounded-full px-6 text-xs font-bold"
                     >
-                      Load More Logs
+                      Load More Journal Logs
                     </Button>
                   </div>
                 )}

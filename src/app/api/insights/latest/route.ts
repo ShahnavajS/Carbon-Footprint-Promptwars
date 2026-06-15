@@ -25,6 +25,12 @@ const DEMO_INSIGHT = {
   title: "Your Week's Impact",
   content:
     "You've made excellent progress this week! Your transportation choices saved 15.2 kg of CO2 - that's equivalent to planting 1 tree. This week, focus on expanding your vegetarian meals to 6 days.",
+  summary:
+    "You had an inspiring week! By choosing low-impact transit, you spared the atmosphere a significant volume of greenhouse gases and watered your seedling.",
+  biggestWin: "Metro riding saved carbon equivalent to a mature tree breathing for 15 days",
+  improvementArea:
+    "Your kitchen can be a place of climate healing. Try reducing energy use or switching to vegetarian swaps.",
+  nextStep: "Prepare one fully plant-based vegan dinner",
   metrics: {
     carbonSaved: 15.2,
     pointsEarned: 145,

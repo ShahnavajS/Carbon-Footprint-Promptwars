@@ -272,6 +272,59 @@ export default function DashboardPage() {
           monthlyGoal={monthlySavingsGoal}
         />
 
+        {/* MONTHLY REPORT CARD WIDGET */}
+        <Card className="border-emerald-250 bg-linear-to-br from-emerald-500/5 to-teal-500/5 dark:border-emerald-900/20 dark:bg-emerald-950/5 shadow-xs rounded-2xl overflow-hidden">
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+                Latest Monthly Report
+              </span>
+              <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <Trophy className="h-4.5 w-4.5 text-amber-500" />
+                <span>Sanctuary Recovery Report</span>
+              </CardTitle>
+            </div>
+            <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 px-3 py-1 rounded-full uppercase tracking-wider">
+              May 2026
+            </span>
+          </CardHeader>
+          <CardContent className="pt-4 grid gap-4 sm:grid-cols-3">
+            <div className="p-3 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 rounded-xl flex flex-col justify-center">
+              <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">
+                Carbon Prevented
+              </span>
+              <span className="text-lg font-extrabold text-emerald-700 dark:text-emerald-400 mt-0.5">
+                24.5 kg CO₂
+              </span>
+              <span className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 leading-snug">
+                Sparing greenhouse gas the volume of 955 balloons!
+              </span>
+            </div>
+            <div className="p-3 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 rounded-xl flex flex-col justify-center">
+              <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">
+                Vitality Score
+              </span>
+              <span className="text-lg font-extrabold text-blue-700 dark:text-blue-400 mt-0.5">
+                +125 Points
+              </span>
+              <span className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 leading-snug">
+                You maintained a peak 5-day care streak.
+              </span>
+            </div>
+            <div className="p-3 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 rounded-xl flex flex-col justify-center">
+              <span className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider">
+                Primary Habit
+              </span>
+              <span className="text-lg font-extrabold text-amber-700 dark:text-amber-400 mt-0.5">
+                🚌 Commute
+              </span>
+              <span className="text-[9px] text-slate-400 dark:text-slate-500 mt-1 leading-snug">
+                Riding the metro was your biome&apos;s biggest win.
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* TOP METRICS SECTION */}
         <div className="grid gap-6 sm:grid-cols-2">
           {/* 1. EcoScore Card */}
@@ -342,60 +395,96 @@ export default function DashboardPage() {
 
         {/* AI INSIGHTS & RECOMMENDATIONS SECTION */}
         <div className="grid gap-6 md:grid-cols-2">
-          {/* AI Weekly Insight Card */}
-          <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900">
-            <CardHeader className="pb-2">
+          {/* AI Weekly Insight Card (Redesigned into a warm nature journal format) */}
+          <Card className="border-emerald-150 bg-linear-to-tr from-emerald-50/60 via-teal-50/20 to-amber-50/40 dark:from-slate-900/60 dark:to-teal-950/20 shadow-sm rounded-2xl overflow-hidden">
+            <CardHeader className="pb-2 border-b border-emerald-100/50 dark:border-slate-800/40">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-bold flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-purple-500" />
-                  Weekly AI Insight
+                <CardTitle className="text-xs font-extrabold flex items-center gap-2 uppercase tracking-widest text-emerald-800 dark:text-emerald-400">
+                  <Sparkles className="h-4.5 w-4.5 text-emerald-600" />
+                  Weekly Nature Reflection
                 </CardTitle>
                 <Link
                   href="/simulator"
-                  className="flex items-center gap-1 text-xs font-semibold text-emerald-600 hover:underline dark:text-emerald-400"
+                  className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 hover:underline dark:text-emerald-400 uppercase tracking-wider"
                 >
-                  <Zap className="h-3.5 w-3.5" />
-                  Simulator
+                  <Zap className="h-3 w-3" />
+                  Forecaster
                 </Link>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               {insight ? (
                 <div
-                  className="space-y-3"
+                  className="space-y-4 cursor-pointer"
                   onClick={() => markViewed(insight.id, insight.generatedAt)}
                 >
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                    {insight.title}
+                  <h4 className="text-base font-extrabold text-slate-950 dark:text-white leading-snug">
+                    &ldquo;{insight.title}&rdquo;
                   </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-slate-650 dark:text-slate-450 leading-relaxed font-medium italic">
                     {insight.content}
                   </p>
-                  <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/20 p-3 space-y-1.5">
-                    <p className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
-                      ✅ Carbon Saved: {insight.metrics?.carbonSaved}kg
-                    </p>
-                    <p className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
-                      📈 Points Earned: +{insight.metrics?.pointsEarned}
-                    </p>
+
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    <div className="rounded-xl bg-white/60 dark:bg-slate-900/40 border border-emerald-100/40 p-2.5">
+                      <span className="text-[8px] font-extrabold text-slate-400 uppercase tracking-widest block">
+                        Biggest Win
+                      </span>
+                      <p className="text-[10px] font-bold text-emerald-800 dark:text-emerald-400 mt-1">
+                        {insight.biggestWin || "Nurturing the canopy"}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-white/60 dark:bg-slate-900/40 border border-emerald-100/40 p-2.5">
+                      <span className="text-[8px] font-extrabold text-slate-400 uppercase tracking-widest block">
+                        Next Step
+                      </span>
+                      <p className="text-[10px] font-bold text-emerald-800 dark:text-emerald-400 mt-1">
+                        {insight.nextStep || "One green step today"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ) : (
-                <div className="py-6 text-center">
-                  <Sparkles className="mx-auto h-8 w-8 text-slate-200 dark:text-slate-700 mb-2" />
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mb-3">
-                    No insight yet. Generate your first AI weekly insight.
-                  </p>
+                <div className="py-8 text-center space-y-4">
+                  <svg
+                    className="mx-auto h-12 w-12 text-slate-350 dark:text-slate-700"
+                    viewBox="0 0 64 64"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="32"
+                      cy="32"
+                      r="28"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeDasharray="3 3"
+                    />
+                    <path
+                      d="M32 20V28M32 36H32.01"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-slate-700 dark:text-slate-350">
+                      Reflection Journal is Empty
+                    </p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 max-w-xs mx-auto">
+                      Log activities to let Gemini compose your weekly climate reflection report.
+                    </p>
+                  </div>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={generateInsights}
                     isLoading={isGenerating}
                     disabled={isGenerating}
-                    className="text-xs"
+                    className="text-xs rounded-full px-5"
                   >
                     <Sparkles className="h-3.5 w-3.5 mr-1" />
-                    Generate Insight
+                    Compose Reflection
                   </Button>
                 </div>
               )}
@@ -403,7 +492,7 @@ export default function DashboardPage() {
           </Card>
 
           {/* AI Recommendations Strip */}
-          <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900">
+          <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-bold flex items-center gap-2">
@@ -420,11 +509,30 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {recommendations.length === 0 ? (
-                <div className="py-6 text-center">
-                  <Trophy className="mx-auto h-8 w-8 text-slate-200 dark:text-slate-700 mb-2" />
+                <div className="py-10 text-center space-y-3">
+                  <svg
+                    className="mx-auto h-12 w-12 text-slate-300 dark:text-slate-700"
+                    viewBox="0 0 64 64"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="32"
+                      cy="32"
+                      r="28"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeDasharray="3 3"
+                    />
+                    <path
+                      d="M22 32H42"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                   <p className="text-xs text-slate-400 dark:text-slate-500">
-                    No recommendations yet. Generate insights above to receive personalized
-                    suggestions.
+                    No recommendations yet. Complete insights to generate suggestions.
                   </p>
                 </div>
               ) : (
@@ -477,7 +585,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-3">
           {/* Quick Log Form */}
           <div className="md:col-span-2 space-y-6">
-            <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900">
+            <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-lg font-bold flex items-center gap-2">
                   <Leaf className="h-5 w-5 text-emerald-600" />
@@ -588,7 +696,7 @@ export default function DashboardPage() {
 
           {/* Daily Challenges Column */}
           <div className="md:col-span-1">
-            <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900 h-full flex flex-col">
+            <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900 h-full flex flex-col rounded-2xl">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -651,7 +759,7 @@ export default function DashboardPage() {
         </div>
 
         {/* RECENT ACTIVITIES & TELEMETRY SECTION */}
-        <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="border-slate-200/60 shadow-sm dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -669,11 +777,36 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {allActivities.length === 0 ? (
-              <div className="text-center py-10 text-slate-400">
-                <p className="text-sm">No actions recorded yet.</p>
-                <p className="text-xs mt-1">
-                  Use the quick log forms above to log your first activity!
-                </p>
+              <div className="text-center py-12 border border-dashed border-slate-200/60 dark:border-slate-800 rounded-2xl max-w-sm mx-auto space-y-3">
+                <svg
+                  className="mx-auto h-12 w-12 text-slate-350 dark:text-slate-700 animate-pulse"
+                  viewBox="0 0 64 64"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="32"
+                    cy="32"
+                    r="28"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="3 3"
+                  />
+                  <path
+                    d="M22 32H42M32 22V42"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-xs text-slate-705 dark:text-slate-300">
+                    No Actions Recorded
+                  </h4>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 max-w-[250px] mx-auto leading-relaxed">
+                    Complete your first Daily Care Ritual above to seed the activity timeline.
+                  </p>
+                </div>
               </div>
             ) : (
               <>

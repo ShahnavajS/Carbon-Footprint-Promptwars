@@ -46,6 +46,10 @@ interface Insight {
   type: string;
   title: string;
   content: string;
+  summary?: string;
+  biggestWin?: string;
+  improvementArea?: string;
+  nextStep?: string;
   metrics?: {
     carbonSaved: number;
     pointsEarned: number;
