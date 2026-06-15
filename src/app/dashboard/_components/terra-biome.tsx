@@ -20,15 +20,26 @@ export function TerraBiome({
 }: TerraBiomeProps) {
   const percent = Math.min(100, Math.round((carbonSaved / monthlyGoal) * 100));
 
-  // Determine emotional status and messages
+  // Determine emotional status, message, and image state
   let statusText = "Tending the soil";
   let statusEmoji = "🌱";
   let biomeName = "Seedling Globe";
   let description = "Your ecosystem is starting its journey. Feed it with green actions today!";
   let biomeColorClass = "from-amber-100 to-emerald-50 dark:from-slate-900 dark:to-emerald-950/20";
   let textColorClass = "text-amber-800 dark:text-amber-400";
+  let earthImage = "/earth-states/polluted_earth.png";
 
-  if (percent >= 70) {
+  if (percent >= 90 || level >= 5) {
+    statusText = "Climate Champion World";
+    statusEmoji = "👑🌍";
+    biomeName = "Gaea Sanctuary";
+    description =
+      "You have unlocked the ultimate carbon neutrality state! A model ecosystem of harmony.";
+    biomeColorClass =
+      "from-purple-100 via-emerald-50 to-teal-100 dark:from-indigo-950/40 dark:via-slate-900 dark:to-teal-950/20";
+    textColorClass = "text-purple-800 dark:text-purple-400";
+    earthImage = "/earth-states/champion_earth.png";
+  } else if (percent >= 70 || level >= 4) {
     statusText = "Thriving Canopy";
     statusEmoji = "🦊🌳";
     biomeName = "Emerald Sanctuary";
@@ -36,7 +47,8 @@ export function TerraBiome({
     biomeColorClass =
       "from-emerald-100 via-teal-50 to-green-100 dark:from-emerald-950/40 dark:via-slate-900 dark:to-teal-950/20";
     textColorClass = "text-emerald-800 dark:text-emerald-400";
-  } else if (percent >= 30) {
+    earthImage = "/earth-states/emerald_sanctuary.png";
+  } else if (percent >= 40 || level >= 3) {
     statusText = "Budding Meadow";
     statusEmoji = "🌻🌿";
     biomeName = "Whispering Grassland";
@@ -44,7 +56,8 @@ export function TerraBiome({
     biomeColorClass =
       "from-emerald-50 via-slate-50 to-amber-50 dark:from-slate-900 dark:via-emerald-950/10 dark:to-slate-900";
     textColorClass = "text-emerald-700 dark:text-emerald-400";
-  } else if (percent < 30 && carbonSaved > 0) {
+    earthImage = "/earth-states/growing_ecosystem.png";
+  } else if (percent >= 15 || level >= 2) {
     statusText = "Young Shoot";
     statusEmoji = "🌱☁️";
     biomeName = "Misty Valley";
@@ -52,6 +65,15 @@ export function TerraBiome({
       "A little hazy, but a young shoot has broken the soil. Keep going to clear the mist!";
     biomeColorClass = "from-slate-100 to-amber-50 dark:from-slate-950 dark:to-slate-900";
     textColorClass = "text-slate-700 dark:text-slate-400";
+    earthImage = "/earth-states/recovering_earth.png";
+  } else {
+    statusText = "Tending the soil";
+    statusEmoji = "🌋☠️";
+    biomeName = "Seedling Globe";
+    description = "Your ecosystem is starting its journey. Feed it with green actions today!";
+    biomeColorClass = "from-amber-100 to-emerald-50 dark:from-slate-900 dark:to-emerald-950/20";
+    textColorClass = "text-amber-800 dark:text-amber-400";
+    earthImage = "/earth-states/polluted_earth.png";
   }
 
   // Double down on streak animations
@@ -126,72 +148,18 @@ export function TerraBiome({
           />
 
           {/* The Core Planet Circle */}
-          <div className="relative h-32 w-32 rounded-full bg-linear-to-b from-sky-400 to-sky-200 dark:from-slate-900 dark:to-indigo-950 overflow-hidden shadow-inner border-2 border-white dark:border-slate-800 flex items-end justify-center animate-float-custom">
-            {/* Ground Layers (Green curves) */}
-            <div className="absolute inset-0 bg-linear-to-b from-sky-300 to-sky-100 dark:from-slate-900 dark:to-indigo-900 opacity-60" />
+          <div className="relative h-32 w-32 rounded-full overflow-hidden shadow-inner border-2 border-white dark:border-slate-800 flex items-center justify-center animate-float-custom bg-slate-100 dark:bg-slate-950">
+            {/* The Earth Image */}
+            <img
+              src={earthImage}
+              alt={biomeName}
+              className="h-full w-full object-cover transition-opacity duration-700"
+            />
 
-            {/* Haze Overlay if savings are low */}
+            {/* Glowing Haze Overlay if savings are low */}
             {percent < 30 && (
-              <div className="absolute inset-0 bg-slate-900/15 dark:bg-slate-950/20 backdrop-blur-[0.5px] transition-all" />
+              <div className="absolute inset-0 bg-slate-900/10 dark:bg-slate-950/15 backdrop-blur-[0.5px] transition-all pointer-events-none" />
             )}
-
-            {/* Hills/Meadow Hills */}
-            <svg
-              className="absolute bottom-0 w-full h-16 fill-emerald-500 dark:fill-emerald-700 transition-colors duration-700"
-              viewBox="0 0 100 50"
-              preserveAspectRatio="none"
-            >
-              <path d="M0,50 Q25,20 50,35 T100,25 L100,50 Z" />
-            </svg>
-            <svg
-              className="absolute bottom-0 w-full h-12 fill-emerald-600 dark:fill-emerald-800 opacity-90 transition-colors duration-700"
-              viewBox="0 0 100 50"
-              preserveAspectRatio="none"
-            >
-              <path d="M0,50 Q30,30 65,25 T100,35 L100,50 Z" />
-            </svg>
-
-            {/* Vegetation sprouting based on progress */}
-            {percent >= 30 && (
-              <div className="absolute bottom-11 left-6 flex gap-1 animate-sway-custom">
-                {/* Left Tree */}
-                <div className="h-5 w-2 bg-amber-800 dark:bg-amber-900 rounded-xs" />
-                <div className="absolute bottom-3 -left-2 h-6 w-6 rounded-full bg-emerald-700 dark:bg-emerald-600 opacity-95" />
-              </div>
-            )}
-
-            {percent >= 70 && (
-              <>
-                {/* Center Tall Tree */}
-                <div
-                  className="absolute bottom-10 left-16 flex gap-1 animate-sway-custom"
-                  style={{ animationDelay: "1s" }}
-                >
-                  <div className="h-7 w-2.5 bg-amber-900 dark:bg-amber-950 rounded-xs" />
-                  <div className="absolute bottom-4 -left-3 h-8 w-8 rounded-full bg-green-700 dark:bg-green-600 opacity-95" />
-                </div>
-                {/* Right Small Bush */}
-                <div className="absolute bottom-8 right-6 h-4 w-5 rounded-full bg-teal-600 dark:bg-teal-700 animate-pulse" />
-              </>
-            )}
-
-            {/* Basic young seedling sprout for low score */}
-            {percent < 30 && (
-              <div className="absolute bottom-7 left-14 h-4 w-4 text-emerald-400 dark:text-emerald-500 animate-sway-custom">
-                🌱
-              </div>
-            )}
-
-            {/* Sun or Moon depending on Dark Mode */}
-            <div className="absolute top-3 right-6 h-6 w-6 rounded-full bg-amber-200 dark:bg-slate-300 opacity-80 animate-pulse" />
-
-            {/* Tiny clouds */}
-            <div
-              className="absolute top-6 left-4 opacity-75 animate-pulse"
-              style={{ animationDuration: "6s" }}
-            >
-              <div className="h-2.5 w-6 rounded-full bg-white dark:bg-slate-700" />
-            </div>
           </div>
 
           {/* Twinkles for high streak */}
