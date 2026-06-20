@@ -1,12 +1,14 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useJourney } from "@/hooks/use-journey";
+import { useAuthActions } from "@/hooks/use-auth";
 import { JOURNEY_LEVELS } from "@/services/journey.service";
+import { AppNav } from "@/components/layout/app-nav";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trophy, Lock, Check, Sparkles } from "lucide-react";
+import { Lock, Check, Sparkles } from "lucide-react";
 
 interface MilestoneNode {
   id: string;
@@ -20,6 +22,7 @@ interface MilestoneNode {
 }
 
 export default function JourneyPage() {
+  const router = useRouter();
   const {
     ecoScore,
     currentLevel,
@@ -30,8 +33,18 @@ export default function JourneyPage() {
     pointsToNextLevel,
     isLoading,
   } = useJourney();
+  const { dbUser, signOut } = useAuthActions();
 
   const [activeNode, setActiveNode] = React.useState<MilestoneNode | null>(null);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.push("/login");
+    } catch (err) {
+      console.error("Failed to sign out:", err);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -75,28 +88,16 @@ export default function JourneyPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-30 border-b border-slate-200/40 bg-white/60 backdrop-blur-md dark:border-slate-900/60 dark:bg-slate-950/60">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Dashboard
-          </Link>
-          <div className="flex items-center gap-2 font-bold text-emerald-600 dark:text-emerald-400">
-            <Trophy className="h-5 w-5" />
-            <span>My Journey</span>
-          </div>
+      <AppNav userName={dbUser?.profile.name} onSignOut={handleSignOut} />
+
+      {/* Main Container */}
+      <main className="mx-auto max-w-2xl px-4 py-8 space-y-12">
+        {/* Progress banner */}
+        <div className="flex items-center justify-end">
           <div className="text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 px-3 py-1.5 rounded-full">
             {achievedMilestones.length} / {milestones.length} Completed
           </div>
         </div>
-      </nav>
-
-      {/* Main Container */}
-      <main className="mx-auto max-w-2xl px-4 py-8 space-y-12">
         {/* Journey Level Hero */}
         <Card className="border-0 bg-linear-to-br from-emerald-600 to-emerald-800 text-white shadow-xl overflow-hidden relative rounded-2xl">
           <div className="absolute top-0 right-0 opacity-10 text-[120px] leading-none select-none pointer-events-none">

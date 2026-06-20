@@ -7,8 +7,8 @@ describe("EcoScore engine boundaries", () => {
     ["lowest-impact baseline", "high-meat", "car", "house", 0, 1],
     ["lower mid baseline", "mixed", "car", "house", 143, 1],
     ["green citizen baseline", "mixed", "mixed", "house", 357, 2],
-    ["advocate baseline", "vegetarian", "mixed", "apartment", 607, 3],
-    ["champion baseline", "vegan", "walk", "shared", 1000, 4],
+    ["eco hero baseline", "vegetarian", "mixed", "apartment", 607, 4],
+    ["champion baseline", "vegan", "walk", "shared", 1000, 5],
   ] as const)(
     "calculates %s as a bounded score and level",
     (_label, diet, transport, home, score, level) => {
@@ -50,7 +50,7 @@ describe("EcoScore engine boundaries", () => {
           expect(result.score).toBeGreaterThanOrEqual(0);
           expect(result.score).toBeLessThanOrEqual(1000);
           expect(result.level).toBeGreaterThanOrEqual(1);
-          expect(result.level).toBeLessThanOrEqual(4);
+          expect(result.level).toBeLessThanOrEqual(5);
         }
       }
     }

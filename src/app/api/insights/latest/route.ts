@@ -1,45 +1,46 @@
 /**
  * GET /api/insights/latest
- * Get latest cached insight (no generation)
+ * Returns the most recent cached insight for a user (no generation).
+ *
  * Query params:
  *   - userId: string (required)
  *
- * Returns: Latest insight from cache
- * Cache: 30 minutes
- * Performance: ~50ms (no AI call)
+ * Short-circuits to a seeded demo insight for the demo sentinel user.
  */
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { z } from "zod";
 import type { AiInsight } from "@/domain/insight/types";
 import { adminDb } from "@/lib/firebase-admin";
 import { logger } from "@/services/logger.service";
+import { DEMO_UID, isDemoUid } from "@/config/constants";
+import { parseQuery, internalError } from "@/lib/parse-request";
 
 export const runtime = "nodejs";
 export const maxDuration = 5;
 
-const DEMO_INSIGHT = {
+// Demo insight uses the canonical AiInsight shape (note: `summary`, not `content`
+// — the previous demo fixture used a `content` field that no consumer reads).
+const DEMO_INSIGHT: AiInsight = {
   id: "demo-insight-latest",
-  userId: "test-eco-user-id",
-  type: "weekly",
+  userId: DEMO_UID,
+  weekStart: Date.now() - 7 * 24 * 60 * 60 * 1000,
   title: "Your Week's Impact",
-  content:
-    "You've made excellent progress this week! Your transportation choices saved 15.2 kg of CO2 - that's equivalent to planting 1 tree. This week, focus on expanding your vegetarian meals to 6 days.",
   summary:
     "You had an inspiring week! By choosing low-impact transit, you spared the atmosphere a significant volume of greenhouse gases and watered your seedling.",
   biggestWin: "Metro riding saved carbon equivalent to a mature tree breathing for 15 days",
   improvementArea:
     "Your kitchen can be a place of climate healing. Try reducing energy use or switching to vegetarian swaps.",
   nextStep: "Prepare one fully plant-based vegan dinner",
-  metrics: {
-    carbonSaved: 15.2,
-    pointsEarned: 145,
-    activitiesLogged: 23,
-    streakMaintained: true,
-  },
+  recommendations: [],
   generatedAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
-  nextGeneratedAt: Date.now() + 5 * 24 * 60 * 60 * 1000,
+  viewed: false,
 };
+
+const LatestInsightQuerySchema = z.object({
+  userId: z.string().min(1),
+});
 
 function toAiInsight(id: string, data: FirebaseFirestore.DocumentData): AiInsight {
   return {
@@ -59,20 +60,16 @@ function toAiInsight(id: string, data: FirebaseFirestore.DocumentData): AiInsigh
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
-  const { searchParams } = new URL(request.url);
-
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "userId required" }, { status: 400 });
+  const parsed = parseQuery(request, LatestInsightQuerySchema);
+  if (!parsed.success) {
+    return parsed.response;
   }
+  const { userId } = parsed.data;
 
   try {
-    if (userId === "test-eco-user-id") {
+    if (isDemoUid(userId)) {
       return NextResponse.json(DEMO_INSIGHT, {
-        headers: {
-          "Cache-Control": "public, max-age=1800",
-        },
+        headers: { "Cache-Control": "public, max-age=1800" },
       });
     }
 
@@ -97,15 +94,10 @@ export async function GET(request: NextRequest) {
     const latest = snapshot.docs[0];
     const insight = toAiInsight(latest.id, latest.data());
 
-    logger.info("Latest insight fetched", {
-      userId,
-      duration: Date.now() - startTime,
-    });
+    logger.info("Latest insight fetched", { userId, duration: Date.now() - startTime });
 
     return NextResponse.json(insight, {
-      headers: {
-        "Cache-Control": "private, max-age=1800",
-      },
+      headers: { "Cache-Control": "private, max-age=1800" },
     });
   } catch (error) {
     logger.error("Latest insight fetch failed", {
@@ -114,6 +106,6 @@ export async function GET(request: NextRequest) {
       duration: Date.now() - startTime,
     });
 
-    return NextResponse.json({ error: "Failed to fetch insights" }, { status: 500 });
+    return internalError("Failed to fetch insights");
   }
 }

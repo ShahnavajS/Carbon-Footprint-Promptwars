@@ -1,18 +1,30 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useActivities } from "@/hooks/use-activities";
+import { useAuthActions } from "@/hooks/use-auth";
+import { AppNav } from "@/components/layout/app-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/loading";
-import { ArrowLeft } from "lucide-react";
 import { AnalogyEngine } from "@/lib/analogy-engine";
 import type { EcoActivity, ActivityCategory } from "@/domain/activity/types";
 import type { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
 export default function HistoryPage() {
+  const router = useRouter();
+  const { dbUser, signOut } = useAuthActions();
   const { fetchPagedActivities, isLoading: initialLoading } = useActivities();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.push("/login");
+    } catch (err) {
+      console.error("Failed to sign out:", err);
+    }
+  };
 
   const [activitiesList, setActivitiesList] = React.useState<EcoActivity[]>([]);
   const [selectedCategory, setSelectedCategory] = React.useState<ActivityCategory | "all">("all");
@@ -92,19 +104,10 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 dark:bg-slate-950 sm:p-6 lg:p-8 text-slate-900 dark:text-slate-100 pb-20">
-      <div className="mx-auto max-w-2xl space-y-6">
-        {/* Navigation Back */}
-        <div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Dashboard</span>
-          </Link>
-        </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20">
+      <AppNav userName={dbUser?.profile.name} onSignOut={handleSignOut} />
 
+      <div className="mx-auto max-w-2xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {/* Climate Journal Header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">

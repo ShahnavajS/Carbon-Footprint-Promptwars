@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Sparkles, Cloud } from "lucide-react";
+import { getEcoLevel } from "@/domain/eco-score/levels";
 
 interface TerraBiomeProps {
   ecoScore: number;
@@ -10,6 +11,70 @@ interface TerraBiomeProps {
   carbonSaved: number;
   monthlyGoal?: number;
 }
+
+/**
+ * Per-tier presentation (poetic names, copy, gradient palettes, emoji).
+ * The level NUMBER and biome IMAGE are sourced from the unified config so
+ * they can never drift from the rest of the app. A tier can also be reached
+ * early via the carbon-saved percent milestone, which is a deliberate
+ * emotional reward that doesn't affect the canonical level.
+ */
+interface BiomePresentation {
+  statusText: string;
+  statusEmoji: string;
+  biomeName: string;
+  description: string;
+  biomeColorClass: string;
+  textColorClass: string;
+}
+
+const BIOME_PRESENTATION: Record<number, BiomePresentation> = {
+  1: {
+    statusText: "Tending the soil",
+    statusEmoji: "🌋☠️",
+    biomeName: "Seedling Globe",
+    description: "Your ecosystem is starting its journey. Feed it with green actions today!",
+    biomeColorClass: "from-amber-100 to-emerald-50 dark:from-slate-900 dark:to-emerald-950/20",
+    textColorClass: "text-amber-800 dark:text-amber-400",
+  },
+  2: {
+    statusText: "Young Shoot",
+    statusEmoji: "🌱☁️",
+    biomeName: "Misty Valley",
+    description:
+      "A little hazy, but a young shoot has broken the soil. Keep going to clear the mist!",
+    biomeColorClass: "from-slate-100 to-amber-50 dark:from-slate-950 dark:to-slate-900",
+    textColorClass: "text-slate-700 dark:text-slate-400",
+  },
+  3: {
+    statusText: "Budding Meadow",
+    statusEmoji: "🌻🌿",
+    biomeName: "Whispering Grassland",
+    description: "Fresh shoots are spreading. The air is clearing up as you log actions.",
+    biomeColorClass:
+      "from-emerald-50 via-slate-50 to-amber-50 dark:from-slate-900 dark:via-emerald-950/10 dark:to-slate-900",
+    textColorClass: "text-emerald-700 dark:text-emerald-400",
+  },
+  4: {
+    statusText: "Thriving Canopy",
+    statusEmoji: "🦊🌳",
+    biomeName: "Emerald Sanctuary",
+    description: "Your environment is lush and resilient! Diverse wildlife is returning.",
+    biomeColorClass:
+      "from-emerald-100 via-teal-50 to-green-100 dark:from-emerald-950/40 dark:via-slate-900 dark:to-teal-950/20",
+    textColorClass: "text-emerald-800 dark:text-emerald-400",
+  },
+  5: {
+    statusText: "Climate Champion World",
+    statusEmoji: "👑🌍",
+    biomeName: "Gaea Sanctuary",
+    description:
+      "You have unlocked the ultimate carbon neutrality state! A model ecosystem of harmony.",
+    biomeColorClass:
+      "from-purple-100 via-emerald-50 to-teal-100 dark:from-indigo-950/40 dark:via-slate-900 dark:to-teal-950/20",
+    textColorClass: "text-purple-800 dark:text-purple-400",
+  },
+};
 
 export function TerraBiome({
   ecoScore,
@@ -20,119 +85,35 @@ export function TerraBiome({
 }: TerraBiomeProps) {
   const percent = Math.min(100, Math.round((carbonSaved / monthlyGoal) * 100));
 
-  // Determine emotional status, message, and image state
-  let statusText = "Tending the soil";
-  let statusEmoji = "🌱";
-  let biomeName = "Seedling Globe";
-  let description = "Your ecosystem is starting its journey. Feed it with green actions today!";
-  let biomeColorClass = "from-amber-100 to-emerald-50 dark:from-slate-900 dark:to-emerald-950/20";
-  let textColorClass = "text-amber-800 dark:text-amber-400";
-  let earthImage = "/earth-states/polluted_earth.png";
+  // Canonical level/image come from the unified config. Carbon-milestone
+  // percent can preview a higher tier as a reward, but the biome image
+  // always tracks the real level so visuals never lie about progress.
+  const unifiedLevel = getEcoLevel(ecoScore);
+  const previewTier =
+    percent >= 90 ? 5 : percent >= 70 ? 4 : percent >= 40 ? 3 : percent >= 15 ? 2 : 1;
+  const effectiveTier = Math.max(unifiedLevel.level, previewTier, level);
+  const safeTier = Math.max(1, Math.min(5, effectiveTier)) as 1 | 2 | 3 | 4 | 5;
 
-  if (percent >= 90 || level >= 5) {
-    statusText = "Climate Champion World";
-    statusEmoji = "👑🌍";
-    biomeName = "Gaea Sanctuary";
-    description =
-      "You have unlocked the ultimate carbon neutrality state! A model ecosystem of harmony.";
-    biomeColorClass =
-      "from-purple-100 via-emerald-50 to-teal-100 dark:from-indigo-950/40 dark:via-slate-900 dark:to-teal-950/20";
-    textColorClass = "text-purple-800 dark:text-purple-400";
-    earthImage = "/earth-states/champion_earth.png";
-  } else if (percent >= 70 || level >= 4) {
-    statusText = "Thriving Canopy";
-    statusEmoji = "🦊🌳";
-    biomeName = "Emerald Sanctuary";
-    description = "Your environment is lush and resilient! Diverse wildlife is returning.";
-    biomeColorClass =
-      "from-emerald-100 via-teal-50 to-green-100 dark:from-emerald-950/40 dark:via-slate-900 dark:to-teal-950/20";
-    textColorClass = "text-emerald-800 dark:text-emerald-400";
-    earthImage = "/earth-states/emerald_sanctuary.png";
-  } else if (percent >= 40 || level >= 3) {
-    statusText = "Budding Meadow";
-    statusEmoji = "🌻🌿";
-    biomeName = "Whispering Grassland";
-    description = "Fresh shoots are spreading. The air is clearing up as you log actions.";
-    biomeColorClass =
-      "from-emerald-50 via-slate-50 to-amber-50 dark:from-slate-900 dark:via-emerald-950/10 dark:to-slate-900";
-    textColorClass = "text-emerald-700 dark:text-emerald-400";
-    earthImage = "/earth-states/growing_ecosystem.png";
-  } else if (percent >= 15 || level >= 2) {
-    statusText = "Young Shoot";
-    statusEmoji = "🌱☁️";
-    biomeName = "Misty Valley";
-    description =
-      "A little hazy, but a young shoot has broken the soil. Keep going to clear the mist!";
-    biomeColorClass = "from-slate-100 to-amber-50 dark:from-slate-950 dark:to-slate-900";
-    textColorClass = "text-slate-700 dark:text-slate-400";
-    earthImage = "/earth-states/recovering_earth.png";
-  } else {
-    statusText = "Tending the soil";
-    statusEmoji = "🌋☠️";
-    biomeName = "Seedling Globe";
-    description = "Your ecosystem is starting its journey. Feed it with green actions today!";
-    biomeColorClass = "from-amber-100 to-emerald-50 dark:from-slate-900 dark:to-emerald-950/20";
-    textColorClass = "text-amber-800 dark:text-amber-400";
-    earthImage = "/earth-states/polluted_earth.png";
-  }
+  const presentation = BIOME_PRESENTATION[safeTier];
+  const { statusText, statusEmoji, biomeName, description, biomeColorClass, textColorClass } =
+    presentation;
+  const earthImage = unifiedLevel.biomeImage;
 
   // Double down on streak animations
   const hasStreakGlow = streak >= 3;
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-slate-200/60 dark:border-slate-800/80 p-6 bg-gradient-to-b ${biomeColorClass} transition-all duration-700 shadow-sm hover:shadow-md`}
+      className={`relative overflow-hidden rounded-2xl border border-slate-200/60 dark:border-slate-800/80 p-6 bg-gradient-to-b ${biomeColorClass} shadow-sm transition-all duration-700 hover:shadow-md`}
     >
-      {/* CSS Keyframe Animations Inline */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(1deg); }
-        }
-        @keyframes orbit {
-          0% { transform: rotate(0deg) translateX(70px) rotate(0deg); }
-          100% { transform: rotate(360deg) translateX(70px) rotate(-360deg); }
-        }
-        @keyframes pulseGlow {
-          0%, 100% { filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.2)); }
-          50% { filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.4)); }
-        }
-        @keyframes sway {
-          0%, 100% { transform: rotate(-2deg); }
-          50% { transform: rotate(2deg); }
-        }
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-        }
-        .animate-float-custom {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-orbit-custom {
-          animation: orbit 25s linear infinite;
-        }
-        .animate-glow-custom {
-          animation: pulseGlow 4s ease-in-out infinite;
-        }
-        .animate-sway-custom {
-          transform-origin: bottom center;
-          animation: sway 4s ease-in-out infinite;
-        }
-        .animate-twinkle-custom {
-          animation: twinkle 3s ease-in-out infinite;
-        }
-      `,
-        }}
-      />
+      {/* Animations are defined once globally in globals.css (.animate-eco-*). */}
 
-      <div className="flex flex-col md:flex-row items-center gap-8">
+      <div className="flex flex-col items-center gap-8 md:flex-row">
         {/* Visual Biome Display */}
-        <div className="relative flex items-center justify-center h-44 w-44 shrink-0">
+        <div className="relative flex h-44 w-44 shrink-0 items-center justify-center">
           {/* Outer Atmosphere Orbiting Cloud */}
-          <div className="absolute h-full w-full animate-orbit-custom pointer-events-none">
-            <div className="bg-white/95 dark:bg-slate-800/95 shadow-xs rounded-full px-2 py-1 flex items-center gap-1 text-[9px] font-bold border border-slate-100 dark:border-slate-700">
+          <div className="animate-eco-orbit pointer-events-none absolute h-full w-full">
+            <div className="flex items-center gap-1 rounded-full border border-slate-100 bg-white/95 px-2 py-1 text-[9px] font-bold shadow-xs dark:border-slate-700 dark:bg-slate-800/95">
               <Cloud className="h-2.5 w-2.5 text-sky-400" />
               <span>CO₂ Saved</span>
             </div>
@@ -142,14 +123,15 @@ export function TerraBiome({
           <div
             className={`absolute h-36 w-36 rounded-full transition-all duration-700 ${
               hasStreakGlow
-                ? "bg-emerald-500/10 dark:bg-emerald-400/5 animate-glow-custom"
+                ? "animate-eco-glow bg-emerald-500/10 dark:bg-emerald-400/5"
                 : "bg-transparent"
             }`}
           />
 
           {/* The Core Planet Circle */}
-          <div className="relative h-32 w-32 rounded-full overflow-hidden shadow-inner border-2 border-white dark:border-slate-800 flex items-center justify-center animate-float-custom bg-slate-100 dark:bg-slate-950">
+          <div className="animate-eco-float relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-slate-100 shadow-inner dark:border-slate-800 dark:bg-slate-950">
             {/* The Earth Image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={earthImage}
               alt={biomeName}
@@ -158,7 +140,7 @@ export function TerraBiome({
 
             {/* Glowing Haze Overlay if savings are low */}
             {percent < 30 && (
-              <div className="absolute inset-0 bg-slate-900/10 dark:bg-slate-950/15 backdrop-blur-[0.5px] transition-all pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 bg-slate-900/10 backdrop-blur-[0.5px] transition-all dark:bg-slate-950/15" />
             )}
           </div>
 
@@ -166,14 +148,14 @@ export function TerraBiome({
           {hasStreakGlow && (
             <>
               <Sparkles
-                className="absolute top-2 left-6 h-3.5 w-3.5 text-amber-400 animate-twinkle-custom"
+                className="animate-eco-twinkle absolute left-6 top-2 h-3.5 w-3.5 text-amber-400"
                 style={{ animationDelay: "0.5s" }}
               />
               <Sparkles
-                className="absolute bottom-6 right-2 h-4 w-4 text-emerald-400 animate-twinkle-custom"
+                className="animate-eco-twinkle absolute bottom-6 right-2 h-4 w-4 text-emerald-400"
                 style={{ animationDelay: "1.2s" }}
               />
-              <Sparkles className="absolute top-24 left-1 h-3 w-3 text-sky-400 animate-twinkle-custom" />
+              <Sparkles className="animate-eco-twinkle absolute left-1 top-24 h-3 w-3 text-sky-400" />
             </>
           )}
         </div>

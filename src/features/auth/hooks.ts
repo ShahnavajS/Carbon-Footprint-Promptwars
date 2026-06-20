@@ -5,10 +5,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/services/firebase";
 import { useAuthStore } from "./store";
 import { UserService } from "@/services/user.service";
+import { readDemoSession } from "@/lib/demo-session";
 
 /**
  * Initializes the Firebase auth listener and syncs state to Zustand.
- * Also checks for demo account session in localStorage.
+ * Also checks for a demo account session in localStorage.
  * Must be mounted once at the root layout level.
  */
 export function useAuthListener() {
@@ -18,36 +19,27 @@ export function useAuthListener() {
     setLoading(true);
 
     // Check for demo session in localStorage
-    if (typeof window !== "undefined") {
-      const demoSession = localStorage.getItem("_demo_auth_user");
-      if (demoSession) {
-        try {
-          const demoUser = JSON.parse(demoSession);
-          setUser({
-            uid: demoUser.uid,
-            email: demoUser.email,
-            displayName: demoUser.displayName || "Demo User",
-            photoURL: null,
-          });
+    const demoUser = readDemoSession();
+    if (demoUser) {
+      setUser({
+        uid: demoUser.uid,
+        email: demoUser.email,
+        displayName: demoUser.displayName || "Demo User",
+        photoURL: null,
+      });
 
-          // Try to load or create demo user profile
-          UserService.getUser(demoUser.uid)
-            .then((dbUser) => {
-              setDbUser(dbUser);
-              setLoading(false);
-            })
-            .catch(() => {
-              // For demo mode, even if Firestore fails, we have the profile in memory
-              // UserService.getUser already returns demo user data from memory
-              setLoading(false);
-            });
+      // Load (or seed) the demo user profile. Even if Firestore fails, the
+      // UserService returns an in-memory demo profile.
+      UserService.getUser(demoUser.uid)
+        .then((dbUser) => {
+          setDbUser(dbUser);
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
 
-          return;
-        } catch {
-          // Invalid demo session, continue with Firebase auth
-          localStorage.removeItem("_demo_auth_user");
-        }
-      }
+      return;
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {

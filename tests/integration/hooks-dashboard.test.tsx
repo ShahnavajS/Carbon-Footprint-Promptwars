@@ -234,19 +234,14 @@ describe("dashboard-facing hooks", () => {
       displayName: "User",
       photoURL: null,
     };
+    // The hook fires 4 parallel fetches: activities, page-2 probe, badges, insight.
+    const ok = (data: unknown): Response =>
+      ({ ok: true, json: async () => data }) as Response;
     vi.mocked(fetch)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: [{ id: "dash-activity" }] }),
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: [{ id: "badge-1" }] }),
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ data: { id: "insight-1" } }),
-      } as Response);
+      .mockResolvedValueOnce(ok({ data: [{ id: "dash-activity" }] })) // page 1
+      .mockResolvedValueOnce(ok({ data: [] })) // page-2 probe (empty → no "load more")
+      .mockResolvedValueOnce(ok({ data: [{ id: "badge-1" }] })) // badges
+      .mockResolvedValueOnce(ok({ data: { id: "insight-1" } })); // insight
     const { useOptimizedDashboard } = await import("@/hooks/use-optimized-dashboard");
 
     const { result } = renderHook(() => useOptimizedDashboard());

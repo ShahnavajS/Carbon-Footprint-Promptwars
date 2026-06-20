@@ -108,6 +108,35 @@ class GeminiService {
       throw error;
     }
   }
+
+  /**
+   * Generates free-form text and parses it as JSON.
+   * Used by services that build their own prompt and need flexible JSON
+   * (objects or arrays) without a fixed response schema. Includes a regex
+   * fallback to recover a JSON fragment from noisy model output.
+   *
+   * `options.temperature` / `options.maxTokens` are accepted for future use
+   * (callers pass them today); they are intentionally not forwarded until the
+   * upstream schema-bearing methods expose a matching config surface.
+   */
+  public async generateJSON(
+    prompt: string,
+    options: { temperature?: number; maxTokens?: number } = {}
+  ): Promise<Record<string, unknown> | unknown[]> {
+    void options;
+    const raw = await this.generateText(prompt);
+    const trimmed = raw.trim();
+
+    try {
+      return JSON.parse(trimmed) as Record<string, unknown> | unknown[];
+    } catch {
+      const jsonMatch = trimmed.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]) as Record<string, unknown> | unknown[];
+      }
+      throw new Error("Gemini returned invalid JSON");
+    }
+  }
 }
 
 export const gemini = new GeminiService();

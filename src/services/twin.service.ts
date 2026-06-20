@@ -9,9 +9,10 @@ import { SustainabilityTwin, TwinGenerationData } from "@/domain/twin/types";
 import { twinRepository } from "@/repositories/twin.repository";
 import { userRepository } from "@/repositories/user.repository";
 import { activityRepository } from "@/repositories/activity.repository";
-import { GeminiService } from "@/services/gemini.service";
+import { gemini } from "@/services/gemini";
 import { logger } from "@/services/logger.service";
 import { rateLimit } from "@/lib/rate-limiter";
+import { getEcoTier } from "@/domain/eco-score/levels";
 
 interface TwinGenerationResponse {
   strengths?: SustainabilityTwin["strengths"];
@@ -21,8 +22,6 @@ interface TwinGenerationResponse {
 }
 
 export class TwinService {
-  private gemini = new GeminiService();
-
   /**
    * Get current twin or regenerate if needed
    */
@@ -64,7 +63,7 @@ export class TwinService {
       const prompt = this.buildTwinPrompt(data);
 
       // Call Gemini
-      const response = (await this.gemini.generateJSON(prompt, {
+      const response = (await gemini.generateJSON(prompt, {
         temperature: 0.7,
         maxTokens: 2000,
       })) as TwinGenerationResponse;
@@ -241,13 +240,10 @@ Be encouraging, specific, and actionable.`;
   }
 
   /**
-   * Determine level based on eco-score
+   * Determine level tier based on eco-score (delegates to the unified config).
    */
   private calculateLevel(ecoScore: number): string {
-    if (ecoScore >= 1000) return "champion";
-    if (ecoScore >= 500) return "advocate";
-    if (ecoScore >= 200) return "citizen";
-    return "explorer";
+    return getEcoTier(ecoScore);
   }
 }
 

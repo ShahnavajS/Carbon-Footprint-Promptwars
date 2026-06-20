@@ -9,11 +9,13 @@ import {
   UserCredential,
 } from "firebase/auth";
 import { auth } from "@/services/firebase";
+import { DEMO_UID } from "@/config/constants";
+import { startDemoSession, readDemoSession, clearDemoSession } from "@/lib/demo-session";
 
-// Demo account bypass flag
+// Demo credentials allow a Firebase-free login for the public demo. They are
+// intentionally not secret — the demo session is fully client-side.
 const DEMO_EMAIL = "test@ecoscore.com";
 const DEMO_PASSWORD = "password123";
-const DEMO_UID = "test-eco-user-id";
 
 export interface IAuthRepository {
   signInWithEmail(email: string, password: string): Promise<UserCredential>;
@@ -24,7 +26,10 @@ export interface IAuthRepository {
   getCurrentUser(): FirebaseUser | null;
 }
 
-// Create a mock UserCredential for demo account bypass
+/**
+ * Builds an in-memory mock UserCredential for the demo account so the rest of
+ * the app (which expects a Firebase User) works unchanged in demo mode.
+ */
 function createMockUserCredential(email: string, uid: string): UserCredential {
   return {
     user: {
@@ -45,31 +50,35 @@ function createMockUserCredential(email: string, uid: string): UserCredential {
       providerId: "custom",
       delete: async () => {},
       getIdToken: async () => "demo-token",
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      getIdTokenResult: async () => ({ token: "demo-token" }) as any,
+      getIdTokenResult: async () =>
+        Promise.resolve({
+          token: "demo-token",
+          signInProvider: "custom",
+          signInSecondFactor: null,
+          authTime: new Date().toISOString(),
+          issuedAtTime: new Date().toISOString(),
+          expirationTime: new Date(Date.now() + 3600_000).toISOString(),
+          claims: {},
+        }),
       reload: async () => {},
       toJSON: () => ({}),
-    } as FirebaseUser,
+      // FirebaseUser has many optional/internal members; cast through unknown
+      // for the demo mock only (never used against real Firebase).
+    } as unknown as FirebaseUser,
     providerId: null,
-  } as UserCredential;
+  } as unknown as UserCredential;
 }
 
 export const AuthRepository: IAuthRepository = {
   async signInWithEmail(email, password): Promise<UserCredential> {
-    // Demo account bypass - allow login without Firebase Emulator
+    // Demo account bypass — allow login without Firebase Emulator.
     if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      // Store demo session in localStorage for auth listener to pick up
       const mockUser = createMockUserCredential(email, DEMO_UID);
-      if (typeof window !== "undefined") {
-        localStorage.setItem(
-          "_demo_auth_user",
-          JSON.stringify({
-            uid: mockUser.user.uid,
-            email: mockUser.user.email,
-            displayName: mockUser.user.displayName,
-          })
-        );
-      }
+      startDemoSession({
+        uid: mockUser.user.uid,
+        email: mockUser.user.email ?? "",
+        displayName: mockUser.user.displayName ?? "Demo User",
+      });
       return mockUser;
     }
 
@@ -82,16 +91,12 @@ export const AuthRepository: IAuthRepository = {
 
   async signInWithGoogle(): Promise<UserCredential> {
     const provider = new GoogleAuthProvider();
-    // Configure custom parameters for Google Auth if needed
     provider.setCustomParameters({ prompt: "select_account" });
     return signInWithPopup(auth, provider);
   },
 
   async signOut(): Promise<void> {
-    // Clear demo session if exists
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("_demo_auth_user");
-    }
+    clearDemoSession();
     return firebaseSignOut(auth);
   },
 
@@ -107,17 +112,9 @@ export const AuthRepository: IAuthRepository = {
   },
 
   getCurrentUser(): FirebaseUser | null {
-    // Check for demo session first
-    if (typeof window !== "undefined") {
-      const demoSession = localStorage.getItem("_demo_auth_user");
-      if (demoSession) {
-        try {
-          const demoUser = JSON.parse(demoSession);
-          return createMockUserCredential(demoUser.email, demoUser.uid).user;
-        } catch {
-          // Invalid demo session, fall through to Firebase
-        }
-      }
+    const demoSession = readDemoSession();
+    if (demoSession) {
+      return createMockUserCredential(demoSession.email, demoSession.uid).user;
     }
     return auth.currentUser;
   },

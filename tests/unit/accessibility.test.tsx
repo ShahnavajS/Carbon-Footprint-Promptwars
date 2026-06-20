@@ -4,6 +4,12 @@ import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { StatCard } from "@/components/ui/stat-card";
+import { Pill } from "@/components/ui/pill";
+import { ProgressBar } from "@/components/ui/progress-bar";
+import { CelebrationOverlay } from "@/components/ui/celebration-overlay";
+import { EcoCompanion } from "@/components/mascot/eco-companion";
+import { Trophy } from "lucide-react";
 import SignupPage from "@/app/signup/page";
 import { RouteGuard } from "@/components/auth/route-guard";
 
@@ -113,6 +119,61 @@ describe("accessibility checks with jest-axe", () => {
     expect(screen.getByLabelText("Email Address")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /create account/i })).toBeEnabled();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("StatCard renders an accessible label and value with no axe violations", async () => {
+    const { container } = render(
+      <StatCard label="EcoScore Vitality" icon={Trophy} value={580} unit="/ 1000" />
+    );
+    expect(screen.getByText("EcoScore Vitality")).toBeInTheDocument();
+    expect(screen.getByText("580")).toBeInTheDocument();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("Pill renders as static text (not a focusable element) with no axe violations", async () => {
+    const { container } = render(<Pill tone="emerald">Level 3</Pill>);
+    expect(screen.getByText("Level 3")).toBeInTheDocument();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("ProgressBar exposes an ARIA progressbar role and clamped value", async () => {
+    const { container } = render(<ProgressBar value={0.6} aria-label="Monthly goal" />);
+    const bar = screen.getByRole("progressbar", { name: "Monthly goal" });
+    expect(bar).toHaveAttribute("aria-valuenow", "60");
+    expect(bar).toHaveAttribute("aria-valuemin", "0");
+    expect(bar).toHaveAttribute("aria-valuemax", "100");
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("CelebrationOverlay is a labelled, dismissible dialog when open", async () => {
+    const { container } = render(
+      <CelebrationOverlay
+        open
+        onClose={() => {}}
+        title="Milestone unlocked!"
+        message="You saved your first 10 kg of CO₂."
+      />
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+    expect(screen.getByRole("heading", { name: /milestone unlocked/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /continue/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /close celebration/i })).toBeInTheDocument();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("EcoCompanion exposes its mood line to assistive tech via aria-live", async () => {
+    const { container } = render(
+      <EcoCompanion streak={0} lastActivityAt={null} />
+    );
+    // The mood line is announced politely.
+    expect(container.querySelector('[aria-live="polite"]')).toBeTruthy();
+    // The decorative SVG must be hidden from AT.
+    const svg = container.querySelector("svg");
+    expect(
+      svg?.getAttribute("aria-hidden") === "true" || svg?.getAttribute("role") === "presentation"
+    ).toBe(true);
     expect((await axe(container)).violations).toEqual([]);
   });
 });

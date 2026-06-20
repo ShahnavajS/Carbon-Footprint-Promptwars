@@ -1,73 +1,110 @@
 /**
  * GET /api/activities/recent
- * Optimized activities endpoint with pagination
+ * Optimized activities endpoint with pagination.
+ *
  * Query params:
  *   - userId: string (required)
  *   - limit: number (default 10, max 50)
  *   - page: number (default 1)
- *   - category: string (optional filter)
+ *   - category: "food" | "transport" | "energy" (optional filter)
  *
- * Returns: Paginated activities + hasMore flag
- * Cache: 5 minutes
- * Performance: ~150ms
+ * Returns a uniform paginated envelope and short-circuits to seeded demo data
+ * when the demo sentinel user is requested.
  */
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { z } from "zod";
 import { adminDb } from "@/lib/firebase-admin";
 import { logger } from "@/services/logger.service";
+import { DEMO_UID, isDemoUid } from "@/config/constants";
+import { parseQuery, internalError } from "@/lib/parse-request";
+import type { ActionType, ActivityCategory } from "@/domain/activity/types";
 
 export const maxDuration = 10;
 
-const DEMO_ACTIVITIES = [
+interface DashboardActivity {
+  id: string;
+  userId: string;
+  /** Display label (mirrors `actionType`). Kept as `type` for client compat. */
+  type: string;
+  category: ActivityCategory;
+  carbonReduction: number;
+  ecoPoints: number;
+  timestamp: number;
+  createdAt: number;
+}
+
+// ─── Demo fixtures ──────────────────────────────────────────────────────────
+// Seeded in the production schema ({ actionType, carbonSaved, ecoPoints }) so
+// the demo path and the real path share one shape — no `?? type / ?? carbonReduction`
+// shim required.
+
+const DAY = 24 * 60 * 60 * 1000;
+
+const DEMO_ACTIVITIES: DashboardActivity[] = [
   {
     id: "demo-1",
-    userId: "test-eco-user-id",
-    type: "Bike Commute",
+    userId: DEMO_UID,
+    type: "Bicycle",
     category: "transport",
-    carbonReduction: 5.2,
-    ecoPoints: 25,
-    timestamp: Date.now() - 1 * 24 * 60 * 60 * 1000,
-    createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
+    carbonReduction: 1.3,
+    ecoPoints: 15,
+    timestamp: Date.now() - 1 * DAY,
+    createdAt: Date.now() - 1 * DAY,
   },
   {
     id: "demo-2",
-    userId: "test-eco-user-id",
-    type: "Public Transit",
+    userId: DEMO_UID,
+    type: "Metro",
     category: "transport",
-    carbonReduction: 3.1,
-    ecoPoints: 20,
-    timestamp: Date.now() - 2 * 24 * 60 * 60 * 1000,
-    createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+    carbonReduction: 1.2,
+    ecoPoints: 15,
+    timestamp: Date.now() - 2 * DAY,
+    createdAt: Date.now() - 2 * DAY,
   },
   {
     id: "demo-3",
-    userId: "test-eco-user-id",
+    userId: DEMO_UID,
     type: "Vegetarian Meal",
     category: "food",
-    carbonReduction: 2.5,
-    ecoPoints: 15,
-    timestamp: Date.now() - 3 * 24 * 60 * 60 * 1000,
-    createdAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
+    carbonReduction: 0.8,
+    ecoPoints: 10,
+    timestamp: Date.now() - 3 * DAY,
+    createdAt: Date.now() - 3 * DAY,
   },
   {
     id: "demo-4",
-    userId: "test-eco-user-id",
-    type: "LED Lights",
+    userId: DEMO_UID,
+    type: "Line Dried Clothes",
     category: "energy",
-    carbonReduction: 1.8,
-    ecoPoints: 18,
-    timestamp: Date.now() - 4 * 24 * 60 * 60 * 1000,
-    createdAt: Date.now() - 4 * 24 * 60 * 60 * 1000,
+    carbonReduction: 0.8,
+    ecoPoints: 10,
+    timestamp: Date.now() - 4 * DAY,
+    createdAt: Date.now() - 4 * DAY,
   },
 ];
 
-function toDashboardActivity(id: string, data: FirebaseFirestore.DocumentData) {
+// ─── Request validation ──────────────────────────────────────────────────────
+
+const RecentActivitiesQuerySchema = z.object({
+  userId: z.string().min(1),
+  limit: z.preprocess(
+    (v) => (v === undefined || v === "" ? 10 : Number(v)),
+    z.number().int().min(1).max(50)
+  ),
+  page: z.preprocess((v) => (v === undefined || v === "" ? 1 : Number(v)), z.number().int().min(1)),
+  category: z.enum(["food", "transport", "energy"]).optional(),
+});
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function toDashboardActivity(id: string, data: FirebaseFirestore.DocumentData): DashboardActivity {
   return {
     id,
     userId: data.userId,
-    type: data.actionType ?? data.type,
-    category: data.category,
+    type: (data.actionType ?? data.type) as ActionType,
+    category: data.category as ActivityCategory,
     carbonReduction: data.carbonSaved ?? data.carbonReduction ?? 0,
     ecoPoints: data.ecoPoints ?? 0,
     timestamp: data.createdAt ?? data.timestamp ?? Date.now(),
@@ -75,43 +112,33 @@ function toDashboardActivity(id: string, data: FirebaseFirestore.DocumentData) {
   };
 }
 
+function paginate<T>(items: T[], page: number, limit: number) {
+  const skip = (page - 1) * limit;
+  const paged = items.slice(skip, skip + limit);
+  return { paged, hasMore: skip + limit < items.length };
+}
+
+// ─── Route ───────────────────────────────────────────────────────────────────
+
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
-  const { searchParams } = new URL(request.url);
-
-  const userId = searchParams.get("userId");
-  const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 50);
-  const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
-  const category = searchParams.get("category");
-
-  if (!userId) {
-    return NextResponse.json({ error: "userId required" }, { status: 400 });
+  const parsed = parseQuery(request, RecentActivitiesQuerySchema);
+  if (!parsed.success) {
+    return parsed.response;
   }
+  const { userId, limit, page, category } = parsed.data;
 
   try {
     // Demo mode: return instant paginated demo data
-    if (userId === "test-eco-user-id") {
-      let activities = DEMO_ACTIVITIES;
-      if (category) {
-        activities = activities.filter((a) => a.category === category);
-      }
-
-      const skip = (page - 1) * limit;
-      const paged = activities.slice(skip, skip + limit);
+    if (isDemoUid(userId)) {
+      const filtered = category
+        ? DEMO_ACTIVITIES.filter((a) => a.category === category)
+        : DEMO_ACTIVITIES;
+      const { paged, hasMore } = paginate(filtered, page, limit);
 
       return NextResponse.json(
-        {
-          data: paged,
-          page,
-          limit,
-          hasMore: skip + limit < activities.length,
-          total: activities.length,
-        },
-        {
-          headers: {
-            "Cache-Control": "public, max-age=300", // 5-min cache
-          },
-        }
+        { data: paged, page, limit, hasMore, total: filtered.length },
+        { headers: { "Cache-Control": "public, max-age=300" } }
       );
     }
 
@@ -128,16 +155,8 @@ export async function GET(request: NextRequest) {
       .get();
 
     const activities = snapshot.docs.map((doc) => toDashboardActivity(doc.id, doc.data()));
-
-    // Filter by category if specified
-    let filtered = activities;
-    if (category) {
-      filtered = activities.filter((a) => a.category === category);
-    }
-
-    // Paginate
-    const skip = (page - 1) * limit;
-    const paged = filtered.slice(skip, skip + limit);
+    const filtered = category ? activities.filter((a) => a.category === category) : activities;
+    const { paged, hasMore } = paginate(filtered, page, limit);
 
     logger.info("Activities fetched", {
       userId,
@@ -149,18 +168,8 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(
-      {
-        data: paged,
-        page,
-        limit,
-        hasMore: skip + limit < filtered.length,
-        total: filtered.length,
-      },
-      {
-        headers: {
-          "Cache-Control": "private, max-age=300", // 5-min cache
-        },
-      }
+      { data: paged, page, limit, hasMore, total: filtered.length },
+      { headers: { "Cache-Control": "private, max-age=300" } }
     );
   } catch (error) {
     logger.error("Activities fetch failed", {
@@ -169,6 +178,6 @@ export async function GET(request: NextRequest) {
       duration: Date.now() - startTime,
     });
 
-    return NextResponse.json({ error: "Failed to fetch activities" }, { status: 500 });
+    return internalError("Failed to fetch activities");
   }
 }

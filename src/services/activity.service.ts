@@ -3,6 +3,7 @@ import { UserRepository } from "@/repositories/user.repository";
 import { ChallengeRepository, DEFAULT_CHALLENGES } from "@/repositories/challenge.repository";
 import { StreakService } from "./streak.service";
 import { trackEvent } from "./analytics";
+import { getEcoLevelNumber } from "@/domain/eco-score/levels";
 import type { ActivityCategory, ActionType, EcoActivity } from "@/domain/activity/types";
 import type { UserScore } from "@/domain/user/types";
 import { doc, collection, getDocs } from "firebase/firestore";
@@ -129,17 +130,12 @@ export const ActivityService = {
       });
     }
 
-    // 6. Calculate new EcoScore and Level
+    // 6. Calculate new EcoScore and Level (level derived from unified config).
     const oldScore = scoreState.ecoScore;
     // Multiplier: +1 score for every 5 eco points earned
     const addedScorePoints = Math.round(earnedPoints / 5);
     const newScoreValue = Math.min(1000, oldScore + addedScorePoints);
-
-    // Dynamic level: Level 1 (0-250), Level 2 (251-500), Level 3 (501-750), Level 4 (751-1000)
-    let newLevel = 1;
-    if (newScoreValue > 750) newLevel = 4;
-    else if (newScoreValue > 500) newLevel = 3;
-    else if (newScoreValue > 250) newLevel = 2;
+    const newLevel = getEcoLevelNumber(newScoreValue);
 
     if (newScoreValue !== oldScore) {
       trackEvent("eco_score_updated", {

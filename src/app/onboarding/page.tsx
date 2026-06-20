@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuthActions } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Leaf, MapPin, Flame, CheckCircle, Calendar, Compass, ArrowRight } from "lucide-react";
 import type { DietType, TransportType, HomeType } from "@/domain/user/types";
 import type { EcoScoreResult } from "@/domain/eco-score/types";
+import { getEcoLevel } from "@/domain/eco-score/levels";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -178,6 +180,15 @@ export default function OnboardingPage() {
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Awareness hook — a real, sourced fact to awaken, not overwhelm */}
+                <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 text-center dark:border-emerald-900/30 dark:bg-emerald-950/10">
+                  <p className="text-xs leading-relaxed text-emerald-800 dark:text-emerald-300">
+                    The Earth has warmed about <strong>1.1°C</strong> since pre-industrial times,
+                    and CO₂ levels are at their highest in <strong>800,000 years</strong>. The good
+                    news? Every choice you make today shapes what comes next.
+                  </p>
+                </div>
+
                 <div className="space-y-4">
                   <div className="flex gap-4">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
@@ -189,7 +200,7 @@ export default function OnboardingPage() {
                       </h4>
                       <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                         An intuitive personal carbon score calculator based on real sustainability
-                        metrics.
+                        metrics — turned into a living, emotional journey.
                       </p>
                     </div>
                   </div>
@@ -203,8 +214,9 @@ export default function OnboardingPage() {
                         Why it matters
                       </h4>
                       <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                        Your decisions directly shape carbon emissions. Measure habits to create
-                        actual footprint progress.
+                        Carbon emissions are the main driver of climate change — and they come
+                        mostly from everyday choices about food, transport, and energy. Measuring
+                        your habits is the first step to changing them.
                       </p>
                     </div>
                   </div>
@@ -219,11 +231,20 @@ export default function OnboardingPage() {
                       </h4>
                       <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                         Get personalized suggestions via Gemini AI, habit tracking logs, and
-                        gamification streaks.
+                        gamification streaks — plus a Learn hub to understand the climate itself.
                       </p>
                     </div>
                   </div>
                 </div>
+
+                {/* Learn gateway — awareness first, data second */}
+                <Link
+                  href="/learn"
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50/60 py-2.5 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-900/30 dark:bg-emerald-950/20 dark:text-emerald-400 dark:hover:bg-emerald-950/40"
+                >
+                  <Compass className="h-3.5 w-3.5" />
+                  Explore the climate first — visit Learn
+                </Link>
 
                 <Button
                   onClick={nextStep}
@@ -519,14 +540,8 @@ export default function OnboardingPage() {
                     </div>
 
                     <div className="rounded-full bg-slate-100 px-4 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300 inline-block mb-4">
-                      Level {ecoScoreResult.level}:{" "}
-                      {ecoScoreResult.level === 4
-                        ? "Eco Champion"
-                        : ecoScoreResult.level === 3
-                          ? "Advocate"
-                          : ecoScoreResult.level === 2
-                            ? "Citizen"
-                            : "Explorer"}
+                      Level {ecoScoreResult.level}: {getEcoLevel(ecoScoreResult.score).emoji}{" "}
+                      {getEcoLevel(ecoScoreResult.score).name}
                     </div>
 
                     <p className="mx-auto max-w-sm text-sm leading-relaxed text-slate-600 dark:text-slate-400 mb-6">

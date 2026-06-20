@@ -6,7 +6,14 @@ import { useAuthStore } from "@/features/auth/store";
 import { Spinner } from "@/components/ui/loading";
 
 const PUBLIC_PATHS = ["/login", "/signup", "/forgot-password", "/"];
+/** Public path prefixes — any path under these is viewable without auth. */
+const PUBLIC_PREFIXES = ["/learn"];
 const AUTH_RESTRICTED_PATHS = ["/login", "/signup", "/forgot-password"];
+
+function isPublicPath(pathname: string): boolean {
+  if (PUBLIC_PATHS.includes(pathname)) return true;
+  return PUBLIC_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(prefix + "/"));
+}
 
 export function RouteGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -25,8 +32,7 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
 
     // 1. Not Authenticated
     if (!user) {
-      const isPublicPath = PUBLIC_PATHS.includes(pathname);
-      if (!isPublicPath) {
+      if (!isPublicPath(pathname)) {
         router.replace("/login");
       }
       return;

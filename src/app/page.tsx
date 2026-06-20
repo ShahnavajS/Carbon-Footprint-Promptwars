@@ -88,6 +88,23 @@ export default function HomePage() {
           </p>
 
           <HeroCtas />
+
+          {/* Awareness stat band — grounds the mission in a real, sourced fact */}
+          <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-2xl border border-emerald-100 bg-white/60 px-6 py-4 text-center backdrop-blur-sm dark:border-emerald-900/30 dark:bg-slate-900/40">
+            <p className="text-xs text-slate-600 dark:text-slate-400">
+              <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+                420+ ppm
+              </span>{" "}
+              CO₂ in our air — the highest in 800,000 years.
+            </p>
+            <span className="hidden h-4 w-px bg-slate-200 dark:bg-slate-700 sm:inline-block" />
+            <Link
+              href="/learn"
+              className="text-xs font-bold text-emerald-600 hover:underline dark:text-emerald-400"
+            >
+              Understand why →
+            </Link>
+          </div>
         </div>
 
         {/* Hero Illustration */}

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/store";
+import { startDemoSession } from "@/lib/demo-session";
 
 export function HeroCtas() {
   const router = useRouter();
@@ -17,23 +18,14 @@ export function HeroCtas() {
   };
 
   const handleDemoMode = () => {
-    localStorage.setItem(
-      "_demo_auth_user",
-      JSON.stringify({
-        uid: "test-eco-user-id",
-        email: "test@ecoscore.com",
-        displayName: "Alex Rivera",
-      })
-    );
-    // Force a reload or navigation so the auth state picks it up
+    // Persists the demo session client-side and navigates to the dashboard.
+    startDemoSession();
     window.location.href = "/dashboard";
   };
 
   const handleLearnMore = () => {
-    const section = document.getElementById("features-section");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
+    // Route to the awareness hub — the educational gateway into the mission.
+    router.push("/learn");
   };
 
   return (

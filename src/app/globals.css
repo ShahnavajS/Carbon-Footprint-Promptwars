@@ -1,19 +1,101 @@
 @import "tailwindcss";
 
+/*
+ * EcoScore design tokens.
+ * Single source of truth for the color system, typography, elevation, motion,
+ * and the semantic "biome" / "stakes" palettes used by the awareness layer.
+ * Consumers should prefer the semantic tokens over raw color scales.
+ */
 @theme {
-  --font-sans: "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  /* ── Typography ───────────────────────────────────────────── */
+  --font-sans:
+    "Inter", "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Fraunces", "Inter", ui-serif, Georgia, serif;
+
+  /* ── Brand: Emerald (growth / progress) ──────────────────── */
   --color-emerald-50: #ecfdf5;
   --color-emerald-100: #d1fae5;
+  --color-emerald-150: #a7f3d0;
+  --color-emerald-200: #99f6e4;
+  --color-emerald-250: #6ee7b7;
+  --color-emerald-300: #5eead4;
   --color-emerald-400: #34d399;
   --color-emerald-500: #10b981;
+  --color-emerald-550: #059669;
   --color-emerald-600: #059669;
   --color-emerald-700: #047857;
   --color-emerald-800: #065f46;
   --color-emerald-900: #064e3b;
   --color-emerald-950: #022c22;
+
+  /* ── Teal (water / calm) ─────────────────────────────────── */
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+
+  /* ── Amber (streak / energy / warmth) ────────────────────── */
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
+
+  /* ── Earth / soil (grounding) ────────────────────────────── */
+  --color-earth-50: #faf6f0;
+  --color-earth-100: #f0e6d6;
+  --color-earth-200: #e0cdb0;
+  --color-earth-300: #c9a878;
+  --color-earth-400: #a8855a;
+  --color-earth-500: #8b6741;
+  --color-earth-600: #6f4f2f;
+
+  /* ── Slate scale already provided by Tailwind v4 ─────────── */
+
+  /* ── Semantic: Biome tiers (awareness/progress states) ──── */
+  --color-biome-seedling: #94a3b8; /* slate-400 — dormant potential */
+  --color-biome-shoot: #fbbf24; /* amber-400 — first growth */
+  --color-biome-meadow: #10b981; /* emerald-500 — thriving */
+  --color-biome-canopy: #059669; /* emerald-600 — lush */
+  --color-biome-sanctuary: #8b5cf6; /* violet-500 — apex */
+
+  /* ── Semantic: Stakes (consequence states, never despair) ── */
+  --color-stakes-low: #10b981; /* on track — green */
+  --color-stakes-mid: #f59e0b; /* watch — amber */
+  --color-stakes-high: #f97316; /* act now — warm orange, not red */
+
+  /* ── Surface tokens (dark-mode aware via Tailwind dark:) ── */
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+
+  /* ── Radius scale ────────────────────────────────────────── */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
+  /* ── Elevation (shadows) ─────────────────────────────────── */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.06);
+
+  /* ── Motion ──────────────────────────────────────────────── */
+  --ease-biome: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-slow: 700ms;
 }
 
-/* Accessibility: Respect user motion preferences */
+/* Accessibility: Respect user motion preferences (always-on safety net). */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -21,21 +103,23 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-/* Focus ring consistency across browsers */
+/* Focus ring consistency across browsers. */
 :focus-visible {
   outline: 2px solid var(--color-emerald-500);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling (overridden for reduced-motion above). */
 html {
   scroll-behavior: smooth;
 }
 
-/* Screen-reader only utility (complements Tailwind sr-only) */
+/* Screen-reader only utility (complements Tailwind sr-only). */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -57,4 +141,97 @@ html {
   overflow: visible;
   clip: auto;
   white-space: normal;
+}
+
+/* ── Reusable biome animations (defined once, applied by name) ──
+ * Components opt-in via the `.animate-*` classes; the reduced-motion block
+ * above neutralizes them for users who prefer less motion. */
+@keyframes ecobutton-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+@keyframes ecobutton-orbit {
+  0% {
+    transform: rotate(0deg) translateX(70px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(70px) rotate(-360deg);
+  }
+}
+@keyframes ecobutton-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgb(16 185 129 / 0.2));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgb(16 185 129 / 0.4));
+  }
+}
+@keyframes ecobutton-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+@keyframes ecobutton-twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes ecobutton-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-eco-float {
+  animation: ecobutton-float 6s var(--ease-biome) infinite;
+}
+.animate-eco-orbit {
+  animation: ecobutton-orbit 25s linear infinite;
+}
+.animate-eco-glow {
+  animation: ecobutton-glow 4s var(--ease-biome) infinite;
+}
+.animate-eco-sway {
+  transform-origin: bottom center;
+  animation: ecobutton-sway 4s var(--ease-biome) infinite;
+}
+.animate-eco-twinkle {
+  animation: ecobutton-twinkle 3s var(--ease-biome) infinite;
+}
+.animate-eco-pop {
+  animation: ecobutton-pop-in var(--duration-slow) var(--ease-biome) both;
+}
+
+/* Slide-in used by toasts / celebration overlays. */
+@keyframes ecobutton-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-in {
+  animation: ecobutton-slide-in 300ms var(--ease-biome) both;
 }

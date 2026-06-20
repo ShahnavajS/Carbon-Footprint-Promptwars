@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Leaf } from "lucide-react";
+import { startDemoSession } from "@/lib/demo-session";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -68,16 +69,9 @@ export default function LoginPage() {
   };
 
   const handleDemoSignIn = () => {
-    // Client-side only: write the demo session token so the auth listener
-    // can pick it up without any Firebase or backend call.
-    localStorage.setItem(
-      "_demo_auth_user",
-      JSON.stringify({
-        uid: "test-eco-user-id",
-        email: "test@ecoscore.com",
-        displayName: "Alex Rivera",
-      })
-    );
+    // Client-side only: write the demo session so the auth listener can pick
+    // it up without any Firebase or backend call.
+    startDemoSession();
     router.push("/dashboard");
   };
 

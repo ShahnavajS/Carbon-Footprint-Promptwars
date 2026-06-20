@@ -2,53 +2,55 @@ import { UserRepository } from "@/repositories/user.repository";
 import { EcoScoreService } from "./eco-score.service";
 import { OnboardingDataSchema, type OnboardingDataInput } from "@/domain/user/schemas";
 import { trackEvent } from "./analytics";
+import { isDemoUid } from "@/config/constants";
+import { readDemoSession } from "@/lib/demo-session";
+import { getEcoLevelNumber } from "@/domain/eco-score/levels";
 import type { EcoScoreUser } from "@/domain/user/types";
 import type { EcoScoreResult } from "@/domain/eco-score/types";
 
 export const UserService = {
   async getUser(userId: string): Promise<EcoScoreUser | null> {
-    // Check for demo mode first
-    if (typeof window !== "undefined" && userId === "test-eco-user-id") {
-      const demoSession = localStorage.getItem("_demo_auth_user");
-      if (demoSession) {
-        // Return hardcoded demo user profile
-        return {
-          uid: userId,
-          profile: {
-            name: "Alex Rivera",
-            email: "alex@ecoscore.demo",
-            avatar: null,
-            city: "San Francisco",
-            country: "United States",
-            language: "en",
-          },
-          sustainability: {
-            dietType: "vegetarian",
-            transportType: "metro",
-            homeType: "apartment",
-          },
-          score: {
-            ecoScore: 680,
-            level: 4,
-            streak: 12,
-            bestStreak: 21,
-            carbonSaved: 340,
-            lastActivityAt: Date.now() - 18 * 60 * 60 * 1000,
-            goalDifficulty: "medium",
-          },
-          goals: {
-            reduceTransport: true,
-            reduceFood: true,
-            reduceEnergy: false,
-            buildHabits: true,
-            learnSustainability: true,
-          },
-          metadata: {
-            createdAt: Date.now() - 45 * 24 * 60 * 60 * 1000,
-            updatedAt: Date.now(),
-          },
-        };
-      }
+    // Demo mode: return a seeded in-memory profile (no Firestore needed).
+    if (typeof window !== "undefined" && isDemoUid(userId) && readDemoSession()) {
+      // ecoScore is the single source of truth; level is derived from the
+      // unified config so it can never drift from the rest of the app.
+      const ecoScore = 580;
+      return {
+        uid: userId,
+        profile: {
+          name: "Aarav Sharma",
+          email: "demo@ecoscore.app",
+          avatar: null,
+          city: "Bengaluru",
+          country: "India",
+          language: "en",
+        },
+        sustainability: {
+          dietType: "vegetarian",
+          transportType: "metro",
+          homeType: "apartment",
+        },
+        score: {
+          ecoScore,
+          level: getEcoLevelNumber(ecoScore),
+          streak: 12,
+          bestStreak: 21,
+          carbonSaved: 340,
+          lastActivityAt: Date.now() - 18 * 60 * 60 * 1000,
+          goalDifficulty: "medium",
+        },
+        goals: {
+          reduceTransport: true,
+          reduceFood: true,
+          reduceEnergy: false,
+          buildHabits: true,
+          learnSustainability: true,
+        },
+        metadata: {
+          createdAt: Date.now() - 45 * 24 * 60 * 60 * 1000,
+          updatedAt: Date.now(),
+        },
+      };
     }
 
     return UserRepository.getUser(userId);

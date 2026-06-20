@@ -1,13 +1,14 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSimulator } from "@/hooks/use-simulator";
 import { useAuthActions } from "@/hooks/use-auth";
+import { AppNav } from "@/components/layout/app-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { TerraBiome } from "../dashboard/_components/terra-biome";
-import { ArrowLeft, Zap, Leaf, TreePine, Car, IndianRupee, Sparkles, Play } from "lucide-react";
+import { Leaf, TreePine, Car, IndianRupee, Sparkles, Play } from "lucide-react";
 import type { SimulatorCategory } from "@/domain/simulator/types";
 
 const CATEGORY_STYLES: Record<SimulatorCategory, { bg: string; badge: string; icon: string }> = {
@@ -32,7 +33,8 @@ const CATEGORY_STYLES: Record<SimulatorCategory, { bg: string; badge: string; ic
 };
 
 export default function SimulatorPage() {
-  const { dbUser } = useAuthActions();
+  const router = useRouter();
+  const { dbUser, signOut } = useAuthActions();
   const { scenarios, selectedScenario, result, isRunning, error, selectScenario, runSimulation } =
     useSimulator();
 
@@ -41,25 +43,18 @@ export default function SimulatorPage() {
   const filtered =
     activeCategory === "all" ? scenarios : scenarios.filter((s) => s.category === activeCategory);
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.push("/login");
+    } catch (err) {
+      console.error("Failed to sign out:", err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20">
-      {/* Header */}
-      <nav className="sticky top-0 z-30 border-b border-slate-200/60 bg-white/60 backdrop-blur-md dark:border-slate-800/60 dark:bg-slate-900/60">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Dashboard
-          </Link>
-          <div className="flex items-center gap-2 font-bold text-emerald-600 dark:text-emerald-400">
-            <Zap className="h-5 w-5" />
-            <span>What-If Simulator</span>
-          </div>
-          <div className="w-20" />
-        </div>
-      </nav>
+      <AppNav userName={dbUser?.profile.name} onSignOut={handleSignOut} />
 
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-8">
         {/* Hero */}

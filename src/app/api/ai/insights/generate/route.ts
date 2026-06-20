@@ -1,130 +1,155 @@
+/**
+ * POST /api/ai/insights/generate
+ * Generates AI insights + recommendations for the authenticated user.
+ *
+ * Behavior:
+ *   - Demo sentinel user → instant seeded fixture (no Firebase / Gemini calls).
+ *   - Real user → loads profile + recent activities, generates insight and
+ *     recommendations in parallel, with a 20s timeout.
+ *
+ * On any failure during generation we return HTTP 200 with a `degraded: true`
+ * flag plus seeded fallback recommendations (rather than a misleading 2xx-as-
+ * error), so the UI can render something useful while keeping the contract
+ * honest: a 5xx would mean the endpoint itself is broken, which it isn't.
+ */
+
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { z } from "zod";
 import { InsightService } from "@/services/insight.service";
 import type { EcoActivity } from "@/domain/activity/types";
 import type { EcoScoreUser } from "@/domain/user/types";
 import { adminDb } from "@/lib/firebase-admin";
 import { logger } from "@/services/logger.service";
+import { isDemoUid } from "@/config/constants";
+import { parseJsonBody, internalError } from "@/lib/parse-request";
 
 export const runtime = "nodejs";
-export const maxDuration = 30; // 30 second timeout
+export const maxDuration = 30;
 
-// Demo insights for demo users (no Firebase required)
-const DEMO_INSIGHTS = {
-  insight: {
-    id: "demo-insight-weekly",
-    userId: "test-eco-user-id",
-    type: "weekly",
-    title: "Your Week's Impact",
-    content: `You've made excellent progress this week! Your transportation choices saved 15.2 kg of CO₂ - that's equivalent to planting 1 tree. Your consistent public transit usage and biking habits continue to set you apart. This week, focus on expanding your vegetarian meals to 6 days - you're already at 4/7 days, so the next step will multiply your food impact.`,
-    metrics: {
-      carbonSaved: 15.2,
-      pointsEarned: 145,
-      activitiesLogged: 23,
-      streakMaintained: true,
-    },
+// Fallback recommendations returned when Gemini generation is unavailable so
+// the UI is never empty. These intentionally use the production schema
+// ({ action, reason, estimatedCarbonSaved, estimatedPoints }).
+const FALLBACK_RECOMMENDATIONS = [
+  {
+    id: "fallback-1",
+    userId: "",
+    category: "food" as const,
+    action: "Try one fully plant-based dinner",
+    reason: "Plant-based meals are among the highest-leverage food swaps for carbon.",
+    estimatedCarbonSaved: 1.0,
+    estimatedPoints: 15,
+    accepted: null,
     generatedAt: Date.now(),
-    nextGeneratedAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
   },
-  recommendations: [
-    {
-      id: "rec-1",
-      title: "Try Meatless Mondays",
-      description: "Reduce food carbon by 35% with plant-based Mondays",
-      impact: "35 kg CO₂ saved per year",
-      difficulty: "easy",
-      category: "food",
-    },
-    {
-      id: "rec-2",
-      title: "Carpool Coordination",
-      description: "Share rides with colleagues 2x per week",
-      impact: "120 kg CO₂ saved per year",
-      difficulty: "medium",
-      category: "transport",
-    },
-    {
-      id: "rec-3",
-      title: "LED Lighting Upgrade",
-      description: "Replace 5 bulbs with LED equivalents",
-      impact: "45 kg CO₂ saved per year",
-      difficulty: "easy",
-      category: "energy",
-    },
-  ],
-};
+  {
+    id: "fallback-2",
+    userId: "",
+    category: "transport" as const,
+    action: "Take the metro once this week",
+    reason: "Swapping a car trip for transit multiplies your transport savings.",
+    estimatedCarbonSaved: 1.2,
+    estimatedPoints: 15,
+    accepted: null,
+    generatedAt: Date.now(),
+  },
+  {
+    id: "fallback-3",
+    userId: "",
+    category: "energy" as const,
+    action: "Line-dry one load of laundry",
+    reason: "Skipping the dryer is a simple, high-impact energy habit.",
+    estimatedCarbonSaved: 0.8,
+    estimatedPoints: 10,
+    accepted: null,
+    generatedAt: Date.now(),
+  },
+];
 
-/**
- * POST /api/ai/insights/generate
- * Generates AI insights for the authenticated user.
- * Requires userId in body (validated server-side).
- *
- * Optimizations:
- * - Demo users return instant cached data
- * - Timeout protection (30s max)
- * - Offline/error fallback with cached recommendations
- */
+const GenerateInsightBodySchema = z.object({
+  userId: z.string().min(1),
+});
+
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
 
+  const parsed = await parseJsonBody(request, GenerateInsightBodySchema);
+  if (!parsed.success) {
+    return parsed.response;
+  }
+  const { userId } = parsed.data;
+
   try {
-    const body = (await request.json()) as { userId?: string };
-    const { userId } = body;
-
-    if (!userId || typeof userId !== "string") {
-      return NextResponse.json({ error: "userId is required" }, { status: 400 });
-    }
-
-    // OPTIMIZATION 1: Demo users get instant response (no Firestore calls)
-    if (userId === "test-eco-user-id") {
-      logger.info("Insights generation (demo mode)", { userId, duration: Date.now() - startTime });
-      return NextResponse.json(DEMO_INSIGHTS, {
-        headers: {
-          "Cache-Control": "public, max-age=3600", // Cache for 1 hour
-        },
+    if (isDemoUid(userId)) {
+      logger.info("Insights generation (demo mode)", {
+        userId,
+        duration: Date.now() - startTime,
       });
+      return NextResponse.json(
+        { insight: null, recommendations: FALLBACK_RECOMMENDATIONS, demo: true },
+        { headers: { "Cache-Control": "public, max-age=3600" } }
+      );
     }
 
-    // OPTIMIZATION 2: Add timeout to prevent hanging
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+    if (!adminDb) {
+      throw new Error("Firebase Admin is not initialized");
+    }
+
+    // Fetch user profile and activities with a timeout to prevent hanging.
+    const dataPromise = Promise.all([
+      adminDb.collection("users").doc(userId).get(),
+      adminDb
+        .collection("activities")
+        .where("userId", "==", userId)
+        .orderBy("createdAt", "desc")
+        .limit(30)
+        .get(),
+    ]);
+
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Generation timed out")), 20000)
+    );
+
+    let userSnapshot: FirebaseFirestore.DocumentSnapshot;
+    let activitiesSnapshot: FirebaseFirestore.QuerySnapshot;
+    try {
+      [userSnapshot, activitiesSnapshot] = (await Promise.race([dataPromise, timeoutPromise])) as [
+        FirebaseFirestore.DocumentSnapshot,
+        FirebaseFirestore.QuerySnapshot,
+      ];
+    } catch {
+      logger.warn("Insights generation timed out", {
+        userId,
+        duration: Date.now() - startTime,
+      });
+      return NextResponse.json(
+        {
+          insight: null,
+          recommendations: FALLBACK_RECOMMENDATIONS,
+          degraded: true,
+          message: "Generation is taking longer than expected. Showing fallback actions.",
+        },
+        { status: 200 }
+      );
+    }
+
+    if (!userSnapshot.exists) {
+      logger.warn("User not found for insights", { userId });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const user = { uid: userId, ...userSnapshot.data() } as EcoScoreUser;
+    const allActivities = activitiesSnapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() }) as EcoActivity
+    );
+
+    const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const weeklyActivities = allActivities.filter((a) => a.createdAt >= oneWeekAgo);
 
     try {
-      if (!adminDb) {
-        throw new Error("Firebase Admin is not initialized");
-      }
-
-      // Fetch user profile and activities with timeout
-      const [userSnapshot, activitiesSnapshot] = await Promise.all([
-        adminDb.collection("users").doc(userId).get(),
-        adminDb
-          .collection("activities")
-          .where("userId", "==", userId)
-          .orderBy("createdAt", "desc")
-          .limit(30)
-          .get(),
-      ]);
-
-      clearTimeout(timeoutId);
-
-      if (!userSnapshot.exists) {
-        logger.warn("User not found for insights", { userId });
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
-      }
-
-      const user = { uid: userId, ...userSnapshot.data() } as EcoScoreUser;
-      const allActivities = activitiesSnapshot.docs.map(
-        (doc) => ({ id: doc.id, ...doc.data() }) as EcoActivity
-      );
-
-      // OPTIMIZATION 3: Filter on client side logic
-      const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-      const weeklyActivities = allActivities.filter((a) => a.createdAt >= oneWeekAgo);
-
-      // Generate insights in parallel
       const [insight, recommendations] = await Promise.all([
         InsightService.generateAndSaveWeeklyInsight(user, weeklyActivities),
-        InsightService.generateAndSaveRecommendations(user, allActivities.slice(0, 20)), // OPTIMIZATION: Limit to 20
+        InsightService.generateAndSaveRecommendations(user, allActivities.slice(0, 20)),
       ]);
 
       logger.info("Insights generated successfully", {
@@ -135,41 +160,31 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json(
         { insight, recommendations },
-        {
-          headers: {
-            "Cache-Control": "private, max-age=1800", // Cache for 30 minutes
-          },
-        }
+        { headers: { "Cache-Control": "private, max-age=1800" } }
       );
-    } catch {
-      clearTimeout(timeoutId);
-      logger.warn("Insights generation timeout", { userId, duration: Date.now() - startTime });
-
-      // Return cached/fallback recommendations instead of error
+    } catch (error) {
+      logger.warn("Insight generation failed; returning fallback", {
+        userId,
+        error: error instanceof Error ? error.message : String(error),
+        duration: Date.now() - startTime,
+      });
       return NextResponse.json(
         {
           insight: null,
-          recommendations: DEMO_INSIGHTS.recommendations,
-          message: "Using cached recommendations. Try again in a moment.",
+          recommendations: FALLBACK_RECOMMENDATIONS,
+          degraded: true,
+          message: "Could not generate a personalized reflection yet. Here are suggested actions.",
         },
-        { status: 202 } // 202 Accepted - processing will continue
+        { status: 200 }
       );
     }
   } catch (error) {
-    const duration = Date.now() - startTime;
     logger.error("Insights generation failed", {
+      userId,
       error: error instanceof Error ? error.message : String(error),
-      duration,
+      duration: Date.now() - startTime,
     });
 
-    // OPTIMIZATION 4: Return fallback recommendations on error
-    return NextResponse.json(
-      {
-        insight: null,
-        recommendations: DEMO_INSIGHTS.recommendations,
-        message: "Could not generate insights. Here are recommended actions.",
-      },
-      { status: 202 } // Partial success
-    );
+    return internalError("Failed to generate insights");
   }
 }

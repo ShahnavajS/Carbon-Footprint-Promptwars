@@ -8,9 +8,10 @@
 import { VoiceSession, ConversationTurn, VoiceResponse } from "@/domain/voice/types";
 import { voiceRepository } from "@/repositories/voice.repository";
 import { userRepository } from "@/repositories/user.repository";
-import { GeminiService } from "@/services/gemini.service";
+import { gemini } from "@/services/gemini";
 import { logger } from "@/services/logger.service";
 import { rateLimit } from "@/lib/rate-limiter";
+import { getEcoTier } from "@/domain/eco-score/levels";
 
 interface VoiceCoachGenerationResponse {
   response?: string;
@@ -21,8 +22,6 @@ interface VoiceCoachGenerationResponse {
 }
 
 export class VoiceCoachService {
-  private gemini = new GeminiService();
-
   /**
    * Start new voice session
    */
@@ -89,7 +88,7 @@ export class VoiceCoachService {
       const prompt = this.buildVoicePrompt(user, session, transcript);
 
       // Call Gemini
-      const response = (await this.gemini.generateJSON(prompt, {
+      const response = (await gemini.generateJSON(prompt, {
         temperature: 0.8,
         maxTokens: 500,
       })) as VoiceCoachGenerationResponse;
@@ -312,13 +311,10 @@ Be encouraging and actionable. Keep response conversational for voice delivery.`
   }
 
   /**
-   * Calculate level based on eco-score
+   * Calculate level tier based on eco-score (delegates to the unified config).
    */
   private calculateLevel(ecoScore: number): string {
-    if (ecoScore >= 1000) return "champion";
-    if (ecoScore >= 500) return "advocate";
-    if (ecoScore >= 200) return "citizen";
-    return "explorer";
+    return getEcoTier(ecoScore);
   }
 }
 

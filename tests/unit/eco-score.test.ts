@@ -17,8 +17,9 @@ describe("EcoScore Service Calculations", () => {
     // Vegan (+120) + Walk (+150) + Shared (+100) = 370 (Max raw score)
     const result = EcoScoreService.calculateInitialEcoScore("vegan", "walk", "shared");
     expect(result.score).toBe(1000);
-    expect(result.level).toBe(4);
-    expect(result.explanation).toContain("Level 4");
+    // Unified 5-level system: 800-1000 = Level 5 (Climate Champion)
+    expect(result.level).toBe(5);
+    expect(result.explanation).toContain("Level 5");
     expect(result.explanation).toContain("Vegan");
     expect(result.explanation).toContain("Walk");
     expect(result.explanation).toContain("Shared");
@@ -29,7 +30,8 @@ describe("EcoScore Service Calculations", () => {
     // Normalized: (280 - 90) / 280 * 1000 = 190 / 280 * 1000 = 678.57 -> 679
     const result = EcoScoreService.calculateInitialEcoScore("vegetarian", "bus", "apartment");
     expect(result.score).toBe(679);
-    expect(result.level).toBe(3); // Level 3 Advocate (> 500)
-    expect(result.explanation).toContain("Level 3");
+    // Unified 5-level system: 600-799 = Level 4 (Eco Hero)
+    expect(result.level).toBe(4);
+    expect(result.explanation).toContain("Level 4");
   });
 });

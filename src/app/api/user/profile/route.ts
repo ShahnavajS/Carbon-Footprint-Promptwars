@@ -1,27 +1,31 @@
 /**
  * GET /api/user/profile
- * Optimized user profile endpoint
- * Returns: Only user profile, score, preferences
- * Cache: 1 hour (user unlikely to change frequently)
- * Performance: ~100ms
+ * Returns a user's profile, score, preferences, and metadata.
+ *
+ * Short-circuits to a seeded demo profile for the demo sentinel user so the
+ * public demo runs without a Firebase project. Demo locale is kept consistent
+ * with the rest of the app (kg CO₂, INR-aware framing).
  */
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { z } from "zod";
 import type { EcoScoreUser } from "@/domain/user/types";
 import { adminDb } from "@/lib/firebase-admin";
 import { logger } from "@/services/logger.service";
+import { DEMO_UID, isDemoUid } from "@/config/constants";
+import { parseQuery, internalError } from "@/lib/parse-request";
 
 export const maxDuration = 10;
 
 const DEMO_PROFILE = {
-  uid: "test-eco-user-id",
+  uid: DEMO_UID,
   profile: {
-    name: "Test Eco User",
-    email: "test@ecoscore.com",
+    name: "Aarav Sharma",
+    email: "demo@ecoscore.app",
     avatar: null,
-    city: "San Francisco",
-    country: "United States",
+    city: "Bengaluru",
+    country: "India",
     language: "en",
   },
   score: {
@@ -50,22 +54,23 @@ const DEMO_PROFILE = {
   },
 };
 
+const ProfileQuerySchema = z.object({
+  userId: z.string().min(1),
+});
+
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "userId required" }, { status: 400 });
+  const parsed = parseQuery(request, ProfileQuerySchema);
+  if (!parsed.success) {
+    return parsed.response;
   }
+  const { userId } = parsed.data;
 
   try {
     // Demo mode: instant response
-    if (userId === "test-eco-user-id") {
+    if (isDemoUid(userId)) {
       return NextResponse.json(DEMO_PROFILE, {
-        headers: {
-          "Cache-Control": "public, max-age=3600",
-        },
+        headers: { "Cache-Control": "public, max-age=3600" },
       });
     }
 
@@ -91,15 +96,10 @@ export async function GET(request: NextRequest) {
       metadata: user.metadata,
     };
 
-    logger.info("Profile fetched", {
-      userId,
-      duration: Date.now() - startTime,
-    });
+    logger.info("Profile fetched", { userId, duration: Date.now() - startTime });
 
     return NextResponse.json(profileData, {
-      headers: {
-        "Cache-Control": "private, max-age=3600", // 1-hour cache
-      },
+      headers: { "Cache-Control": "private, max-age=3600" },
     });
   } catch (error) {
     logger.error("Profile fetch failed", {
@@ -108,6 +108,6 @@ export async function GET(request: NextRequest) {
       duration: Date.now() - startTime,
     });
 
-    return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+    return internalError("Failed to fetch profile");
   }
 }

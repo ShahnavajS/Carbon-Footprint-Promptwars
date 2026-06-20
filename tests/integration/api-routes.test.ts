@@ -81,13 +81,14 @@ describe("AI simulator API route", () => {
     simulatorMocks.getAiExplanation.mockResolvedValue("AI explanation");
   });
 
-  it("returns 400 when scenarioId is missing", async () => {
+  it("returns 422 when scenarioId is missing (Zod validation)", async () => {
     const { POST } = await import("@/app/api/ai/simulate/route");
 
     const response = await POST(jsonRequest({ currentEcoScore: 300 }));
 
-    expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({ error: "scenarioId is required" });
+    expect(response.status).toBe(422);
+    const body = await response.json();
+    expect(body.error).toBe("Validation failed");
   });
 
   it("returns 404 for unknown simulator scenarios", async () => {
@@ -118,9 +119,8 @@ describe("AI simulator API route", () => {
     );
   });
 
-  it("returns 500 when request parsing fails", async () => {
+  it("returns 400 when the request body is not valid JSON", async () => {
     const { POST } = await import("@/app/api/ai/simulate/route");
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const request = {
       json: vi.fn(async () => {
         throw new Error("bad json");
@@ -129,11 +129,8 @@ describe("AI simulator API route", () => {
 
     const response = await POST(request);
 
-    expect(response.status).toBe(500);
-    await expect(response.json()).resolves.toEqual({
-      error: "Simulation failed. Please try again.",
-    });
-    consoleError.mockRestore();
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({ error: "Bad request", message: "Invalid JSON body" });
   });
 });
 
@@ -193,23 +190,25 @@ describe("AI insights generation API route", () => {
     insightMocks.generateAndSaveRecommendations.mockResolvedValue([{ id: "rec-1" }]);
   });
 
-  it("returns 400 when userId is missing", async () => {
+  it("returns 422 when userId is missing (Zod validation)", async () => {
     const { POST } = await import("@/app/api/ai/insights/generate/route");
 
     const response = await POST(jsonRequest({}));
 
-    expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({ error: "userId is required" });
+    expect(response.status).toBe(422);
+    const body = await response.json();
+    expect(body.error).toBe("Validation failed");
   });
 
-  it("returns cached demo insights without Firebase or Gemini calls", async () => {
+  it("returns demo fallback recommendations without Firebase or Gemini calls", async () => {
     const { POST } = await import("@/app/api/ai/insights/generate/route");
 
     const response = await POST(jsonRequest({ userId: "test-eco-user-id" }));
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(body.insight.id).toBe("demo-insight-weekly");
+    expect(body.demo).toBe(true);
+    expect(body.insight).toBeNull();
     expect(body.recommendations).toHaveLength(3);
     expect(adminMocks.userGet).not.toHaveBeenCalled();
   });
@@ -242,16 +241,17 @@ describe("AI insights generation API route", () => {
     expect(insightMocks.generateAndSaveRecommendations).toHaveBeenCalled();
   });
 
-  it("returns fallback recommendations with 202 when Firestore or Gemini fails", async () => {
+  it("returns fallback recommendations with a degraded flag when Firestore or Gemini fails", async () => {
     adminMocks.activitiesGet.mockRejectedValueOnce(new Error("Firestore unavailable"));
     const { POST } = await import("@/app/api/ai/insights/generate/route");
 
     const response = await POST(jsonRequest({ userId: "user-1" }));
     const body = await response.json();
 
-    expect(response.status).toBe(202);
+    expect(response.status).toBe(200);
+    expect(body.degraded).toBe(true);
     expect(body.insight).toBeNull();
     expect(body.recommendations).toHaveLength(3);
-    expect(body.message).toContain("cached recommendations");
+    expect(body.message).toBeTruthy();
   });
 });

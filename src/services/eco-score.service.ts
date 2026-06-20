@@ -1,5 +1,6 @@
 import type { DietType, TransportType, HomeType } from "@/domain/user/types";
 import type { EcoScoreResult } from "@/domain/eco-score/types";
+import { getEcoLevel, getEcoLevelNumber } from "@/domain/eco-score/levels";
 import { formatLabel } from "@/lib/string";
 
 const DIET_POINTS: Record<DietType, number> = {
@@ -47,24 +48,16 @@ export const EcoScoreService = {
     // Enforce bounds just in case
     const score = Math.max(0, Math.min(1000, normalizedScore));
 
-    // Determine level: 1 to 4
-    let level = 1;
-    if (score > 750) {
-      level = 4; // Eco Champion (751 - 1000)
-    } else if (score > 500) {
-      level = 3; // Sustainability Advocate (501 - 750)
-    } else if (score > 250) {
-      level = 2; // Green Citizen (251 - 500)
-    } else {
-      level = 1; // Eco Explorer (0 - 250)
-    }
+    // Level is derived from the unified level system (single source of truth).
+    const level = getEcoLevelNumber(score);
 
     const dietLabel = formatLabel(dietType);
     const transportLabel = formatLabel(transportType);
     const homeLabel = formatLabel(homeType);
 
+    const ecoLevel = getEcoLevel(score);
     const explanation =
-      `Your EcoScore is ${score}/1000 (Level ${level}). ` +
+      `Your EcoScore is ${score}/1000 — ${ecoLevel.emoji} ${ecoLevel.name} (Level ${level}). ` +
       `Your sustainability habits include a ${dietLabel} diet (+${dietScore} points), ` +
       `${transportLabel} as your primary transit choice (+${transportScore} points), and ` +
       `living in a ${homeLabel} environment (+${homeScore} points). ` +
