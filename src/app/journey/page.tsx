@@ -48,8 +48,8 @@ export default function JourneyPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-amber-50/10 dark:bg-slate-950">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600 dark:border-slate-800 dark:border-t-emerald-400" />
+      <div className="flex min-h-screen items-center justify-center bg-amber-50/10 dark:bg-forest-950">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-hairline border-t-emerald-600 dark:border-forest-800 dark:border-t-emerald-400" />
       </div>
     );
   }
@@ -87,14 +87,14 @@ export default function JourneyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20">
+    <div className="min-h-screen bg-canvas dark:bg-forest-950 text-ink dark:text-forest-50 pb-20">
       <AppNav userName={dbUser?.profile.name} onSignOut={handleSignOut} />
 
       {/* Main Container */}
       <main className="mx-auto max-w-2xl px-4 py-8 space-y-12">
         {/* Progress banner */}
         <div className="flex items-center justify-end">
-          <div className="text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 px-3 py-1.5 rounded-full">
+          <div className="text-xs font-bold bg-emerald-100 text-forest-800 dark:bg-forest-950/40 dark:text-forest-300 px-3 py-1.5 rounded-full">
             {achievedMilestones.length} / {milestones.length} Completed
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function JourneyPage() {
               </div>
               <div className="text-right shrink-0">
                 <p className="text-4xl font-extrabold">{ecoScore}</p>
-                <p className="text-emerald-250 text-[10px] font-bold tracking-wider">
+                <p className="text-forest-300 text-[10px] font-bold tracking-wider">
                   VITALITY POINTS
                 </p>
               </div>
@@ -155,10 +155,10 @@ export default function JourneyPage() {
         {/* DUOLINGO SNAKE PATH ROADMAP */}
         <section aria-label="Sanctuary Trail" className="space-y-12 relative">
           <div className="text-center">
-            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">
+            <h2 className="text-lg font-bold text-ink-soft dark:text-forest-100">
               The Path of Biome Recovery
             </h2>
-            <p className="text-xs text-slate-400 dark:text-slate-500">
+            <p className="text-xs text-ink-muted dark:text-ink-muted">
               Complete milestones to grow your Sanctuary. Click any milestone to view details.
             </p>
           </div>
@@ -172,20 +172,20 @@ export default function JourneyPage() {
               return (
                 <div key={level.level} className="w-full relative flex flex-col items-center py-6">
                   {/* Chapter Banner Header */}
-                  <div className="w-full max-w-sm rounded-xl border border-slate-200/50 bg-white p-3 dark:border-slate-850 dark:bg-slate-900 shadow-xs text-center z-10 space-y-1 mb-8">
-                    <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+                  <div className="w-full max-w-sm rounded-xl border border-hairline/50 bg-white p-3 dark:border-forest-800 dark:bg-forest-900 shadow-xs text-center z-10 space-y-1 mb-8">
+                    <span className="text-[10px] font-extrabold text-forest-600 dark:text-forest-300 uppercase tracking-widest">
                       Chapter {level.level}
                     </span>
-                    <h3 className="font-extrabold text-sm text-slate-950 dark:text-white flex items-center justify-center gap-1.5">
+                    <h3 className="font-extrabold text-sm text-ink dark:text-paper flex items-center justify-center gap-1.5">
                       <span>{level.emoji}</span>
                       <span>{level.name}</span>
                       {isLvlCurrent && (
-                        <span className="text-[8px] font-extrabold bg-emerald-600 text-white px-1.5 py-0.5 rounded-sm uppercase ml-1">
+                        <span className="text-[8px] font-extrabold bg-forest-600 text-white px-1.5 py-0.5 rounded-sm uppercase ml-1">
                           Current
                         </span>
                       )}
                     </h3>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                    <p className="text-[10px] text-ink-muted dark:text-ink-muted">
                       {level.minScore} - {level.maxScore} Score Range
                     </p>
                   </div>
@@ -206,8 +206,8 @@ export default function JourneyPage() {
                             onClick={() => setActiveNode(node)}
                             className={`flex h-16 w-16 items-center justify-center rounded-full border-4 shadow-md transition-all cursor-pointer relative ${
                               node.achieved
-                                ? "bg-emerald-500 border-emerald-450 hover:bg-emerald-600 text-white scale-105 active:scale-95"
-                                : "bg-slate-100 border-slate-300 text-slate-400 hover:bg-slate-200 dark:bg-slate-900 dark:border-slate-850"
+                                ? "bg-emerald-500 border-emerald-450 hover:bg-forest-600 text-white scale-105 active:scale-95"
+                                : "bg-canvas-soft border-hairline-strong text-ink-muted hover:bg-hairline dark:bg-forest-900 dark:border-forest-800"
                             }`}
                             aria-label={`Milestone: ${node.title}`}
                           >
@@ -215,18 +215,18 @@ export default function JourneyPage() {
 
                             {/* Little badge decorator */}
                             {node.achieved ? (
-                              <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white border border-emerald-500 shadow-sm text-emerald-600">
+                              <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white border border-emerald-500 shadow-sm text-forest-600">
                                 <Check className="h-3 w-3 stroke-[3]" />
                               </div>
                             ) : (
-                              <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400">
+                              <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-hairline dark:bg-forest-900 text-ink-muted">
                                 <Lock className="h-2.5 w-2.5" />
                               </div>
                             )}
                           </button>
 
                           {/* Level Node Title Label */}
-                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-2 block select-none">
+                          <span className="text-[10px] font-bold text-ink-muted dark:text-forest-200/60 mt-2 block select-none">
                             {node.title}
                           </span>
                         </div>
@@ -240,47 +240,47 @@ export default function JourneyPage() {
 
           {/* Interactive Tooltip Card drawer */}
           {activeNode && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
-              <Card className="w-full max-w-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-                <CardHeader className="bg-slate-50/50 dark:bg-slate-950/20 pb-3 flex flex-row items-center gap-3">
-                  <div className="text-3xl bg-white border dark:bg-slate-800 dark:border-slate-700 rounded-xl h-14 w-14 flex items-center justify-center shadow-inner">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-forest-950/50 backdrop-blur-xs animate-in fade-in duration-200">
+              <Card className="w-full max-w-sm border-hairline dark:border-forest-800 bg-paper dark:bg-forest-900 shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                <CardHeader className="bg-canvas-soft dark:bg-forest-950/20 pb-3 flex flex-row items-center gap-3">
+                  <div className="text-3xl bg-white border dark:bg-forest-900 dark:border-forest-800 rounded-xl h-14 w-14 flex items-center justify-center shadow-inner">
                     {activeNode.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-[9px] font-extrabold uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 px-2 py-0.5 rounded-sm">
+                    <span className="text-[9px] font-extrabold uppercase bg-emerald-100 text-forest-800 dark:bg-forest-950/40 dark:text-forest-300 px-2 py-0.5 rounded-sm">
                       {activeNode.type} milestone
                     </span>
-                    <CardTitle className="text-base font-bold mt-1 text-slate-900 dark:text-white truncate">
+                    <CardTitle className="text-base font-bold mt-1 text-ink dark:text-paper truncate">
                       {activeNode.title}
                     </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6 space-y-4">
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-ink-soft dark:text-forest-200/70 leading-relaxed">
                     {activeNode.description}
                   </p>
 
                   <div className="space-y-1">
-                    <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                    <div className="flex justify-between items-center text-[10px] font-bold text-ink-muted">
                       <span>Requirement progress</span>
                       <span>{Math.round(activeNode.progress * 100)}%</span>
                     </div>
-                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-1.5 w-full bg-canvas-soft dark:bg-forest-900 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full transition-all"
+                        className="h-full bg-emerald-500 dark:bg-forest-400 rounded-full transition-all"
                         style={{ width: `${activeNode.progress * 100}%` }}
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-100 dark:border-slate-850">
-                    <span className="text-slate-400">Status</span>
+                  <div className="flex items-center justify-between text-[11px] pt-2 border-t border-hairline dark:border-forest-800">
+                    <span className="text-ink-muted">Status</span>
                     {activeNode.achieved ? (
-                      <span className="font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+                      <span className="font-extrabold text-forest-600 dark:text-forest-300 flex items-center gap-0.5">
                         <Check className="h-3 w-3 stroke-[3]" /> Completed
                       </span>
                     ) : (
-                      <span className="font-bold text-slate-400 flex items-center gap-1">
+                      <span className="font-bold text-ink-muted flex items-center gap-1">
                         <Lock className="h-3 w-3" /> Locked
                       </span>
                     )}
@@ -290,7 +290,7 @@ export default function JourneyPage() {
                     <Button
                       size="sm"
                       onClick={() => setActiveNode(null)}
-                      className="w-full text-xs font-semibold rounded-xl bg-slate-900 text-white hover:bg-slate-850 dark:bg-slate-800 dark:hover:bg-slate-700"
+                      className="w-full text-xs font-semibold rounded-xl bg-forest-800 text-paper hover:bg-forest-900 dark:bg-forest-900 dark:hover:bg-slate-700"
                     >
                       Close Details
                     </Button>

@@ -25,25 +25,29 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
-          // Variants
+          "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+          // Variants — Cohere system:
+          //   primary   → forest pill (the one high-priority action)
+          //   secondary → underlined text link (NOT a box)
+          //   outline   → outlined pill (taxonomy / filters)
+          //   ghost     → quiet transparent (nav, toolbars)
+          //   danger    → clay pill (destructive)
           {
-            "bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 focus-visible:outline-emerald-600":
+            "rounded-pill bg-forest-700 px-6 py-3 text-sm text-paper hover:bg-forest-800 active:bg-forest-900 focus-visible:outline-forest-600 dark:bg-forest-600 dark:hover:bg-forest-500":
               variant === "primary",
-            "bg-slate-100 text-slate-900 hover:bg-slate-200 active:bg-slate-300 focus-visible:outline-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700":
+            "bg-transparent px-1 py-1 text-sm font-medium text-forest-700 underline-offset-4 hover:underline focus-visible:outline-forest-600 dark:text-forest-300":
               variant === "secondary",
-            "border border-slate-300 bg-transparent text-slate-700 hover:bg-slate-50 active:bg-slate-100 focus-visible:outline-slate-600 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800":
+            "rounded-pill border border-forest-300 bg-transparent px-5 py-2 text-sm font-medium text-forest-700 hover:bg-forest-50 active:bg-forest-100 focus-visible:outline-forest-600 dark:border-forest-700 dark:text-forest-300 dark:hover:bg-forest-950/40":
               variant === "outline",
-            "bg-transparent text-slate-600 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-slate-600 dark:text-slate-400 dark:hover:bg-slate-800":
+            "rounded-md bg-transparent px-3 py-1.5 text-sm font-medium text-ink-soft hover:bg-canvas-soft hover:text-ink focus-visible:outline-forest-600 dark:text-forest-200 dark:hover:bg-forest-900/40":
               variant === "ghost",
-            "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 focus-visible:outline-red-600":
+            "rounded-pill bg-clay-500 px-6 py-3 text-sm text-paper hover:bg-clay-600 active:bg-clay-600 focus-visible:outline-clay-500":
               variant === "danger",
           },
-          // Sizes
+          // Size overrides (text scale only; padding is per-variant).
           {
-            "h-9 px-3 text-sm": size === "sm",
-            "h-11 px-4 text-base": size === "md",
-            "h-12 px-6 text-lg": size === "lg",
+            "text-xs": size === "sm",
+            "text-base": size === "lg",
           },
           className
         )}

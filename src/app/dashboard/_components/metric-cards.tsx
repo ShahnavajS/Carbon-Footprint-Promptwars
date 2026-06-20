@@ -36,15 +36,15 @@ export function MetricCards({
         unit="/ 1000"
         trend={
           <div className="flex items-center gap-1.5 text-xs">
-            <Pill tone="emerald">
+            <Pill tone="forest">
               {level.emoji} Level {level.level}
             </Pill>
             {weeklyChange > 0 ? (
-              <span className="flex items-center gap-0.5 font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="flex items-center gap-0.5 font-semibold text-forest-600 dark:text-forest-300">
                 <TrendingUp className="h-3 w-3" aria-hidden="true" />+{weeklyChange} this week
               </span>
             ) : (
-              <span className="text-slate-400">0 change this week</span>
+              <span className="text-ink-muted">0 change this week</span>
             )}
           </div>
         }
@@ -60,7 +60,7 @@ export function MetricCards({
           lastActivityType ? (
             <>
               Last logged:{" "}
-              <strong className="text-slate-700 dark:text-slate-300">{lastActivityType}</strong>
+              <strong className="text-ink-soft dark:text-forest-200/80">{lastActivityType}</strong>
             </>
           ) : (
             "Log an activity today to start a streak!"

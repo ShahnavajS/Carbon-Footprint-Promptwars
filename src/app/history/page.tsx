@@ -104,24 +104,24 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20">
+    <div className="min-h-screen bg-canvas dark:bg-forest-950 text-ink dark:text-forest-50 pb-20">
       <AppNav userName={dbUser?.profile.name} onSignOut={handleSignOut} />
 
       <div className="mx-auto max-w-2xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {/* Climate Journal Header */}
         <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">
+          <h1 className="text-3xl font-extrabold tracking-tight text-ink dark:text-paper">
             Your Climate Journal
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+          <p className="text-xs text-ink-muted dark:text-forest-200/60 leading-relaxed">
             A chronological timeline of every green ritual you completed. Each entry details the
             real-world carbon equivalent saved for our biosphere.
           </p>
         </div>
 
         {/* History Card */}
-        <Card className="border-slate-200/60 shadow-md dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
-          <CardHeader className="space-y-4 border-b border-slate-100 dark:border-slate-850 bg-slate-50/50 dark:bg-slate-950/20 py-5">
+        <Card className="border-hairline/60 shadow-md dark:border-forest-800 bg-paper dark:bg-forest-900 rounded-2xl overflow-hidden">
+          <CardHeader className="space-y-4 border-b border-hairline dark:border-forest-800 bg-canvas-soft dark:bg-forest-950/20 py-5">
             <div
               className="flex flex-wrap items-center gap-1.5"
               role="group"
@@ -139,8 +139,8 @@ export default function HistoryPage() {
                   onClick={() => setSelectedCategory(val as ActivityCategory | "all")}
                   className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     selectedCategory === val
-                      ? "bg-emerald-600 text-white shadow-sm"
-                      : "bg-white border border-slate-200 text-slate-655 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-350 dark:border-slate-800"
+                      ? "bg-forest-600 text-white shadow-sm"
+                      : "bg-paper border border-hairline text-ink-soft hover:bg-canvas dark:bg-forest-900 dark:text-forest-200/60 dark:border-forest-800"
                   }`}
                 >
                   {label}
@@ -161,13 +161,13 @@ export default function HistoryPage() {
             {/* Timeline logs */}
             {initialLoading && activitiesList.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 space-y-3">
-                <Spinner className="h-8 w-8 text-emerald-600" />
-                <p className="text-xs text-slate-400">Opening Climate Journal...</p>
+                <Spinner className="h-8 w-8 text-forest-600" />
+                <p className="text-xs text-ink-muted">Opening Climate Journal...</p>
               </div>
             ) : activitiesList.length === 0 ? (
-              <div className="text-center py-16 border-2 border-dashed border-slate-200/60 rounded-2xl dark:border-slate-800 max-w-sm mx-auto space-y-4">
+              <div className="text-center py-16 border-2 border-dashed border-hairline/60 rounded-2xl dark:border-forest-800 max-w-sm mx-auto space-y-4">
                 <svg
-                  className="mx-auto h-12 w-12 text-slate-300 dark:text-slate-700"
+                  className="mx-auto h-12 w-12 text-ink-muted dark:text-forest-200/50"
                   viewBox="0 0 64 64"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -183,10 +183,10 @@ export default function HistoryPage() {
                   <path d="M22 32H42" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-sm text-slate-750 dark:text-slate-350">
+                  <h4 className="font-bold text-sm text-ink-soft dark:text-forest-200/60">
                     No Logs Found
                   </h4>
-                  <p className="text-xs text-slate-450 dark:text-slate-500 max-w-xs mx-auto leading-relaxed">
+                  <p className="text-xs text-ink-muted dark:text-ink-muted max-w-xs mx-auto leading-relaxed">
                     You haven&apos;t logged any rituals in this category yet. Nurture your biome on
                     the dashboard!
                   </p>
@@ -194,11 +194,11 @@ export default function HistoryPage() {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="relative border-l-2 border-slate-200/80 pl-6 ml-2 dark:border-slate-800 space-y-8">
+                <div className="relative border-l-2 border-hairline/80 pl-6 ml-2 dark:border-forest-800 space-y-8">
                   {activitiesList.map((act) => (
                     <div key={act.id} className="relative group">
                       {/* Timeline dot marker */}
-                      <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 rounded-full bg-emerald-650 ring-4 ring-white dark:ring-slate-900 dark:bg-emerald-500 transition-transform group-hover:scale-125" />
+                      <span className="absolute -left-[31px] top-1.5 flex h-3 w-3 rounded-full bg-forest-500 ring-4 ring-paper dark:ring-forest-900 dark:bg-forest-400 transition-transform group-hover:scale-125" />
 
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-1">
@@ -208,27 +208,27 @@ export default function HistoryPage() {
                                 ? "bg-amber-50 text-amber-700 border border-amber-100/60 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/30"
                                 : act.category === "transport"
                                   ? "bg-blue-50 text-blue-700 border border-blue-100/60 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/30"
-                                  : "bg-emerald-50 text-emerald-700 border border-emerald-100/60 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30"
+                                  : "bg-forest-50 text-forest-700 border border-forest-100/60 dark:bg-forest-950/20 dark:text-forest-300 dark:border-forest-900/30"
                             }`}
                           >
                             {act.category}
                           </span>
-                          <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                          <h4 className="text-sm font-bold text-ink dark:text-paper">
                             {act.actionType}
                           </h4>
-                          <time className="text-[10px] text-slate-400 dark:text-slate-500 block">
+                          <time className="text-[10px] text-ink-muted dark:text-ink-muted block">
                             {formatDateString(act.createdAt)}
                           </time>
                         </div>
                         <div className="text-right flex flex-col items-end gap-0.5">
-                          <p className="text-xs font-extrabold text-slate-950 dark:text-white">
+                          <p className="text-xs font-extrabold text-ink dark:text-paper">
                             +{act.ecoPoints} pts
                           </p>
-                          <p className="text-[10px] text-emerald-650 font-bold dark:text-emerald-400">
+                          <p className="text-[10px] text-emerald-650 font-bold dark:text-forest-300">
                             -{act.carbonSaved.toFixed(1)}kg CO₂
                           </p>
                           <span
-                            className="text-[9.5px] text-slate-450 dark:text-slate-500 mt-1 max-w-[200px] truncate block leading-snug font-medium"
+                            className="text-[9.5px] text-ink-muted dark:text-ink-muted mt-1 max-w-[200px] truncate block leading-snug font-medium"
                             title={AnalogyEngine.getPrimaryAnalogyText(act.carbonSaved)}
                           >
                             {AnalogyEngine.getPrimaryAnalogyText(act.carbonSaved)}
@@ -241,7 +241,7 @@ export default function HistoryPage() {
 
                 {/* Load More Button */}
                 {hasMore && (
-                  <div className="pt-6 text-center border-t border-slate-100 dark:border-slate-850">
+                  <div className="pt-6 text-center border-t border-hairline dark:border-forest-800">
                     <Button
                       variant="outline"
                       size="sm"

@@ -1,6 +1,29 @@
 import type { Metadata, Viewport } from "next";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+
+// ── Self-hosted fonts (zero layout shift, no external request) ────────────────
+// Fraunces → display headlines (--font-display), Inter → UI/body (--font-sans),
+// JetBrains Mono → technical labels / metric numbers (--font-mono).
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display-loaded",
+  axes: ["opsz", "SOFT"],
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans-loaded",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono-loaded",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -52,8 +75,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
+    { media: "(prefers-color-scheme: light)", color: "#faf7f0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1f17" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -65,8 +88,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-white font-sans antialiased dark:bg-slate-950">
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+    >
+      <body className="min-h-screen bg-canvas font-sans antialiased text-ink dark:bg-forest-950 dark:text-forest-50">
         <Providers>
           <div id="app-root">
             <a

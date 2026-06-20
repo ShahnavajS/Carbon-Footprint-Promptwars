@@ -1,12 +1,19 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+/**
+ * Card — flat editorial surface (Cohere "mostly flat").
+ *
+ * Default: hairline border on paper, NO shadow. Depth comes from surface
+ * alternation + borders, not drop shadows. Pass a `shadow-*` class or the
+ * `CardMedia` variant when a lift is genuinely needed.
+ */
 export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        "rounded-xl border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50",
+        "rounded-lg border border-hairline bg-paper text-ink dark:border-forest-800 dark:bg-forest-900 dark:text-forest-50",
         className
       )}
       {...props}
@@ -14,6 +21,24 @@ export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
   )
 );
 Card.displayName = "Card";
+
+/**
+ * CardMedia — the one "media moment" surface (hero image, planet, projection).
+ * Larger radius (22px) and an optional soft lift per DESIGN.md hero-photo-card.
+ */
+export const CardMedia = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "overflow-hidden rounded-lg border border-hairline bg-paper shadow-sm dark:border-forest-800 dark:bg-forest-900",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+CardMedia.displayName = "CardMedia";
 
 export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
@@ -28,7 +53,7 @@ export const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
+    className={cn("font-display text-lg font-medium leading-tight tracking-tight", className)}
     {...props}
   />
 ));
@@ -38,7 +63,11 @@ export const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn("text-sm text-slate-500 dark:text-slate-400", className)} {...props} />
+  <p
+    ref={ref}
+    className={cn("text-sm text-ink-soft dark:text-forest-200/70", className)}
+    {...props}
+  />
 ));
 CardDescription.displayName = "CardDescription";
 

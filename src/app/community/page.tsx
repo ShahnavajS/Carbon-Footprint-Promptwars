@@ -18,7 +18,7 @@ interface CollectiveImpact {
 const TREND_ICON = {
   up: { Icon: TrendingUp, class: "text-emerald-500" },
   down: { Icon: TrendingDown, class: "text-orange-500" },
-  neutral: { Icon: Minus, class: "text-slate-400" },
+  neutral: { Icon: Minus, class: "text-ink-muted" },
 };
 
 export default function CommunityPage() {
@@ -60,27 +60,27 @@ export default function CommunityPage() {
 
   if (loading || !dbUser) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-slate-950">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600 dark:border-slate-800 dark:border-t-emerald-400" />
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-forest-950">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-hairline border-t-emerald-600 dark:border-forest-800 dark:border-t-emerald-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-16 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-canvas pb-16 text-ink dark:bg-forest-950 dark:text-forest-50">
       <AppNav userName={dbUser.profile.name} onSignOut={handleSignOut} />
 
       <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
         {/* Hero */}
         <div className="text-center">
-          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/60 bg-emerald-50/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:border-emerald-900/30 dark:bg-emerald-950/30 dark:text-emerald-400">
+          <span className="inline-flex items-center gap-1 rounded-full border border-forest-200/60 bg-forest-50/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-forest-700 dark:border-forest-900/30 dark:bg-forest-950/30 dark:text-forest-300">
             <Users className="h-3.5 w-3.5" aria-hidden="true" />
             Community
           </span>
-          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-ink dark:text-paper sm:text-4xl">
             You&apos;re not doing this alone.
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft dark:text-forest-200/70">
             Real change is a collective effort. See how the EcoScore community is healing the planet
             together — and where you stand among people on the same journey.
           </p>
@@ -88,7 +88,7 @@ export default function CommunityPage() {
 
         {/* Collective impact counter — the social-proof hero */}
         {impact && (
-          <Card className="overflow-hidden rounded-2xl border-emerald-150 bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg">
+          <Card className="overflow-hidden rounded-2xl border-forest-150 bg-gradient-to-br from-forest-500 to-teal-600 text-white shadow-lg">
             <CardContent className="p-6">
               <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-100">
                 Together this week
@@ -125,11 +125,9 @@ export default function CommunityPage() {
         <Card className="rounded-2xl">
           <CardContent className="p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-950 dark:text-white">
-                Weekly standings
-              </h2>
+              <h2 className="text-base font-bold text-ink dark:text-paper">Weekly standings</h2>
               {seeded && (
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                <span className="rounded-full bg-canvas-soft px-2 py-0.5 text-[10px] font-bold text-ink-muted dark:bg-forest-900 dark:text-ink-muted">
                   demo members
                 </span>
               )}
@@ -145,33 +143,33 @@ export default function CommunityPage() {
                     key={`${entry.userId}-${entry.rank}`}
                     className={`flex items-center gap-3 rounded-xl border p-3 ${
                       isYou
-                        ? "border-emerald-200 bg-emerald-50/60 dark:border-emerald-900/40 dark:bg-emerald-950/20"
-                        : "border-slate-100 dark:border-slate-800"
+                        ? "border-forest-200 bg-forest-50/60 dark:border-forest-900/40 dark:bg-forest-950/20"
+                        : "border-hairline dark:border-forest-800"
                     }`}
                   >
                     <span
                       className={`w-7 shrink-0 text-center text-sm font-extrabold ${
-                        entry.rank <= 3 ? "text-amber-500" : "text-slate-400"
+                        entry.rank <= 3 ? "text-amber-500" : "text-ink-muted"
                       }`}
                       aria-label={`Rank ${entry.rank}`}
                     >
                       {entry.rank}
                     </span>
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-forest-700 dark:bg-forest-950/40 dark:text-forest-300">
                       {entry.userName.charAt(0)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-bold text-slate-900 dark:text-white">
+                      <p className="truncate text-sm font-bold text-ink dark:text-paper">
                         {entry.userName}
                         {isYou && (
-                          <span className="ml-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className="ml-1.5 text-[10px] font-bold text-forest-600 dark:text-forest-300">
                             (you)
                           </span>
                         )}
                       </p>
                     </div>
                     <TrendIcon className={`h-4 w-4 shrink-0 ${trend.class}`} aria-hidden="true" />
-                    <span className="w-12 shrink-0 text-right text-sm font-bold text-slate-900 dark:text-white">
+                    <span className="w-12 shrink-0 text-right text-sm font-bold text-ink dark:text-paper">
                       {entry.metric}
                     </span>
                   </li>
@@ -182,7 +180,7 @@ export default function CommunityPage() {
         </Card>
 
         {/* Closing nudge */}
-        <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+        <p className="text-center text-xs text-ink-muted dark:text-ink-muted">
           Every action you log nudges the whole community forward. 🌍
         </p>
       </main>

@@ -24,7 +24,7 @@ interface RecentActivitiesListProps {
 
 const EMPTY_SVG = (
   <svg
-    className="mx-auto h-12 w-12 animate-pulse text-slate-350 dark:text-slate-700"
+    className="mx-auto h-12 w-12 animate-pulse text-ink-muted dark:text-ink-soft"
     viewBox="0 0 64 64"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -43,38 +43,38 @@ export function RecentActivitiesList({
   previewCount = 5,
 }: RecentActivitiesListProps) {
   return (
-    <Card className="rounded-2xl border-slate-200/60 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <Card className="rounded-2xl border-hairline/60 bg-white shadow-sm dark:border-forest-800 dark:bg-forest-900">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle className="flex items-center gap-2 text-lg font-bold">
-            <Activity className="h-5 w-5 text-emerald-600" aria-hidden="true" />
+            <Activity className="h-5 w-5 text-forest-600" aria-hidden="true" />
             <span>Recent Eco Actions</span>
           </CardTitle>
           <CardDescription>Your sustainability log records.</CardDescription>
         </div>
         <Link
           href="/history"
-          className="text-xs font-bold text-emerald-600 hover:underline dark:text-emerald-400"
+          className="text-xs font-bold text-forest-600 hover:underline dark:text-forest-300"
         >
           View All History
         </Link>
       </CardHeader>
       <CardContent className="space-y-4">
         {activities.length === 0 ? (
-          <div className="mx-auto max-w-sm space-y-3 rounded-2xl border border-dashed border-slate-200/60 py-12 text-center dark:border-slate-800">
+          <div className="mx-auto max-w-sm space-y-3 rounded-2xl border border-dashed border-hairline/60 py-12 text-center dark:border-forest-800">
             {EMPTY_SVG}
             <div className="space-y-1">
-              <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              <h4 className="text-xs font-bold text-ink-soft dark:text-forest-200/80">
                 No Actions Recorded
               </h4>
-              <p className="mx-auto max-w-[250px] text-[10px] leading-relaxed text-slate-400 dark:text-slate-500">
+              <p className="mx-auto max-w-[250px] text-[10px] leading-relaxed text-ink-muted dark:text-ink-muted">
                 Complete your first Daily Care Ritual above to seed the activity timeline.
               </p>
             </div>
           </div>
         ) : (
           <>
-            <div className="divide-y divide-slate-200/60 dark:divide-slate-800/60">
+            <div className="divide-y divide-hairline dark:divide-forest-800">
               {activities.slice(0, previewCount).map((act) => {
                 const analogy = AnalogyEngine.getPrimaryAnalogyText(act.carbonReduction);
                 return (
@@ -86,30 +86,28 @@ export function RecentActivitiesList({
                             ? "bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400"
                             : act.category === "transport"
                               ? "bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400"
-                              : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400"
+                              : "bg-forest-50 text-forest-600 dark:bg-forest-950/20 dark:text-forest-300"
                         }`}
                         aria-hidden="true"
                       >
                         {getCategoryEmoji(act.category)}
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-850 dark:text-slate-200">
-                          {act.type}
-                        </p>
-                        <p className="mt-0.5 text-[10px] text-slate-400">
+                        <p className="font-semibold text-ink dark:text-forest-100">{act.type}</p>
+                        <p className="mt-0.5 text-[10px] text-ink-muted">
                           {formatTimeAgo(act.createdAt)}
                         </p>
                       </div>
                     </div>
                     <div className="flex flex-col items-end text-right">
-                      <p className="text-xs font-bold text-slate-950 dark:text-white">
+                      <p className="text-xs font-bold text-ink dark:text-paper">
                         +{act.ecoPoints} EcoPoints
                       </p>
-                      <p className="mt-0.5 text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">
+                      <p className="mt-0.5 text-[10px] font-extrabold text-forest-600 dark:text-forest-300">
                         -{act.carbonReduction.toFixed(1)}kg CO₂ saved
                       </p>
                       <span
-                        className="mt-0.5 block max-w-[200px] truncate text-[9px] text-slate-400 dark:text-slate-500"
+                        className="mt-0.5 block max-w-[200px] truncate text-[9px] text-ink-muted dark:text-ink-muted"
                         title={analogy}
                       >
                         {analogy}

@@ -19,7 +19,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-semibold text-slate-700 dark:text-slate-300"
+            className="mono-label block text-ink-soft dark:text-forest-200/80"
           >
             {label}
           </label>
@@ -31,9 +31,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           aria-describedby={error ? errorId : helperText ? helperId : undefined}
           aria-invalid={!!error}
           className={cn(
-            "flex h-11 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 ring-offset-white placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus-visible:ring-emerald-500",
+            // Cohere: rectangular (radius-xs), thin hairline border, focus ring.
+            "flex h-11 w-full rounded-xs border border-hairline-strong bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink-muted/70 focus-visible:border-forest-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-500/30 disabled:cursor-not-allowed disabled:opacity-50 dark:border-forest-700 dark:bg-forest-950 dark:text-forest-50 dark:placeholder:text-forest-200/40 dark:focus-visible:border-forest-400",
             {
-              "border-red-500 focus-visible:ring-red-500": !!error,
+              "border-clay-500 focus-visible:border-clay-500 focus-visible:ring-clay-500/30":
+                !!error,
             },
             className
           )}
@@ -43,13 +45,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <p
             id={errorId}
             role="alert"
-            className="text-xs font-medium text-red-600 dark:text-red-400"
+            className="text-xs font-medium text-clay-600 dark:text-clay-300"
           >
             {error}
           </p>
         )}
         {!error && helperText && (
-          <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">
+          <p id={helperId} className="text-xs text-ink-muted dark:text-forest-200/60">
             {helperText}
           </p>
         )}

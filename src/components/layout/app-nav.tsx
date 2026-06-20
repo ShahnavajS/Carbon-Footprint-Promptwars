@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Leaf, Trophy, Zap, History, LogOut, BookOpen, Users, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /**
@@ -52,54 +51,65 @@ export function AppNav({ userName, onSignOut }: AppNavProps) {
   return (
     <nav
       aria-label="Primary"
-      className="sticky top-0 z-30 border-b border-slate-200/60 bg-white/80 backdrop-blur-md dark:border-slate-800/60 dark:bg-slate-900/80"
+      className="sticky top-0 z-30 border-b border-hairline bg-canvas/85 backdrop-blur-md dark:border-forest-800 dark:bg-forest-950/80"
     >
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 px-4 py-3">
+      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5">
+        {/* Brand */}
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 font-bold text-emerald-600 dark:text-emerald-400"
+          className="flex shrink-0 items-center gap-2 font-display text-lg font-medium tracking-tight text-forest-700 dark:text-forest-200"
         >
-          <Leaf className="h-6 w-6" aria-hidden="true" />
-          <span className="tracking-tight text-lg">EcoScore</span>
+          <Leaf className="h-5 w-5" aria-hidden="true" />
+          <span className="hidden sm:inline">EcoScore</span>
         </Link>
 
-        <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+        {/* Horizontal-scroll icon rail — scrolls on mobile, never wraps */}
+        <div
+          className="flex flex-1 items-center gap-0.5 overflow-x-auto sm:gap-1"
+          role="menubar"
+          aria-label="Section navigation"
+          style={{ scrollbarWidth: "none" }}
+        >
           {APP_NAV_ITEMS.slice(1).map((item) => {
             const Icon = item.icon;
             const active = isActive(item);
             return (
-              <Link key={item.href} href={item.href}>
-                <Button
-                  variant={active ? "secondary" : "ghost"}
-                  size="sm"
-                  aria-label={item.label}
-                  aria-current={active ? "page" : undefined}
-                  className={cn("flex items-center gap-1.5")}
-                >
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">{item.label}</span>
-                </Button>
+              <Link
+                key={item.href}
+                href={item.href}
+                role="menuitem"
+                className={cn(
+                  "flex shrink-0 items-center gap-1.5 rounded-pill px-3 py-1.5 text-xs font-medium transition-colors",
+                  active
+                    ? "bg-forest-700 text-paper dark:bg-forest-600"
+                    : "text-ink-soft hover:bg-canvas-soft hover:text-forest-700 dark:text-forest-200/70 dark:hover:bg-forest-900/50"
+                )}
+                aria-label={item.label}
+                aria-current={active ? "page" : undefined}
+              >
+                <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span className="hidden md:inline">{item.label}</span>
               </Link>
             );
           })}
+        </div>
 
+        {/* Right zone: user + sign out */}
+        <div className="flex shrink-0 items-center gap-2">
           {userName ? (
-            <span className="ml-1 hidden text-sm font-semibold text-slate-700 dark:text-slate-300 md:inline">
+            <span className="hidden text-xs font-medium text-ink-muted dark:text-forest-200/60 lg:inline">
               {userName}
             </span>
           ) : null}
-
           {onSignOut ? (
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
+              type="button"
               onClick={onSignOut}
               aria-label="Sign out"
-              className="flex items-center gap-1.5"
+              className="rounded-md p-1.5 text-ink-muted transition-colors hover:bg-canvas-soft hover:text-forest-700 dark:text-forest-200/60 dark:hover:bg-forest-900/50"
             >
               <LogOut className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Sign Out</span>
-            </Button>
+            </button>
           ) : null}
         </div>
       </div>

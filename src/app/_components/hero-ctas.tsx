@@ -38,7 +38,7 @@ export function HeroCtas() {
         variant="outline"
         id="cta-demo-mode"
         onClick={handleDemoMode}
-        className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30 dark:hover:bg-emerald-950/40"
+        className="bg-emerald-50 text-emerald-700 border-forest-200 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-900/30 dark:hover:bg-emerald-950/40"
       >
         🌿 Explore Demo Mode
       </Button>

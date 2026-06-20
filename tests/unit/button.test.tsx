@@ -9,18 +9,21 @@ describe("Button Component", () => {
     render(<Button>Click me</Button>);
     const button = screen.getByRole("button", { name: /click me/i });
     expect(button).toBeInTheDocument();
-    expect(button).toHaveClass("bg-emerald-600");
+    // Default = primary forest pill.
+    expect(button).toHaveClass("bg-forest-700");
+    expect(button).toHaveClass("rounded-pill");
   });
 
-  it("applies secondary and sm size classes", () => {
+  it("applies secondary (text-link) and sm size classes", () => {
     render(
       <Button variant="secondary" size="sm">
         Secondary Small
       </Button>
     );
     const button = screen.getByRole("button", { name: /secondary small/i });
-    expect(button).toHaveClass("bg-slate-100");
-    expect(button).toHaveClass("h-9");
+    // Secondary is a transparent underlined text link, not a filled box.
+    expect(button).toHaveClass("bg-transparent");
+    expect(button).toHaveClass("text-xs");
   });
 
   it("fires click events correctly", () => {

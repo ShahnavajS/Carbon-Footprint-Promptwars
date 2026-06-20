@@ -20,40 +20,43 @@ interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /**
- * Compact metric card used across the dashboard and report surfaces.
- * Keeps a single, consistent treatment for headline numbers + icon + caption.
+ * Cohere-style big-number metric tile: mono label, oversized Fraunces value,
+ * flat surface, no icon-in-circle. Depth comes from the headline number, not
+ * decoration. Used across the dashboard, twin, and impact surfaces.
  */
 export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
   ({ label, value, unit, icon: Icon, iconClassName, caption, trend, className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        "rounded-xl border border-slate-200/60 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900",
+        "rounded-lg border border-hairline bg-paper p-6 dark:border-forest-800 dark:bg-forest-900",
         className
       )}
       {...props}
     >
       <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          {label}
-        </span>
+        <span className="mono-label text-ink-muted dark:text-forest-200/60">{label}</span>
         {Icon ? (
           <Icon
             aria-hidden="true"
-            className={cn("h-5 w-5 text-emerald-600 dark:text-emerald-400", iconClassName)}
+            className={cn("h-4 w-4 text-forest-500 dark:text-forest-300", iconClassName)}
           />
         ) : null}
       </div>
-      <div className="mt-2 flex items-baseline gap-1">
-        <span className="text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
+      <div className="mt-3 flex items-baseline gap-1.5">
+        <span className="font-display text-5xl font-medium tracking-tight text-ink dark:text-paper">
           {value}
         </span>
-        {unit ? <span className="text-xs font-bold text-slate-400">{unit}</span> : null}
+        {unit ? (
+          <span className="mono-label text-ink-muted dark:text-forest-200/50">{unit}</span>
+        ) : null}
       </div>
       {(trend || caption) && (
-        <div className="mt-3 space-y-1">
+        <div className="mt-3 space-y-1.5">
           {trend}
-          {caption ? <p className="text-xs text-slate-500 dark:text-slate-400">{caption}</p> : null}
+          {caption ? (
+            <p className="text-xs text-ink-soft dark:text-forest-200/70">{caption}</p>
+          ) : null}
         </div>
       )}
     </div>

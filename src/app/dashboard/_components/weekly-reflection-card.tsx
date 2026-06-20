@@ -37,16 +37,16 @@ export function WeeklyReflectionCard({
   onMarkViewed,
 }: WeeklyReflectionCardProps) {
   return (
-    <Card className="overflow-hidden rounded-2xl border-emerald-150 bg-linear-to-tr from-emerald-50/60 via-teal-50/20 to-amber-50/40 shadow-sm dark:from-slate-900/60 dark:to-teal-950/20">
-      <CardHeader className="border-b border-emerald-100/50 pb-2 dark:border-slate-800/40">
+    <Card className="overflow-hidden rounded-2xl border-forest-150 bg-linear-to-tr from-forest-50/60 via-teal-50/20 to-amber-50/40 shadow-sm dark:from-slate-900/60 dark:to-teal-950/20">
+      <CardHeader className="border-b border-forest-100/50 pb-2 dark:border-forest-800/40">
         <div className="flex items-center justify-between">
-          <h3 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-emerald-800 dark:text-emerald-400">
-            <Sparkles className="h-4.5 w-4.5 text-emerald-600" aria-hidden="true" />
+          <h3 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-forest-800 dark:text-forest-300">
+            <Sparkles className="h-5 w-5 text-forest-600" aria-hidden="true" />
             Weekly Nature Reflection
           </h3>
           <Link
             href="/simulator"
-            className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 hover:underline dark:text-emerald-400"
+            className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-forest-600 hover:underline dark:text-forest-300"
           >
             <Zap className="h-3 w-3" aria-hidden="true" />
             Forecaster
@@ -59,27 +59,27 @@ export function WeeklyReflectionCard({
             className="cursor-pointer space-y-4"
             onClick={() => onMarkViewed(insight.id, insight.generatedAt)}
           >
-            <h4 className="text-base font-extrabold leading-snug text-slate-950 dark:text-white">
+            <h4 className="text-base font-extrabold leading-snug text-ink dark:text-paper">
               &ldquo;{insight.title}&rdquo;
             </h4>
-            <p className="text-xs font-medium italic leading-relaxed text-slate-650 dark:text-slate-450">
+            <p className="text-xs font-medium italic leading-relaxed text-ink-soft dark:text-forest-200/70">
               {insight.summary}
             </p>
 
             <div className="grid grid-cols-2 gap-2 pt-2">
-              <div className="rounded-xl border border-emerald-100/40 bg-white/60 p-2.5 dark:border-slate-800/40 dark:bg-slate-900/40">
-                <span className="block text-[8px] font-extrabold uppercase tracking-widest text-slate-400">
+              <div className="rounded-xl border border-forest-100/40 bg-white/60 p-2.5 dark:border-forest-800/40 dark:bg-forest-900/40">
+                <span className="block text-[8px] font-extrabold uppercase tracking-widest text-ink-muted">
                   Biggest Win
                 </span>
-                <p className="mt-1 text-[10px] font-bold text-emerald-800 dark:text-emerald-400">
+                <p className="mt-1 text-[10px] font-bold text-forest-800 dark:text-forest-300">
                   {insight.biggestWin || "Nurturing the canopy"}
                 </p>
               </div>
-              <div className="rounded-xl border border-emerald-100/40 bg-white/60 p-2.5 dark:border-slate-800/40 dark:bg-slate-900/40">
-                <span className="block text-[8px] font-extrabold uppercase tracking-widest text-slate-400">
+              <div className="rounded-xl border border-forest-100/40 bg-white/60 p-2.5 dark:border-forest-800/40 dark:bg-forest-900/40">
+                <span className="block text-[8px] font-extrabold uppercase tracking-widest text-ink-muted">
                   Next Step
                 </span>
-                <p className="mt-1 text-[10px] font-bold text-emerald-800 dark:text-emerald-400">
+                <p className="mt-1 text-[10px] font-bold text-forest-800 dark:text-forest-300">
                   {insight.nextStep || "One green step today"}
                 </p>
               </div>
@@ -88,7 +88,7 @@ export function WeeklyReflectionCard({
         ) : (
           <div className="space-y-4 py-8 text-center">
             <svg
-              className="mx-auto h-12 w-12 text-slate-350 dark:text-slate-700"
+              className="mx-auto h-12 w-12 text-ink-muted dark:text-ink-soft"
               viewBox="0 0 64 64"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -110,10 +110,10 @@ export function WeeklyReflectionCard({
               />
             </svg>
             <div className="space-y-1">
-              <p className="text-xs font-bold text-slate-700 dark:text-slate-350">
+              <p className="text-xs font-bold text-ink-soft dark:text-forest-200/60">
                 Reflection Journal is Empty
               </p>
-              <p className="mx-auto max-w-xs text-[10px] text-slate-400 dark:text-slate-500">
+              <p className="mx-auto max-w-xs text-[10px] text-ink-muted dark:text-ink-muted">
                 Log activities to let Gemini compose your weekly climate reflection report.
               </p>
             </div>

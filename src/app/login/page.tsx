@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { useAuthActions } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Leaf } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { SectionLabel } from "@/components/ui/section-label";
 import { startDemoSession } from "@/lib/demo-session";
 
 export default function LoginPage() {
@@ -69,85 +70,76 @@ export default function LoginPage() {
   };
 
   const handleDemoSignIn = () => {
-    // Client-side only: write the demo session so the auth listener can pick
-    // it up without any Firebase or backend call.
     startDemoSession();
     router.push("/dashboard");
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-emerald-50 via-white to-teal-50 px-4 py-12 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950">
-      <div className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-4 py-12 dark:bg-forest-950">
+      {/* Forest gradient backdrop — the "band" behind the card */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-br from-forest-100 via-canvas to-moss-50 dark:from-forest-900 dark:via-forest-950 dark:to-forest-900"
+      />
+
+      <div className="relative w-full max-w-md">
+        {/* Brand + heading */}
         <div className="mb-8 text-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400"
+            className="inline-flex items-center gap-2 font-display text-2xl font-medium tracking-tight text-forest-700 dark:text-forest-200"
           >
-            <Leaf className="h-8 w-8" />
+            <span aria-hidden="true" className="text-2xl">
+              🌱
+            </span>
             <span>EcoScore</span>
           </Link>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="mt-5 font-display text-3xl font-medium tracking-tight text-ink dark:text-paper">
             Welcome back
           </h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-2 text-sm text-ink-soft dark:text-forest-200/70">
             Sign in to resume tracking your carbon goals.
           </p>
         </div>
 
-        <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-xl">Sign In</CardTitle>
-            <CardDescription>Enter your email and password or use Google OAuth.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {errorMsg && (
+        <Card className="rounded-lg p-8">
+          <CardContent className="p-0">
+            <Eyebrow tone="clay" className="mb-5">
+              Account
+            </Eyebrow>
+
+            {(errorMsg || (authError && !errorMsg)) && (
               <div
                 role="alert"
                 aria-live="assertive"
-                className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/35 dark:text-red-400"
+                className="mb-5 rounded-xs border border-clay-200 bg-clay-50 p-3 text-sm font-medium text-clay-600 dark:border-clay-900/40 dark:bg-clay-950/30 dark:text-clay-300"
               >
-                {errorMsg}
-              </div>
-            )}
-            {authError && !errorMsg && (
-              <div
-                role="alert"
-                aria-live="assertive"
-                className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/35 dark:text-red-400"
-              >
-                {authError}
+                {errorMsg || authError}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  label="Email Address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  error={emailError}
-                  disabled={isLoading}
-                  autoComplete="email"
-                  required
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={emailError}
+                disabled={isLoading}
+                autoComplete="email"
+                required
+              />
 
               <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="text-sm font-medium text-slate-700 dark:text-slate-300"
-                  >
-                    Password
-                  </label>
+                <div className="mb-1.5 flex items-center justify-between">
+                  <span className="mono-label text-ink-soft dark:text-forest-200/80">Password</span>
                   <Link
                     href="/forgot-password"
-                    className="text-xs font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300"
+                    className="text-xs font-medium text-forest-700 underline-offset-4 hover:underline dark:text-forest-300"
                   >
-                    Forgot password?
+                    Forgot?
                   </Link>
                 </div>
                 <Input
@@ -159,7 +151,6 @@ export default function LoginPage() {
                   error={passwordError}
                   disabled={isLoading}
                   autoComplete="current-password"
-                  className="mt-1"
                   required
                 />
               </div>
@@ -169,13 +160,14 @@ export default function LoginPage() {
               </Button>
             </form>
 
+            {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                <div className="w-full border-t border-hairline" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-                  Or sign in with
+              <div className="relative flex justify-center">
+                <span className="bg-paper px-3 dark:bg-forest-900">
+                  <SectionLabel>or continue with</SectionLabel>
                 </span>
               </div>
             </div>
@@ -208,28 +200,29 @@ export default function LoginPage() {
               Google
             </Button>
 
-            <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
-              <p className="text-center text-xs text-slate-400 dark:text-slate-500 mb-3">
-                🌿 No account? Explore the full app instantly
-              </p>
+            {/* Demo mode — distinct forest outline pill */}
+            <div className="mt-6 border-t border-hairline pt-5">
+              <SectionLabel className="mb-3 block text-center">No account?</SectionLabel>
               <Button
                 id="demo-mode-btn"
                 type="button"
                 variant="outline"
                 onClick={handleDemoSignIn}
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-300 hover:from-emerald-100 hover:to-teal-100 dark:from-emerald-950/30 dark:to-teal-950/30 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 font-bold text-sm py-3 shadow-sm"
+                className="w-full"
               >
-                <Leaf className="mr-2 h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <span aria-hidden="true" className="mr-2">
+                  🌿
+                </span>
                 Explore Demo Mode — No Login Required
               </Button>
             </div>
 
-            <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-6 text-center text-xs text-ink-soft dark:text-forest-200/70">
               New to EcoScore?{" "}
               <Link
                 href="/signup"
-                className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300"
+                className="font-medium text-forest-700 underline-offset-4 hover:underline dark:text-forest-300"
               >
                 Create an account
               </Link>

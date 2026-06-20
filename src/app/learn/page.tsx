@@ -31,17 +31,17 @@ export default function LearnPage() {
   const categories = Object.keys(LEARN_CATEGORY_LABELS) as LearnCategory[];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <header className="border-b border-slate-200/60 bg-white/60 backdrop-blur-md dark:border-slate-800/60 dark:bg-slate-900/60">
+    <div className="min-h-screen bg-canvas text-ink dark:bg-forest-950 dark:text-forest-50">
+      <header className="border-b border-hairline/60 bg-white/60 backdrop-blur-md dark:border-forest-800/60 dark:bg-forest-900/60">
         <div className="mx-auto max-w-5xl px-4 py-10 text-center">
-          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/60 bg-emerald-50/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:border-emerald-900/30 dark:bg-emerald-950/30 dark:text-emerald-400">
+          <span className="inline-flex items-center gap-1 rounded-full border border-forest-200/60 bg-forest-50/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-forest-700 dark:border-forest-900/30 dark:bg-forest-950/30 dark:text-forest-300">
             <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
             Awareness Hub
           </span>
-          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-ink dark:text-paper sm:text-4xl">
             Understand your impact. Then change it.
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft dark:text-forest-200/70">
             Clear, fact-checked explainers on the climate — no jargon, no guilt. Every article
             connects the science to the choices you make every day.
           </p>
@@ -54,7 +54,7 @@ export default function LearnPage() {
           if (articles.length === 0) return null;
           return (
             <section key={category} className="mb-12">
-              <h2 className="mb-4 text-lg font-bold text-slate-950 dark:text-white">
+              <h2 className="mb-4 text-lg font-bold text-ink dark:text-paper">
                 {LEARN_CATEGORY_LABELS[category]}
               </h2>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -62,29 +62,29 @@ export default function LearnPage() {
                   <Link
                     key={article.slug}
                     href={`/learn/${article.slug}`}
-                    className="group flex flex-col rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                    className="group flex flex-col rounded-2xl border border-hairline/60 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-forest-800 dark:bg-forest-900"
                   >
                     <div className="mb-3 flex items-center justify-between">
                       <span className="text-3xl" aria-hidden="true">
                         {article.emoji}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-canvas-soft px-2 py-0.5 text-[10px] font-bold text-ink-muted dark:bg-forest-900 dark:text-ink-muted">
                         <Clock className="h-3 w-3" aria-hidden="true" />
                         {article.readingMinutes} min
                       </span>
                     </div>
-                    <h3 className="text-sm font-bold leading-snug text-slate-950 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400">
+                    <h3 className="text-sm font-bold leading-snug text-ink group-hover:text-forest-600 dark:text-paper dark:group-hover:text-emerald-400">
                       {article.title}
                     </h3>
-                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-ink-muted dark:text-forest-200/60">
                       {article.summary}
                     </p>
                     <div className="mt-3 flex items-center justify-between">
-                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                      <span className="rounded-full bg-forest-50 px-2 py-0.5 text-[10px] font-bold text-forest-700 dark:bg-forest-950/40 dark:text-forest-300">
                         {DIFFICULTY_LABEL[article.difficulty]}
                       </span>
                       <ArrowRight
-                        className="h-4 w-4 text-slate-300 transition-colors group-hover:text-emerald-600 dark:text-slate-600"
+                        className="h-4 w-4 text-ink-muted transition-colors group-hover:text-forest-600 dark:text-ink-soft"
                         aria-hidden="true"
                       />
                     </div>
@@ -96,11 +96,11 @@ export default function LearnPage() {
         })}
 
         {/* Footer nudge */}
-        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-6 text-center dark:border-emerald-900/30 dark:bg-emerald-950/10">
-          <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-400">
+        <div className="rounded-2xl border border-forest-100 bg-forest-50/40 p-6 text-center dark:border-forest-900/30 dark:bg-forest-950/10">
+          <p className="text-sm font-semibold text-forest-800 dark:text-forest-300">
             {LEARN_ARTICLES.length} articles and growing
           </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-xs text-ink-muted dark:text-forest-200/60">
             Knowledge is the first leaf of change. Pick one article, and let it shape your next
             green choice.
           </p>

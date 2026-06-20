@@ -57,7 +57,7 @@ function ActionGroup({
 }) {
   return (
     <div>
-      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink-muted dark:text-forest-200/60">
         {title}
       </h4>
       <div className={`grid grid-cols-1 gap-2 ${columns}`}>
@@ -71,12 +71,10 @@ function ActionGroup({
               disabled={loggingAction !== null}
               isLoading={loggingAction === action.type}
               onClick={() => onLog(action.category, action.type)}
-              className="flex h-auto flex-col items-center justify-center rounded-xl bg-slate-50/50 py-2.5 text-center hover:bg-slate-50 dark:bg-slate-900/50"
+              className="flex h-auto flex-col items-center justify-center rounded-xl bg-canvas/50 py-2.5 text-center hover:bg-canvas dark:bg-forest-900/50"
             >
-              <span className="text-xs font-bold text-slate-950 dark:text-white">
-                {action.type}
-              </span>
-              <span className="mt-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="text-xs font-bold text-ink dark:text-paper">{action.type}</span>
+              <span className="mt-1 text-[10px] font-semibold text-forest-600 dark:text-forest-300">
                 +{reward.points} pts • -{reward.carbon}kg
               </span>
             </Button>
@@ -89,10 +87,10 @@ function ActionGroup({
 
 export function QuickLogCard({ loggingAction, onLog }: QuickLogCardProps) {
   return (
-    <Card className="rounded-2xl border-slate-200/60 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <Card className="rounded-2xl border-hairline/60 bg-white shadow-sm dark:border-forest-800 dark:bg-forest-900">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg font-bold">
-          <Leaf className="h-5 w-5 text-emerald-600" aria-hidden="true" />
+          <Leaf className="h-5 w-5 text-forest-600" aria-hidden="true" />
           <span>Your Daily Care Ritual</span>
         </CardTitle>
         <CardDescription>

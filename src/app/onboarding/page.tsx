@@ -127,20 +127,22 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen flex-col bg-canvas dark:bg-forest-950">
       {/* Header */}
-      <header className="border-b border-slate-200 bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-900">
+      <header className="border-b border-hairline bg-white px-4 py-4 dark:border-forest-800 dark:bg-forest-900">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-emerald-600 dark:text-emerald-400">
+          <div className="flex items-center gap-2 font-bold text-forest-600 dark:text-forest-300">
             <Leaf className="h-6 w-6" />
             <span>EcoScore</span>
           </div>
           {step < 5 && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500 dark:text-slate-400">Step {step} of 4</span>
-              <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+              <span className="text-xs text-ink-muted dark:text-forest-200/60">
+                Step {step} of 4
+              </span>
+              <div className="h-2 w-24 overflow-hidden rounded-full bg-canvas-soft dark:bg-forest-900">
                 <div
-                  className="h-full bg-emerald-600 transition-all duration-300 dark:bg-emerald-400"
+                  className="h-full bg-forest-600 transition-all duration-300 dark:bg-forest-400"
                   style={{ width: `${(step / 4) * 100}%` }}
                   role="progressbar"
                   aria-valuenow={step}
@@ -169,20 +171,20 @@ export default function OnboardingPage() {
 
           {/* STEP 1: WELCOME SCREEN */}
           {step === 1 && (
-            <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
+            <Card className="border-hairline/60 shadow-xl dark:border-forest-800">
               <CardHeader className="text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-forest-50 text-forest-600 dark:bg-forest-950 dark:text-forest-300">
                   <Compass className="h-7 w-7" />
                 </div>
                 <CardTitle className="text-2xl font-bold">Welcome to EcoScore</CardTitle>
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                <p className="mt-2 text-sm text-ink-muted dark:text-forest-200/60">
                   Learn to measure, understand, and lower your carbon impact.
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Awareness hook — a real, sourced fact to awaken, not overwhelm */}
-                <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 text-center dark:border-emerald-900/30 dark:bg-emerald-950/10">
-                  <p className="text-xs leading-relaxed text-emerald-800 dark:text-emerald-300">
+                <div className="rounded-xl border border-forest-100 bg-forest-50/50 p-4 text-center dark:border-forest-900/30 dark:bg-forest-950/10">
+                  <p className="text-xs leading-relaxed text-forest-800 dark:text-emerald-300">
                     The Earth has warmed about <strong>1.1°C</strong> since pre-industrial times,
                     and CO₂ levels are at their highest in <strong>800,000 years</strong>. The good
                     news? Every choice you make today shapes what comes next.
@@ -191,14 +193,14 @@ export default function OnboardingPage() {
 
                 <div className="space-y-4">
                   <div className="flex gap-4">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-canvas-soft text-ink-soft dark:bg-forest-900 dark:text-ink-muted">
                       1
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-800 dark:text-white">
+                      <h4 className="text-sm font-semibold text-ink-soft dark:text-paper">
                         What it is
                       </h4>
-                      <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                      <p className="mt-0.5 text-xs text-ink-muted dark:text-forest-200/60">
                         An intuitive personal carbon score calculator based on real sustainability
                         metrics — turned into a living, emotional journey.
                       </p>
@@ -206,14 +208,14 @@ export default function OnboardingPage() {
                   </div>
 
                   <div className="flex gap-4">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-canvas-soft text-ink-soft dark:bg-forest-900 dark:text-ink-muted">
                       2
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-800 dark:text-white">
+                      <h4 className="text-sm font-semibold text-ink-soft dark:text-paper">
                         Why it matters
                       </h4>
-                      <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                      <p className="mt-0.5 text-xs text-ink-muted dark:text-forest-200/60">
                         Carbon emissions are the main driver of climate change — and they come
                         mostly from everyday choices about food, transport, and energy. Measuring
                         your habits is the first step to changing them.
@@ -222,14 +224,14 @@ export default function OnboardingPage() {
                   </div>
 
                   <div className="flex gap-4">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-canvas-soft text-ink-soft dark:bg-forest-900 dark:text-ink-muted">
                       3
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-800 dark:text-white">
+                      <h4 className="text-sm font-semibold text-ink-soft dark:text-paper">
                         What you gain
                       </h4>
-                      <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                      <p className="mt-0.5 text-xs text-ink-muted dark:text-forest-200/60">
                         Get personalized suggestions via Gemini AI, habit tracking logs, and
                         gamification streaks — plus a Learn hub to understand the climate itself.
                       </p>
@@ -240,7 +242,7 @@ export default function OnboardingPage() {
                 {/* Learn gateway — awareness first, data second */}
                 <Link
                   href="/learn"
-                  className="flex items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50/60 py-2.5 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-900/30 dark:bg-emerald-950/20 dark:text-emerald-400 dark:hover:bg-emerald-950/40"
+                  className="flex items-center justify-center gap-1.5 rounded-lg border border-forest-200 bg-forest-50/60 py-2.5 text-xs font-bold text-forest-700 transition-colors hover:bg-emerald-100 dark:border-forest-900/30 dark:bg-forest-950/20 dark:text-forest-300 dark:hover:bg-emerald-950/40"
                 >
                   <Compass className="h-3.5 w-3.5" />
                   Explore the climate first — visit Learn
@@ -259,13 +261,13 @@ export default function OnboardingPage() {
 
           {/* STEP 2: LOCATION */}
           {step === 2 && (
-            <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
+            <Card className="border-hairline/60 shadow-xl dark:border-forest-800">
               <CardHeader>
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-forest-50 text-forest-600 dark:bg-forest-950 dark:text-forest-300">
                   <MapPin className="h-5 w-5" />
                 </div>
                 <CardTitle className="text-xl font-bold">Where do you live?</CardTitle>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-ink-muted dark:text-forest-200/60">
                   Carbon emission intensities vary based on your local power grids and climate.
                 </p>
               </CardHeader>
@@ -302,20 +304,20 @@ export default function OnboardingPage() {
 
           {/* STEP 3: LIFESTYLE */}
           {step === 3 && (
-            <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
+            <Card className="border-hairline/60 shadow-xl dark:border-forest-800">
               <CardHeader>
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-forest-50 text-forest-600 dark:bg-forest-950 dark:text-forest-300">
                   <Flame className="h-5 w-5" />
                 </div>
                 <CardTitle className="text-xl font-bold">Tell us about your lifestyle</CardTitle>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-ink-muted dark:text-forest-200/60">
                   These inputs form your initial baseline EcoScore.
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Diet */}
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-800 dark:text-white">
+                  <h4 className="text-sm font-semibold text-ink-soft dark:text-paper">
                     Diet habits
                   </h4>
                   <div
@@ -332,8 +334,8 @@ export default function OnboardingPage() {
                         onClick={() => setDiet(val)}
                         className={`rounded-lg border px-3 py-2.5 text-xs font-medium transition-all text-left ${
                           diet === val
-                            ? "border-emerald-600 bg-emerald-50/50 text-emerald-700 dark:border-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-400"
-                            : "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
+                            ? "border-emerald-600 bg-forest-50/50 text-forest-700 dark:border-emerald-500 dark:bg-forest-950/20 dark:text-forest-300"
+                            : "border-hairline bg-white hover:bg-canvas dark:border-forest-800 dark:bg-forest-900 dark:hover:bg-slate-800"
                         }`}
                       >
                         {val === "high-meat"
@@ -346,7 +348,7 @@ export default function OnboardingPage() {
 
                 {/* Transport */}
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-800 dark:text-white">
+                  <h4 className="text-sm font-semibold text-ink-soft dark:text-paper">
                     Primary transport
                   </h4>
                   <div
@@ -364,8 +366,8 @@ export default function OnboardingPage() {
                           onClick={() => setTransport(val)}
                           className={`rounded-lg border px-3 py-2.5 text-xs font-medium transition-all text-left ${
                             transport === val
-                              ? "border-emerald-600 bg-emerald-50/50 text-emerald-700 dark:border-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-400"
-                              : "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
+                              ? "border-emerald-600 bg-forest-50/50 text-forest-700 dark:border-emerald-500 dark:bg-forest-950/20 dark:text-forest-300"
+                              : "border-hairline bg-white hover:bg-canvas dark:border-forest-800 dark:bg-forest-900 dark:hover:bg-slate-800"
                           }`}
                         >
                           {val === "mixed"
@@ -379,7 +381,7 @@ export default function OnboardingPage() {
 
                 {/* Home */}
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-800 dark:text-white">
+                  <h4 className="text-sm font-semibold text-ink-soft dark:text-paper">
                     Living environment
                   </h4>
                   <div
@@ -396,8 +398,8 @@ export default function OnboardingPage() {
                         onClick={() => setHome(val)}
                         className={`rounded-lg border px-2 py-2.5 text-xs font-medium transition-all text-center ${
                           home === val
-                            ? "border-emerald-600 bg-emerald-50/50 text-emerald-700 dark:border-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-400"
-                            : "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
+                            ? "border-emerald-600 bg-forest-50/50 text-forest-700 dark:border-emerald-500 dark:bg-forest-950/20 dark:text-forest-300"
+                            : "border-hairline bg-white hover:bg-canvas dark:border-forest-800 dark:bg-forest-900 dark:hover:bg-slate-800"
                         }`}
                       >
                         {val.charAt(0).toUpperCase() + val.slice(1)}
@@ -421,13 +423,13 @@ export default function OnboardingPage() {
 
           {/* STEP 4: GOALS */}
           {step === 4 && (
-            <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
+            <Card className="border-hairline/60 shadow-xl dark:border-forest-800">
               <CardHeader>
-                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+                <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-forest-50 text-forest-600 dark:bg-forest-950 dark:text-forest-300">
                   <CheckCircle className="h-5 w-5" />
                 </div>
                 <CardTitle className="text-xl font-bold">Pick your focus goals</CardTitle>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-ink-muted dark:text-forest-200/60">
                   Select between 1 and 3 focus areas you would like to concentrate on.
                 </p>
               </CardHeader>
@@ -446,16 +448,16 @@ export default function OnboardingPage() {
                       onClick={() => handleGoalToggle(key)}
                       className={`flex w-full items-center justify-between rounded-xl border p-4 text-sm font-semibold transition-all ${
                         goals[key]
-                          ? "border-emerald-600 bg-emerald-50/30 text-emerald-700 dark:border-emerald-500 dark:bg-emerald-950/20 dark:text-emerald-400"
-                          : "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900"
+                          ? "border-emerald-600 bg-forest-50/30 text-forest-700 dark:border-emerald-500 dark:bg-forest-950/20 dark:text-forest-300"
+                          : "border-hairline bg-white hover:bg-canvas dark:border-forest-800 dark:bg-forest-900"
                       }`}
                     >
                       <span>{label}</span>
                       <div
                         className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
                           goals[key]
-                            ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-400 dark:bg-emerald-400"
-                            : "border-slate-300 bg-white dark:border-slate-800"
+                            ? "border-emerald-600 bg-forest-600 text-white dark:border-emerald-400 dark:bg-forest-400"
+                            : "border-hairline-strong bg-white dark:border-forest-800"
                         }`}
                       >
                         {goals[key] && (
@@ -486,24 +488,24 @@ export default function OnboardingPage() {
 
           {/* STEP 5: RESULTS SCREEN */}
           {step === 5 && (
-            <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
+            <Card className="border-hairline/60 shadow-xl dark:border-forest-800">
               <CardContent className="py-8 text-center">
                 {isLoading || !ecoScoreResult ? (
                   <div className="space-y-4 py-12">
-                    <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600 dark:border-slate-800 dark:border-t-emerald-400" />
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-hairline border-t-emerald-600 dark:border-forest-800 dark:border-t-emerald-400" />
+                    <p className="text-sm font-medium text-ink-muted dark:text-forest-200/60">
                       Generating initial footprint baseline and scoring...
                     </p>
                   </div>
                 ) : (
                   <>
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-forest-600 dark:bg-forest-950 dark:text-forest-300">
                       <Calendar className="h-7 w-7" />
                     </div>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-forest-600 dark:text-forest-300">
                       Baseline Generated
                     </span>
-                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-ink dark:text-paper">
                       Your EcoScore is
                     </h2>
 
@@ -530,30 +532,30 @@ export default function OnboardingPage() {
                         />
                       </svg>
                       <div className="text-center z-10">
-                        <span className="text-4xl font-extrabold text-slate-900 dark:text-white">
+                        <span className="text-4xl font-extrabold text-ink dark:text-paper">
                           {ecoScoreResult.score}
                         </span>
-                        <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        <div className="text-xs font-semibold text-ink-muted dark:text-forest-200/60">
                           out of 1000
                         </div>
                       </div>
                     </div>
 
-                    <div className="rounded-full bg-slate-100 px-4 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300 inline-block mb-4">
+                    <div className="rounded-full bg-canvas-soft px-4 py-1 text-xs font-semibold text-ink-soft dark:bg-forest-900 dark:text-forest-200/80 inline-block mb-4">
                       Level {ecoScoreResult.level}: {getEcoLevel(ecoScoreResult.score).emoji}{" "}
                       {getEcoLevel(ecoScoreResult.score).name}
                     </div>
 
-                    <p className="mx-auto max-w-sm text-sm leading-relaxed text-slate-600 dark:text-slate-400 mb-6">
+                    <p className="mx-auto max-w-sm text-sm leading-relaxed text-ink-soft dark:text-forest-200/70 mb-6">
                       {ecoScoreResult.explanation}
                     </p>
 
                     {/* Recommendation Card */}
-                    <div className="rounded-xl border border-slate-200 bg-white p-4 text-left dark:border-slate-800 dark:bg-slate-900 mb-6">
-                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                    <div className="rounded-xl border border-hairline bg-white p-4 text-left dark:border-forest-800 dark:bg-forest-900 mb-6">
+                      <span className="text-xs font-bold text-forest-600 dark:text-forest-300">
                         🎯 Recommended Starting Habit
                       </span>
-                      <p className="mt-1 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                      <p className="mt-1 text-xs text-ink-soft dark:text-forest-200/80 font-medium">
                         {getFirstGoalRecommendation()}
                       </p>
                     </div>

@@ -57,27 +57,27 @@ export default function JournalPage() {
 
   if (!dbUser) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-slate-950">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-600 dark:border-slate-800 dark:border-t-emerald-400" />
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-forest-950">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-hairline border-t-emerald-600 dark:border-forest-800 dark:border-t-emerald-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-16 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-canvas pb-16 text-ink dark:bg-forest-950 dark:text-forest-50">
       <AppNav userName={dbUser.profile.name} onSignOut={handleSignOut} />
 
       <main className="mx-auto max-w-2xl space-y-6 px-4 py-8">
         {/* Hero */}
         <div className="text-center">
-          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/60 bg-emerald-50/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:border-emerald-900/30 dark:bg-emerald-950/30 dark:text-emerald-400">
+          <span className="inline-flex items-center gap-1 rounded-full border border-forest-200/60 bg-forest-50/80 px-3 py-1 text-xs font-bold uppercase tracking-wider text-forest-700 dark:border-forest-900/30 dark:bg-forest-950/30 dark:text-forest-300">
             <BookHeart className="h-3.5 w-3.5" aria-hidden="true" />
             Reflection Journal
           </span>
-          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+          <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-ink dark:text-paper sm:text-4xl">
             How does caring for the planet feel today?
           </h1>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink-soft dark:text-forest-200/70">
             Climate action is emotional. This is a quiet space to check in with yourself — your
             hopes, your pride, even your worry. No scores here, just you.
           </p>
@@ -88,7 +88,7 @@ export default function JournalPage() {
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <fieldset>
-                <legend className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <legend className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-muted dark:text-forest-200/60">
                   How are you feeling?
                 </legend>
                 <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Mood">
@@ -101,8 +101,8 @@ export default function JournalPage() {
                       onClick={() => setMood(m.value)}
                       className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition-all ${
                         mood === m.value
-                          ? "border-emerald-400 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
-                          : "border-slate-200 text-slate-500 hover:border-slate-300 dark:border-slate-700 dark:text-slate-400"
+                          ? "border-emerald-400 bg-forest-50 text-forest-700 dark:border-emerald-600 dark:bg-forest-950/40 dark:text-forest-300"
+                          : "border-hairline text-ink-muted hover:border-hairline-strong dark:border-forest-800 dark:text-ink-muted"
                       }`}
                     >
                       <span aria-hidden="true">{m.emoji}</span>
@@ -123,13 +123,13 @@ export default function JournalPage() {
                   rows={3}
                   maxLength={500}
                   placeholder="A few words about your climate feelings, a win, a worry, a hope..."
-                  className="w-full resize-none rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  className="w-full resize-none rounded-xl border border-hairline bg-white p-3 text-sm text-ink placeholder:text-ink-muted focus:border-emerald-400 focus:outline-none dark:border-forest-800 dark:bg-forest-900 dark:text-forest-50"
                 />
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-[10px] text-slate-400">{note.length}/500</span>
+                  <span className="text-[10px] text-ink-muted">{note.length}/500</span>
                   {error && <span className="text-[10px] font-bold text-red-500">{error}</span>}
                   {success && (
-                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="text-[10px] font-bold text-forest-600 dark:text-forest-300">
                       Saved 🌿
                     </span>
                   )}
@@ -152,21 +152,21 @@ export default function JournalPage() {
         {/* Past reflections */}
         {entries.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-sm font-bold text-slate-500 dark:text-slate-400">
+            <h2 className="text-sm font-bold text-ink-muted dark:text-forest-200/60">
               Your reflections
             </h2>
             {entries.map((entry) => (
               <Card key={entry.id} className="rounded-xl">
                 <CardContent className="p-4">
                   <div className="mb-1 flex items-center justify-between">
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                    <span className="rounded-full bg-canvas-soft px-2 py-0.5 text-[10px] font-bold text-ink-soft dark:bg-forest-900 dark:text-ink-muted">
                       {MOOD_LABEL[entry.mood]}
                     </span>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-ink-muted">
                       {new Date(entry.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                  <p className="text-sm leading-relaxed text-ink-soft dark:text-forest-200/80">
                     {entry.note}
                   </p>
                 </CardContent>

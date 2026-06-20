@@ -34,7 +34,7 @@ const BIOME_PRESENTATION: Record<number, BiomePresentation> = {
     statusEmoji: "🌋☠️",
     biomeName: "Seedling Globe",
     description: "Your ecosystem is starting its journey. Feed it with green actions today!",
-    biomeColorClass: "from-amber-100 to-emerald-50 dark:from-slate-900 dark:to-emerald-950/20",
+    biomeColorClass: "from-amber-100 to-forest-50 dark:from-forest-900 dark:to-forest-950/20",
     textColorClass: "text-amber-800 dark:text-amber-400",
   },
   2: {
@@ -43,8 +43,8 @@ const BIOME_PRESENTATION: Record<number, BiomePresentation> = {
     biomeName: "Misty Valley",
     description:
       "A little hazy, but a young shoot has broken the soil. Keep going to clear the mist!",
-    biomeColorClass: "from-slate-100 to-amber-50 dark:from-slate-950 dark:to-slate-900",
-    textColorClass: "text-slate-700 dark:text-slate-400",
+    biomeColorClass: "from-canvas-soft to-amber-50 dark:from-forest-950 dark:to-forest-900",
+    textColorClass: "text-ink-soft dark:text-ink-muted",
   },
   3: {
     statusText: "Budding Meadow",
@@ -52,8 +52,8 @@ const BIOME_PRESENTATION: Record<number, BiomePresentation> = {
     biomeName: "Whispering Grassland",
     description: "Fresh shoots are spreading. The air is clearing up as you log actions.",
     biomeColorClass:
-      "from-emerald-50 via-slate-50 to-amber-50 dark:from-slate-900 dark:via-emerald-950/10 dark:to-slate-900",
-    textColorClass: "text-emerald-700 dark:text-emerald-400",
+      "from-forest-50 via-canvas to-amber-50 dark:from-slate-900 dark:via-forest-950/10 dark:to-forest-900",
+    textColorClass: "text-forest-700 dark:text-forest-300",
   },
   4: {
     statusText: "Thriving Canopy",
@@ -61,8 +61,8 @@ const BIOME_PRESENTATION: Record<number, BiomePresentation> = {
     biomeName: "Emerald Sanctuary",
     description: "Your environment is lush and resilient! Diverse wildlife is returning.",
     biomeColorClass:
-      "from-emerald-100 via-teal-50 to-green-100 dark:from-emerald-950/40 dark:via-slate-900 dark:to-teal-950/20",
-    textColorClass: "text-emerald-800 dark:text-emerald-400",
+      "from-forest-100 via-teal-50 to-green-100 dark:from-forest-950/40 dark:via-forest-900 dark:to-teal-950/20",
+    textColorClass: "text-forest-800 dark:text-forest-300",
   },
   5: {
     statusText: "Climate Champion World",
@@ -71,7 +71,7 @@ const BIOME_PRESENTATION: Record<number, BiomePresentation> = {
     description:
       "You have unlocked the ultimate carbon neutrality state! A model ecosystem of harmony.",
     biomeColorClass:
-      "from-purple-100 via-emerald-50 to-teal-100 dark:from-indigo-950/40 dark:via-slate-900 dark:to-teal-950/20",
+      "from-purple-100 via-forest-50 to-teal-100 dark:from-indigo-950/40 dark:via-forest-900 dark:to-teal-950/20",
     textColorClass: "text-purple-800 dark:text-purple-400",
   },
 };
@@ -104,7 +104,7 @@ export function TerraBiome({
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-slate-200/60 dark:border-slate-800/80 p-6 bg-gradient-to-b ${biomeColorClass} shadow-sm transition-all duration-700 hover:shadow-md`}
+      className={`relative overflow-hidden rounded-2xl border border-hairline dark:border-forest-800/80 p-6 bg-gradient-to-b ${biomeColorClass} shadow-sm transition-all duration-700 hover:shadow-md`}
     >
       {/* Animations are defined once globally in globals.css (.animate-eco-*). */}
 
@@ -113,7 +113,7 @@ export function TerraBiome({
         <div className="relative flex h-44 w-44 shrink-0 items-center justify-center">
           {/* Outer Atmosphere Orbiting Cloud */}
           <div className="animate-eco-orbit pointer-events-none absolute h-full w-full">
-            <div className="flex items-center gap-1 rounded-full border border-slate-100 bg-white/95 px-2 py-1 text-[9px] font-bold shadow-xs dark:border-slate-700 dark:bg-slate-800/95">
+            <div className="flex items-center gap-1 rounded-full border border-hairline bg-white/95 px-2 py-1 text-[9px] font-bold shadow-xs dark:border-forest-800 dark:bg-forest-900/95">
               <Cloud className="h-2.5 w-2.5 text-sky-400" />
               <span>CO₂ Saved</span>
             </div>
@@ -123,13 +123,13 @@ export function TerraBiome({
           <div
             className={`absolute h-36 w-36 rounded-full transition-all duration-700 ${
               hasStreakGlow
-                ? "animate-eco-glow bg-emerald-500/10 dark:bg-emerald-400/5"
+                ? "animate-eco-glow bg-emerald-500/10 dark:bg-forest-400/5"
                 : "bg-transparent"
             }`}
           />
 
           {/* The Core Planet Circle */}
-          <div className="animate-eco-float relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-slate-100 shadow-inner dark:border-slate-800 dark:bg-slate-950">
+          <div className="animate-eco-float relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-canvas-soft shadow-inner dark:border-forest-800 dark:bg-forest-950">
             {/* The Earth Image */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -140,7 +140,7 @@ export function TerraBiome({
 
             {/* Glowing Haze Overlay if savings are low */}
             {percent < 30 && (
-              <div className="pointer-events-none absolute inset-0 bg-slate-900/10 backdrop-blur-[0.5px] transition-all dark:bg-slate-950/15" />
+              <div className="pointer-events-none absolute inset-0 bg-forest-950/15 backdrop-blur-[0.5px] transition-all dark:bg-forest-950/15" />
             )}
           </div>
 
@@ -164,7 +164,7 @@ export function TerraBiome({
         <div className="flex-1 space-y-3 text-center md:text-left">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
             <span
-              className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider rounded-full bg-white/80 dark:bg-slate-800/80 px-3 py-1 border border-slate-200/50 dark:border-slate-700/50 ${textColorClass}`}
+              className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider rounded-full bg-white/80 dark:bg-forest-900/80 px-3 py-1 border border-hairline/50 dark:border-forest-800/50 ${textColorClass}`}
             >
               <span>{statusEmoji}</span>
               <span>{statusText}</span>
@@ -177,27 +177,27 @@ export function TerraBiome({
           </div>
 
           <div>
-            <h3 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <h3 className="text-xl font-extrabold tracking-tight text-ink dark:text-paper">
               Level {level} · {biomeName}
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md leading-relaxed">
+            <p className="text-xs text-ink-muted dark:text-forest-200/60 mt-1 max-w-md leading-relaxed">
               {description}
             </p>
           </div>
 
           {/* Progress Metrics summary bar */}
           <div className="pt-2">
-            <div className="flex justify-between items-center text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
+            <div className="flex justify-between items-center text-[11px] font-bold text-ink-soft dark:text-forest-200/70 mb-1">
               <span>Ecosystem Vitality</span>
               <span>{percent}%</span>
             </div>
-            <div className="h-2 w-full bg-slate-200/60 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-hairline/60 dark:bg-forest-900 rounded-full overflow-hidden">
               <div
-                className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full transition-all duration-1000"
+                className="h-full bg-emerald-500 dark:bg-forest-400 rounded-full transition-all duration-1000"
                 style={{ width: `${percent}%` }}
               />
             </div>
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+            <p className="text-[10px] text-ink-muted dark:text-ink-muted mt-1">
               Based on monthly savings of {carbonSaved.toFixed(1)}kg / {monthlyGoal}kg CO₂. Biome
               score: {ecoScore} pts.
             </p>

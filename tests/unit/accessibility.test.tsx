@@ -116,7 +116,7 @@ describe("accessibility checks with jest-axe", () => {
 
     expect(screen.getByRole("heading", { name: /create your account/i })).toBeInTheDocument();
     expect(screen.getByLabelText("Full Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email Address")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /create account/i })).toBeEnabled();
     expect((await axe(container)).violations).toEqual([]);
@@ -132,7 +132,7 @@ describe("accessibility checks with jest-axe", () => {
   });
 
   it("Pill renders as static text (not a focusable element) with no axe violations", async () => {
-    const { container } = render(<Pill tone="emerald">Level 3</Pill>);
+    const { container } = render(<Pill tone="forest">Level 3</Pill>);
     expect(screen.getByText("Level 3")).toBeInTheDocument();
     expect((await axe(container)).violations).toEqual([]);
   });

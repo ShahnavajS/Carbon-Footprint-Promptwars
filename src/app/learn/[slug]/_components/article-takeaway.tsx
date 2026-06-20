@@ -54,7 +54,7 @@ export function ArticleTakeaway({ slug }: { slug: string }) {
     // Subtle skeleton — never a blank gap.
     return (
       <div
-        className="mt-8 animate-pulse rounded-2xl border border-emerald-100 bg-emerald-50/20 p-5 dark:border-emerald-900/30 dark:bg-emerald-950/5"
+        className="mt-8 animate-pulse rounded-2xl border border-forest-100 bg-forest-50/20 p-5 dark:border-forest-900/30 dark:bg-forest-950/5"
         aria-hidden="true"
       >
         <div className="h-3 w-24 rounded bg-emerald-200/40 dark:bg-emerald-900/30" />
@@ -64,17 +64,17 @@ export function ArticleTakeaway({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="mt-8 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/60 to-teal-50/40 p-5 dark:border-emerald-900/30 dark:from-emerald-950/20 dark:to-teal-950/10">
-      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+    <div className="mt-8 rounded-2xl border border-forest-100 bg-gradient-to-br from-forest-50/60 to-teal-50/40 p-5 dark:border-forest-900/30 dark:from-forest-950/20 dark:to-teal-950/10">
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-forest-600 dark:text-forest-300">
         <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
         Why this matters for you
         {!personalized && (
-          <span className="ml-1 rounded-full bg-slate-200/60 px-1.5 py-0.5 text-[8px] text-slate-500 dark:bg-slate-700/60 dark:text-slate-400">
+          <span className="ml-1 rounded-full bg-hairline/60 px-1.5 py-0.5 text-[8px] text-ink-muted dark:bg-forest-800/60 dark:text-ink-muted">
             general
           </span>
         )}
       </span>
-      <p className="mt-1.5 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+      <p className="mt-1.5 text-sm leading-relaxed text-ink-soft dark:text-forest-200/80">
         {takeaway}
       </p>
     </div>

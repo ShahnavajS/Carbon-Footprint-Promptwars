@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { useAuthActions } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Leaf } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { SectionLabel } from "@/components/ui/section-label";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -33,7 +34,6 @@ export default function SignupPage() {
       setNameError("Name is required");
       isValid = false;
     }
-
     if (!email) {
       setEmailError("Email is required");
       isValid = false;
@@ -41,7 +41,6 @@ export default function SignupPage() {
       setEmailError("Please enter a valid email address");
       isValid = false;
     }
-
     if (!password) {
       setPasswordError("Password is required");
       isValid = false;
@@ -49,14 +48,12 @@ export default function SignupPage() {
       setPasswordError("Password must be at least 6 characters");
       isValid = false;
     }
-
     return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-
     try {
       await signUpWithEmail(email, password, name);
       router.push("/onboarding");
@@ -77,94 +74,84 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-emerald-50 via-white to-teal-50 px-4 py-12 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950">
-      <div className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-canvas px-4 py-12 dark:bg-forest-950">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-br from-moss-50 via-canvas to-forest-100 dark:from-forest-900 dark:via-forest-950 dark:to-forest-900"
+      />
+
+      <div className="relative w-full max-w-md">
         <div className="mb-8 text-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400"
+            className="inline-flex items-center gap-2 font-display text-2xl font-medium tracking-tight text-forest-700 dark:text-forest-200"
           >
-            <Leaf className="h-8 w-8" />
+            <span aria-hidden="true" className="text-2xl">
+              🌱
+            </span>
             <span>EcoScore</span>
           </Link>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="mt-5 font-display text-3xl font-medium tracking-tight text-ink dark:text-paper">
             Create your account
           </h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-2 text-sm text-ink-soft dark:text-forest-200/70">
             Start measuring and reducing your carbon footprint today.
           </p>
         </div>
 
-        <Card className="border-slate-200/60 shadow-xl dark:border-slate-800">
-          <CardHeader>
-            <CardTitle className="text-xl">Sign Up</CardTitle>
-            <CardDescription>Enter details to build your EcoScore profile.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {errorMsg && (
+        <Card className="rounded-lg p-8">
+          <CardContent className="p-0">
+            <Eyebrow tone="clay" className="mb-5">
+              New here
+            </Eyebrow>
+
+            {(errorMsg || (authError && !errorMsg)) && (
               <div
                 role="alert"
                 aria-live="assertive"
-                className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/35 dark:text-red-400"
+                className="mb-5 rounded-xs border border-clay-200 bg-clay-50 p-3 text-sm font-medium text-clay-600 dark:border-clay-900/40 dark:bg-clay-950/30 dark:text-clay-300"
               >
-                {errorMsg}
-              </div>
-            )}
-            {authError && !errorMsg && (
-              <div
-                role="alert"
-                aria-live="assertive"
-                className="mb-4 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/35 dark:text-red-400"
-              >
-                {authError}
+                {errorMsg || authError}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="John Doe"
-                  label="Full Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  error={nameError}
-                  disabled={isLoading}
-                  autoComplete="name"
-                  required
-                />
-              </div>
-
-              <div>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  label="Email Address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  error={emailError}
-                  disabled={isLoading}
-                  autoComplete="email"
-                  required
-                />
-              </div>
-
-              <div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  label="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  error={passwordError}
-                  disabled={isLoading}
-                  autoComplete="new-password"
-                  required
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Input
+                id="name"
+                type="text"
+                placeholder="Your name"
+                label="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                error={nameError}
+                disabled={isLoading}
+                autoComplete="name"
+                required
+              />
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={emailError}
+                disabled={isLoading}
+                autoComplete="email"
+                required
+              />
+              <Input
+                id="password"
+                type="password"
+                placeholder="At least 6 characters"
+                label="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={passwordError}
+                disabled={isLoading}
+                autoComplete="new-password"
+                required
+              />
 
               <Button type="submit" className="w-full" isLoading={isLoading}>
                 Create Account
@@ -173,11 +160,11 @@ export default function SignupPage() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                <div className="w-full border-t border-hairline" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-slate-500 dark:bg-slate-900 dark:text-slate-400">
-                  Or sign up with
+              <div className="relative flex justify-center">
+                <span className="bg-paper px-3 dark:bg-forest-900">
+                  <SectionLabel>or continue with</SectionLabel>
                 </span>
               </div>
             </div>
@@ -210,11 +197,11 @@ export default function SignupPage() {
               Google
             </Button>
 
-            <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-6 text-center text-xs text-ink-soft dark:text-forest-200/70">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300"
+                className="font-medium text-forest-700 underline-offset-4 hover:underline dark:text-forest-300"
               >
                 Sign In
               </Link>

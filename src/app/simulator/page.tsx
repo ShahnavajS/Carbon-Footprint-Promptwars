@@ -25,9 +25,9 @@ const CATEGORY_STYLES: Record<SimulatorCategory, { bg: string; badge: string; ic
     icon: "🥗",
   },
   energy: {
-    bg: "bg-emerald-50/60 dark:bg-emerald-950/20",
+    bg: "bg-forest-50/60 dark:bg-forest-950/20",
     badge:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-emerald-200/50",
+      "bg-emerald-100 text-forest-700 dark:bg-emerald-900/40 dark:text-emerald-300 border border-forest-200/50",
     icon: "⚡",
   },
 };
@@ -53,16 +53,16 @@ export default function SimulatorPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20">
+    <div className="min-h-screen bg-canvas dark:bg-forest-950 text-ink dark:text-forest-50 pb-20">
       <AppNav userName={dbUser?.profile.name} onSignOut={handleSignOut} />
 
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 space-y-8">
         {/* Hero */}
         <div className="text-center space-y-3">
-          <h1 className="text-3xl font-extrabold text-slate-950 dark:text-white">
+          <h1 className="text-3xl font-extrabold text-ink dark:text-paper">
             What if you changed one habit?
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm text-ink-muted dark:text-forest-200/60 max-w-xl mx-auto leading-relaxed">
             Select a sustainability scenario below and run a simulation. Watch how your carbon
             savings, EcoScore, and money saved compile over a year—and preview how it heals your
             Terra Biome.
@@ -82,8 +82,8 @@ export default function SimulatorPage() {
               onClick={() => setActiveCategory(cat)}
               className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all capitalize ${
                 activeCategory === cat
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "bg-white text-slate-650 border border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800"
+                  ? "bg-forest-600 text-white shadow-sm"
+                  : "bg-white text-ink-soft border border-hairline hover:bg-canvas dark:bg-forest-900 dark:text-forest-200/80 dark:border-forest-800"
               }`}
             >
               {cat === "all"
@@ -111,8 +111,8 @@ export default function SimulatorPage() {
                   aria-pressed={isSelected}
                   className={`text-left rounded-2xl p-5 border-2 transition-all cursor-pointer ${
                     isSelected
-                      ? "border-emerald-500 bg-emerald-50/45 shadow-md dark:bg-emerald-950/20 dark:border-emerald-400"
-                      : `border-transparent ${style.bg} hover:border-slate-200 dark:hover:border-slate-850`
+                      ? "border-emerald-500 bg-forest-50/45 shadow-md dark:bg-forest-950/20 dark:border-emerald-400"
+                      : `border-transparent ${style.bg} hover:border-hairline dark:hover:border-slate-850`
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
@@ -123,13 +123,13 @@ export default function SimulatorPage() {
                       {scenario.category}
                     </span>
                   </div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-1">
+                  <h3 className="font-bold text-sm text-ink dark:text-paper mb-1">
                     {scenario.label}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-ink-muted dark:text-forest-200/60 leading-relaxed">
                     {scenario.description}
                   </p>
-                  <div className="mt-4 flex items-center gap-2 text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
+                  <div className="mt-4 flex items-center gap-2 text-[10px] font-bold text-forest-700 dark:text-forest-300">
                     <Leaf className="h-3.5 w-3.5" />-{scenario.carbonSavedPerOccurrence}kg CO₂ per
                     action
                   </div>
@@ -173,13 +173,13 @@ export default function SimulatorPage() {
             aria-label="Simulation results"
             className="space-y-8 animate-in fade-in duration-500"
           >
-            <hr className="border-slate-200/60 dark:border-slate-800" />
+            <hr className="border-hairline dark:border-forest-800" />
 
             <div className="text-center">
-              <h2 className="text-xl font-extrabold text-slate-950 dark:text-white">
+              <h2 className="text-xl font-extrabold text-ink dark:text-paper">
                 Ecosystem Forecast Report
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-ink-muted mt-1">
                 Projected cumulative stats if this ritual is kept for a year.
               </p>
             </div>
@@ -187,8 +187,8 @@ export default function SimulatorPage() {
             {/* Visual Biome Forecast Preview */}
             {dbUser && (
               <div className="max-w-xl mx-auto space-y-3">
-                <h3 className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest text-center flex items-center justify-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+                <h3 className="text-[10px] font-extrabold text-ink-muted uppercase tracking-widest text-center flex items-center justify-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-forest-600" />
                   <span>Projected Biome Health (1 Year)</span>
                 </h3>
                 <TerraBiome
@@ -204,19 +204,19 @@ export default function SimulatorPage() {
             {/* Metric Cards Grid */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {/* CO2 Saved */}
-              <Card className="border-emerald-100 bg-emerald-50/30 dark:border-emerald-900/30 dark:bg-emerald-950/10 shadow-sm rounded-2xl">
+              <Card className="border-forest-100 bg-forest-50/30 dark:border-forest-900/30 dark:bg-forest-950/10 shadow-sm rounded-2xl">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-2 mb-2">
-                    <Leaf className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                    <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">
+                    <Leaf className="h-5 w-5 text-forest-600 dark:text-forest-300" />
+                    <span className="text-xs font-semibold text-forest-700 dark:text-forest-300 uppercase tracking-wide">
                       CO₂ Saved/Year
                     </span>
                   </div>
-                  <p className="text-3xl font-extrabold text-emerald-700 dark:text-emerald-300">
+                  <p className="text-3xl font-extrabold text-forest-700 dark:text-emerald-300">
                     {result.annualCarbonSaved}
                     <span className="text-base font-semibold ml-1">kg</span>
                   </p>
-                  <p className="text-[10px] text-emerald-600/80 dark:text-emerald-400/70 mt-1 font-bold">
+                  <p className="text-[10px] text-forest-600/80 dark:text-forest-300/70 mt-1 font-bold">
                     {result.monthlyCarbonSaved} kg / month
                   </p>
                 </CardContent>
@@ -282,16 +282,16 @@ export default function SimulatorPage() {
 
             {/* AI Narrative Analysis */}
             {result.aiExplanation && (
-              <Card className="border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm rounded-2xl overflow-hidden">
-                <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-950/20">
-                  <CardTitle className="text-xs font-bold flex items-center gap-2 uppercase tracking-widest text-slate-500">
-                    <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <Card className="border-hairline dark:border-forest-800 bg-paper dark:bg-forest-900 shadow-sm rounded-2xl overflow-hidden">
+                <CardHeader className="pb-2 bg-canvas-soft dark:bg-forest-950/20">
+                  <CardTitle className="text-xs font-bold flex items-center gap-2 uppercase tracking-widest text-ink-muted">
+                    <Sparkles className="h-4 w-4 text-forest-600 dark:text-forest-300" />
                     AI Forecaster Insight
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">
                   <p
-                    className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium"
+                    className="text-sm text-ink-soft dark:text-forest-200/80 leading-relaxed font-medium"
                     aria-live="polite"
                   >
                     &ldquo;{result.aiExplanation}&rdquo;
@@ -304,9 +304,9 @@ export default function SimulatorPage() {
 
         {/* Empty state visual */}
         {!selectedScenario && !result && (
-          <div className="text-center py-16 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl max-w-md mx-auto space-y-4">
+          <div className="text-center py-16 border-2 border-dashed border-hairline dark:border-forest-800 rounded-3xl max-w-md mx-auto space-y-4">
             <svg
-              className="mx-auto h-16 w-16 text-slate-350 dark:text-slate-700 animate-pulse"
+              className="mx-auto h-16 w-16 text-ink-muted dark:text-ink-soft animate-pulse"
               viewBox="0 0 64 64"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -327,10 +327,10 @@ export default function SimulatorPage() {
               />
             </svg>
             <div className="space-y-1">
-              <h4 className="font-bold text-sm text-slate-750 dark:text-slate-300">
+              <h4 className="font-bold text-sm text-ink-soft dark:text-forest-200/80">
                 Awaiting Forecast Parameters
               </h4>
-              <p className="text-xs text-slate-400 dark:text-slate-500 max-w-xs mx-auto">
+              <p className="text-xs text-ink-muted dark:text-ink-muted max-w-xs mx-auto">
                 Select one of the daily habit scenarios above and project how your action ripples
                 across the earth.
               </p>

@@ -1,14 +1,18 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-type ProgressTone = "emerald" | "amber" | "blue" | "purple" | "stakes";
+/**
+ * Progress tones mapped to the forest/amber/clay/stakes palette.
+ * "stakes" is the gradient used by the consequence/impact surfaces.
+ */
+type ProgressTone = "forest" | "amber" | "clay" | "moss" | "stakes";
 
 const FILL_CLASSES: Record<ProgressTone, string> = {
-  emerald: "bg-emerald-600 dark:bg-emerald-400",
+  forest: "bg-forest-600 dark:bg-forest-400",
   amber: "bg-amber-500 dark:bg-amber-400",
-  blue: "bg-blue-500 dark:bg-blue-400",
-  purple: "bg-purple-500 dark:bg-purple-400",
-  stakes: "bg-gradient-to-r from-emerald-500 via-amber-500 to-orange-500",
+  clay: "bg-clay-400 dark:bg-clay-300",
+  moss: "bg-moss-400 dark:bg-moss-300",
+  stakes: "bg-gradient-to-r from-forest-500 via-amber-500 to-clay-400",
 };
 
 interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -24,7 +28,7 @@ interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
  * Used for streak/challenge/level/goal progress throughout the app.
  */
 export const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
-  ({ value, tone = "emerald", trackClassName, className, ...props }, ref) => {
+  ({ value, tone = "forest", trackClassName, className, ...props }, ref) => {
     const clamped = Math.min(100, Math.max(0, Math.round(value * 100)));
     return (
       <div
@@ -34,7 +38,7 @@ export const ProgressBar = React.forwardRef<HTMLDivElement, ProgressBarProps>(
         aria-valuemin={0}
         aria-valuemax={100}
         className={cn(
-          "h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800",
+          "h-1.5 w-full overflow-hidden rounded-full bg-canvas-soft dark:bg-forest-900",
           trackClassName,
           className
         )}

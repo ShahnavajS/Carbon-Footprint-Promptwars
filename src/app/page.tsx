@@ -1,8 +1,10 @@
 import * as React from "react";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { CardMedia } from "@/components/ui/card";
+import { Eyebrow } from "@/components/ui/eyebrow";
+import { SectionLabel } from "@/components/ui/section-label";
 import { HeroCtas } from "./_components/hero-ctas";
-import { Leaf, Sparkles, Flame, Compass, Heart } from "lucide-react";
+import { Compass, Heart, Sparkles, Flame, ArrowRight } from "lucide-react";
 
 const features = [
   {
@@ -33,24 +35,29 @@ const features = [
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-amber-50/20 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-30 border-b border-slate-200/40 bg-white/60 backdrop-blur-md dark:border-slate-900/60 dark:bg-slate-950/60">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-2 font-bold text-emerald-600 dark:text-emerald-400">
-            <Leaf className="h-6 w-6" />
-            <span className="tracking-tight text-lg">EcoScore</span>
-          </div>
+    <div className="flex min-h-screen flex-col bg-canvas text-ink dark:bg-forest-950 dark:text-forest-50">
+      {/* Navigation — minimal, editorial */}
+      <nav className="sticky top-0 z-30 border-b border-hairline bg-canvas/85 backdrop-blur-md dark:border-forest-800 dark:bg-forest-950/80">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <Link
+            href="/"
+            className="flex items-center gap-2 font-display text-lg font-medium tracking-tight text-forest-700 dark:text-forest-200"
+          >
+            <span aria-hidden="true" className="text-xl">
+              🌱
+            </span>
+            <span>EcoScore</span>
+          </Link>
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="text-sm font-semibold hover:text-emerald-600 transition-colors"
+              className="text-sm font-medium text-ink-soft underline-offset-4 hover:text-forest-700 hover:underline dark:text-forest-200/80 dark:hover:text-forest-100"
             >
               Sign In
             </Link>
             <Link
               href="/signup"
-              className="rounded-full bg-emerald-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all dark:bg-emerald-500 dark:hover:bg-emerald-400"
+              className="rounded-pill bg-forest-700 px-5 py-2 text-sm font-medium text-paper transition-colors hover:bg-forest-800 dark:bg-forest-600 dark:hover:bg-forest-500"
             >
               Get Started
             </Link>
@@ -58,135 +65,136 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* ── HERO — one monumental Fraunces headline, one media moment ── */}
       <section
         aria-labelledby="hero-heading"
-        className="relative flex flex-col items-center justify-center overflow-hidden px-4 py-16 text-center lg:py-24"
+        className="relative overflow-hidden px-4 pb-20 pt-20 lg:pt-28"
       >
-        <div className="absolute inset-0 bg-radial-from-t from-emerald-100/30 via-transparent to-transparent dark:from-emerald-950/10 pointer-events-none" />
+        <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-3xl space-y-7 text-center">
+            <Eyebrow icon="🌱">A New Way to Care for the Earth</Eyebrow>
 
-        <div className="relative z-10 max-w-4xl mx-auto space-y-6">
-          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/60 bg-emerald-50/80 px-3 py-1 text-xs font-bold text-emerald-700 dark:border-emerald-900/30 dark:bg-emerald-950/30 dark:text-emerald-400 uppercase tracking-wider">
-            🌱 A New Way to Care for the Earth
-          </span>
-
-          <h1
-            id="hero-heading"
-            className="text-4xl font-extrabold tracking-tight text-slate-950 sm:text-6xl dark:text-white max-w-3xl mx-auto leading-tight"
-          >
-            Small choices today.
-            <br />
-            <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400">
-              A healthier planet tomorrow.
-            </span>
-          </h1>
-
-          <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-            EcoScore makes personal climate action a narrative journey of hope and growth. Nurture
-            your virtual Terra Biome, complete daily rituals, and connect emotionally with the
-            impact of your daily choices.
-          </p>
-
-          <HeroCtas />
-
-          {/* Awareness stat band — grounds the mission in a real, sourced fact */}
-          <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-2xl border border-emerald-100 bg-white/60 px-6 py-4 text-center backdrop-blur-sm dark:border-emerald-900/30 dark:bg-slate-900/40">
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              <span className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
-                420+ ppm
-              </span>{" "}
-              CO₂ in our air — the highest in 800,000 years.
-            </p>
-            <span className="hidden h-4 w-px bg-slate-200 dark:bg-slate-700 sm:inline-block" />
-            <Link
-              href="/learn"
-              className="text-xs font-bold text-emerald-600 hover:underline dark:text-emerald-400"
+            <h1
+              id="hero-heading"
+              className="font-display text-5xl font-medium leading-[1.05] tracking-tight text-ink sm:text-7xl dark:text-paper"
             >
-              Understand why →
-            </Link>
-          </div>
-        </div>
+              Small choices today.
+              <br />
+              <span className="text-forest-600 dark:text-forest-300">
+                A healthier planet tomorrow.
+              </span>
+            </h1>
 
-        {/* Hero Illustration */}
-        <div className="relative mt-12 w-full max-w-3xl px-4 animate-float">
-          <div className="absolute inset-0 -z-10 bg-radial-gradient from-emerald-400/20 to-transparent blur-3xl rounded-full" />
-          <img
-            src="/illustrations/hero_planet.png"
-            alt="Illustrative floating miniature green planet being nurtured by people"
-            className="mx-auto rounded-3xl border border-slate-200/50 shadow-2xl dark:border-slate-800/80 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xs max-h-[380px] object-contain"
-          />
+            <p className="mx-auto max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg dark:text-forest-200/80">
+              EcoScore makes personal climate action a narrative journey of hope and growth. Nurture
+              your virtual Terra Biome, complete daily rituals, and connect emotionally with the
+              impact of your daily choices.
+            </p>
+
+            <HeroCtas />
+          </div>
+
+          {/* The one media moment — hero planet in a 22px rounded card */}
+          <div className="relative mx-auto mt-16 w-full max-w-3xl">
+            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-forest-200/30 to-clay-200/20 blur-3xl dark:from-forest-500/10 dark:to-clay-500/5" />
+            <CardMedia>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/illustrations/hero_planet.png"
+                alt="Illustrative floating miniature green planet being nurtured by people"
+                className="mx-auto max-h-[420px] w-full object-cover"
+              />
+            </CardMedia>
+          </div>
+
+          {/* Awareness stat band — mono label, sourced fact */}
+          <div className="mx-auto mt-12 flex max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-3 border-y border-hairline py-5 text-center">
+            <div className="flex items-baseline gap-2">
+              <span className="font-mono text-2xl font-medium text-forest-700 dark:text-forest-300">
+                420+
+              </span>
+              <span className="mono-label text-ink-muted dark:text-forest-200/60">PPM CO₂</span>
+            </div>
+            <span className="hidden h-5 w-px bg-hairline-strong sm:inline-block" />
+            <p className="text-sm text-ink-soft dark:text-forest-200/70">
+              The highest in 800,000 years.{" "}
+              <Link
+                href="/learn"
+                className="font-medium text-forest-700 underline-offset-4 hover:underline dark:text-forest-300"
+              >
+                Understand why →
+              </Link>
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Before / After Concept Section */}
-      <section className="mx-auto w-full max-w-5xl px-4 py-16 space-y-10">
-        <div className="text-center space-y-3">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
-            Transforming tracking into meaning
-          </h2>
-          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-            Traditional carbon trackers feel like auditing software. EcoScore turns climate metrics
-            into a living story.
-          </p>
-        </div>
+      {/* ── BEFORE / AFTER — contrasting surfaces, not matching cards ── */}
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-5xl space-y-10">
+          <div className="space-y-3 text-center">
+            <SectionLabel>The difference</SectionLabel>
+            <h2 className="font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl dark:text-paper">
+              Transforming tracking into meaning
+            </h2>
+            <p className="mx-auto max-w-xl text-sm text-ink-soft dark:text-forest-200/70">
+              Traditional carbon trackers feel like auditing software. EcoScore turns climate
+              metrics into a living story.
+            </p>
+          </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
-          {/* Before */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 shadow-sm opacity-85">
-            <h3 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <span>❌ The Old Way</span>
-            </h3>
-            <div className="space-y-4">
-              <div className="h-24 rounded-xl bg-slate-50 border border-slate-200 p-4 dark:bg-slate-950/40 dark:border-slate-850 flex flex-col justify-center">
-                <span className="text-xs font-bold text-slate-400">Carbon Budget Remaining</span>
-                <span className="text-2xl font-extrabold text-slate-500">421.2 kg CO₂</span>
+          <div className="grid gap-px overflow-hidden rounded-lg border border-hairline md:grid-cols-2">
+            {/* Before — muted stone surface */}
+            <div className="bg-canvas-soft p-8 dark:bg-forest-900/40">
+              <SectionLabel className="mb-5 text-ink-muted">❌ The old way</SectionLabel>
+              <div className="mb-5 border border-hairline bg-paper p-5 dark:border-forest-800 dark:bg-forest-950">
+                <span className="mono-label text-ink-muted">Carbon Budget Remaining</span>
+                <p className="mt-1 font-display text-3xl font-medium text-ink-muted">
+                  421.2 kg CO₂
+                </p>
               </div>
-              <ul className="space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-slate-350" />
+              <ul className="space-y-3 text-sm text-ink-soft dark:text-forest-200/70">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-ink-muted" />
                   Numbers carry zero emotional relevance to your daily life.
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-slate-350" />
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-ink-muted" />
                   High interaction friction makes daily logging feel like a chore.
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-slate-350" />
-                  Negative guilt-based feedback loops lead to app fatigue and deletion.
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-ink-muted" />
+                  Guilt-based feedback loops lead to app fatigue and deletion.
                 </li>
               </ul>
             </div>
-          </div>
 
-          {/* After */}
-          <div className="rounded-2xl border border-emerald-250 bg-emerald-50/20 p-6 dark:border-emerald-900/30 dark:bg-emerald-950/10 shadow-md ring-2 ring-emerald-500/10">
-            <h3 className="text-sm font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-              <span>🌿 The EcoScore Way</span>
-            </h3>
-            <div className="space-y-4">
-              <div className="h-24 rounded-xl bg-emerald-50 border border-emerald-100 p-4 dark:bg-emerald-950/30 dark:border-emerald-900/20 flex flex-col justify-center">
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                  Your Biome Health
-                </span>
-                <span className="text-2xl font-extrabold text-emerald-800 dark:text-emerald-300">
+            {/* After — forest band, inverted */}
+            <div className="bg-forest-700 p-8 text-paper dark:bg-forest-800">
+              <SectionLabel onDark className="mb-5">
+                🌿 The EcoScore way
+              </SectionLabel>
+              <div className="mb-5 border border-forest-500/40 bg-forest-800/60 p-5 dark:bg-forest-900/50">
+                <span className="mono-label text-forest-100/70">Your Biome Health</span>
+                <p className="mt-1 font-display text-3xl font-medium text-paper">
                   Level 3 · Whispering Grassland
-                </span>
-                <span className="text-[10px] text-emerald-600 font-semibold dark:text-emerald-400 mt-1">
-                  Saved equivalent to a tree absorbing carbon for 68 days!
-                </span>
+                </p>
+                <p className="mt-1 text-xs text-forest-100/80">
+                  Saved equivalent to a tree absorbing carbon for 68 days.
+                </p>
               </div>
-              <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <ul className="space-y-3 text-sm text-forest-100/90">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-forest-200" />
                   Watch trees sprout and sky clear as you save emissions.
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-forest-200" />
                   Relatable analogies show physical equivalents of your logs.
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Compassionate AI coach cheers your steps rather than listing failures.
+                <li className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-forest-200" />A
+                  compassionate AI coach cheers your steps, never lists failures.
                 </li>
               </ul>
             </div>
@@ -194,55 +202,89 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* ── FEATURES — thin-line capability cards (not boxed) ── */}
       <section
         id="features-section"
         aria-labelledby="features-heading"
-        className="mx-auto w-full max-w-6xl px-4 py-16 border-t border-slate-200/40 dark:border-slate-800/60"
+        className="border-t border-hairline px-4 py-20"
       >
-        <div className="text-center space-y-3">
-          <h2
-            id="features-heading"
-            className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white"
-          >
-            Built for connection and longevity
-          </h2>
-          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
-            Combining climate behavior change psychology with beautiful, mindful design.
-          </p>
-        </div>
+        <div className="mx-auto max-w-6xl">
+          <div className="space-y-3 text-center">
+            <SectionLabel>Built for connection</SectionLabel>
+            <h2
+              id="features-heading"
+              className="font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl dark:text-paper"
+            >
+              Climate behavior change, beautifully designed
+            </h2>
+            <p className="mx-auto max-w-xl text-sm text-ink-soft dark:text-forest-200/70">
+              Combining climate psychology with mindful, hopeful design.
+            </p>
+          </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <Card
-                key={feature.title}
-                className="transition-all hover:shadow-md border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl"
-              >
-                <CardHeader>
-                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-55 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <CardTitle className="text-base font-bold">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+          <div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-hairline sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="group bg-paper p-7 transition-colors hover:bg-canvas-soft dark:bg-forest-900 dark:hover:bg-forest-900/60"
+                >
+                  {/* Thin-line geometric icon, not a colored circle */}
+                  <Icon
+                    className="mb-4 h-6 w-6 text-forest-600 transition-transform group-hover:scale-110 dark:text-forest-300"
+                    aria-hidden="true"
+                    strokeWidth={1.5}
+                  />
+                  <h3 className="font-display text-lg font-medium leading-snug text-ink dark:text-paper">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft dark:text-forest-200/70">
                     {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            );
-          })}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── CLOSING CTA — forest band ── */}
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-4xl rounded-lg bg-forest-700 p-12 text-center text-paper dark:bg-forest-800">
+          <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+            Begin your climate journey today.
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-forest-100/80">
+            No guilt. Just growth. Start with one green choice, and watch the world respond.
+          </p>
+          <Link
+            href="/signup"
+            className="mt-7 inline-flex items-center gap-1.5 rounded-pill bg-paper px-6 py-3 text-sm font-medium text-forest-700 transition-transform hover:scale-[1.02] dark:bg-forest-950 dark:text-forest-200"
+          >
+            Get Started Free
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
+
+      {/* ── FOOTER — mono labels, quiet ── */}
       <footer
         role="contentinfo"
-        className="border-t border-slate-200/40 py-8 text-center text-xs text-slate-400 dark:border-slate-800 dark:text-slate-500"
+        className="border-t border-hairline px-4 py-10 dark:border-forest-800"
       >
-        <p>© {new Date().getFullYear()} EcoScore. A Personal Climate Journey.</p>
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex items-center gap-2 font-display text-base font-medium text-forest-700 dark:text-forest-200">
+            <span aria-hidden="true">🌱</span> EcoScore
+          </div>
+          <SectionLabel>© {new Date().getFullYear()} A Personal Climate Journey</SectionLabel>
+          <Link
+            href="/learn"
+            className="text-sm font-medium text-ink-soft underline-offset-4 hover:text-forest-700 hover:underline dark:text-forest-200/70 dark:hover:text-forest-100"
+          >
+            Learn the climate →
+          </Link>
+        </div>
       </footer>
     </div>
   );

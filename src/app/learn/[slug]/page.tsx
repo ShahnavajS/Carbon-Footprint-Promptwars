@@ -27,10 +27,10 @@ export async function generateMetadata({
 /** Tiny markdown-lite renderer: paragraphs + **bold**. Keeps content safe (no raw HTML). */
 function renderBody(body: string) {
   return body.split(/\n\n+/).map((para, i) => (
-    <p key={i} className="mb-4 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+    <p key={i} className="mb-4 text-sm leading-relaxed text-ink-soft dark:text-forest-200/80">
       {para.split(/(\*\*[^*]+\*\*)/).map((chunk, j) =>
         chunk.startsWith("**") && chunk.endsWith("**") ? (
-          <strong key={j} className="font-bold text-slate-900 dark:text-white">
+          <strong key={j} className="font-bold text-ink dark:text-paper">
             {chunk.slice(2, -2)}
           </strong>
         ) : (
@@ -47,12 +47,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!article) notFound();
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      <header className="border-b border-slate-200/60 bg-white/60 backdrop-blur-md dark:border-slate-800/60 dark:bg-slate-900/60">
+    <div className="min-h-screen bg-canvas text-ink dark:bg-forest-950 dark:text-forest-50">
+      <header className="border-b border-hairline/60 bg-white/60 backdrop-blur-md dark:border-forest-800/60 dark:bg-forest-900/60">
         <div className="mx-auto max-w-3xl px-4 py-4">
           <Link
             href="/learn"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-500 dark:text-emerald-400"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-forest-600 hover:text-emerald-500 dark:text-forest-300"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to Learn
@@ -66,13 +66,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="mb-3 text-5xl" aria-hidden="true">
             {article.emoji}
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+          <h1 className="text-3xl font-extrabold tracking-tight text-ink dark:text-paper sm:text-4xl">
             {article.title}
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft dark:text-forest-200/70">
             {article.summary}
           </p>
-          <div className="mt-4 flex items-center justify-center gap-3 text-[11px] font-bold text-slate-400">
+          <div className="mt-4 flex items-center justify-center gap-3 text-[11px] font-bold text-ink-muted">
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" aria-hidden="true" />
               {article.readingMinutes} min read
@@ -92,17 +92,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="space-y-8">
           {article.sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="mb-3 text-lg font-bold text-slate-950 dark:text-white">
-                {section.heading}
-              </h2>
+              <h2 className="mb-3 text-lg font-bold text-ink dark:text-paper">{section.heading}</h2>
               {renderBody(section.body)}
             </section>
           ))}
         </div>
 
         {/* Tangible analogy */}
-        <div className="mt-10 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 dark:border-emerald-900/30 dark:bg-emerald-950/10">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+        <div className="mt-10 rounded-2xl border border-forest-100 bg-forest-50/40 p-5 dark:border-forest-900/30 dark:bg-forest-950/10">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-forest-600 dark:text-forest-300">
             Make it tangible
           </span>
           <p className="mt-1 text-sm italic leading-relaxed text-emerald-900 dark:text-emerald-200">
@@ -115,12 +113,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {article.callouts.map((c) => (
             <div
               key={c.label}
-              className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+              className="rounded-xl border border-hairline bg-white p-4 dark:border-forest-800 dark:bg-forest-900"
             >
               <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
                 {c.label}
               </span>
-              <p className="mt-1 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+              <p className="mt-1 text-sm leading-relaxed text-ink-soft dark:text-forest-200/80">
                 {c.text}
               </p>
             </div>
@@ -131,8 +129,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <ArticleTakeaway slug={article.slug} />
 
         {/* Sources */}
-        <div className="mt-10 border-t border-slate-200 pt-6 dark:border-slate-800">
-          <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">
+        <div className="mt-10 border-t border-hairline pt-6 dark:border-forest-800">
+          <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-ink-muted">
             Sources & further reading
           </h2>
           <ul className="space-y-2">
@@ -142,7 +140,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-forest-600 hover:underline dark:text-forest-300"
                 >
                   <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   {s.label}
@@ -153,14 +151,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         </div>
 
         {/* Keep-learning nudge */}
-        <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 text-center dark:border-slate-800 dark:bg-slate-900">
+        <div className="mt-10 rounded-2xl border border-hairline bg-white p-6 text-center dark:border-forest-800 dark:bg-forest-900">
           <Sparkles className="mx-auto h-6 w-6 text-emerald-500" aria-hidden="true" />
-          <p className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <p className="mt-2 text-sm font-semibold text-ink-soft dark:text-forest-200/80">
             Now put this knowledge into motion.
           </p>
           <Link
             href="/dashboard"
-            className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-5 py-2 text-xs font-bold text-white transition-colors hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+            className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-forest-600 px-5 py-2 text-xs font-bold text-white transition-colors hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
           >
             Log a green action
           </Link>

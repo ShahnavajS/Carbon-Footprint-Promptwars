@@ -1,46 +1,70 @@
 @import "tailwindcss";
 
 /*
- * EcoScore design tokens.
- * Single source of truth for the color system, typography, elevation, motion,
- * and the semantic "biome" / "stakes" palettes used by the awareness layer.
- * Consumers should prefer the semantic tokens over raw color scales.
+ * EcoScore design system — "Cohere bones + warm forest".
+ *
+ * Adapted from an enterprise editorial system (tight display type, flat depth,
+ * 22px media radius, pill CTAs, whitespace as a trust signal) but warmed for a
+ * climate/emotion mission: deep forest primary, cream canvas, earth/clay accent.
+ *
+ * Fonts are self-hosted via next/font in layout.tsx and exposed as
+ * --font-sans-loaded / --font-display-loaded / --font-mono-loaded. The
+ * --font-* tokens below chain those into the Tailwind theme so utilities like
+ * `font-display` and `font-mono` resolve to the real faces.
  */
 @theme {
   /* ── Typography ───────────────────────────────────────────── */
   --font-sans:
-    "Inter", "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display: "Fraunces", "Inter", ui-serif, Georgia, serif;
+    var(--font-sans-loaded), "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-display: var(--font-display-loaded), "Fraunces", ui-serif, Georgia, serif;
+  --font-mono: var(--font-mono-loaded), "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* ── Brand: Emerald (growth / progress) ──────────────────── */
-  --color-emerald-50: #ecfdf5;
-  --color-emerald-100: #d1fae5;
-  --color-emerald-150: #a7f3d0;
-  --color-emerald-200: #99f6e4;
-  --color-emerald-250: #6ee7b7;
-  --color-emerald-300: #5eead4;
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-emerald-550: #059669;
-  --color-emerald-600: #059669;
-  --color-emerald-700: #047857;
-  --color-emerald-800: #065f46;
-  --color-emerald-900: #064e3b;
-  --color-emerald-950: #022c22;
+  /* ── Brand: Forest green (growth / depth / calm) ──────────── */
+  --color-forest-50: #f0f7f3;
+  --color-forest-100: #dbeee2;
+  --color-forest-150: #c4e0cf;
+  --color-forest-200: #9fc9b2;
+  --color-forest-300: #6ea58a;
+  --color-forest-400: #458069;
+  --color-forest-500: #2c6451;
+  --color-forest-550: #1f5544;
+  --color-forest-600: #184738;
+  --color-forest-700: #133a2d;
+  --color-forest-800: #0f2f24;
+  --color-forest-900: #0d251d;
+  --color-forest-950: #08160f;
 
-  /* ── Teal (water / calm) ─────────────────────────────────── */
-  --color-teal-50: #f0fdfa;
-  --color-teal-100: #ccfbf1;
-  --color-teal-200: #99f6e4;
-  --color-teal-300: #5eead4;
-  --color-teal-400: #2dd4bf;
-  --color-teal-500: #14b8a6;
-  --color-teal-600: #0d9488;
-  --color-teal-700: #0f766e;
-  --color-teal-800: #115e59;
-  --color-teal-900: #134e4a;
+  /* ── Surface: Cream / canvas (calm, warm, "whitespace as trust") ── */
+  --color-canvas: #faf7f0;
+  --color-canvas-soft: #f4efe4;
+  --color-paper: #fffdf8;
+  --color-hairline: #e5e0d6;
+  --color-hairline-strong: #d6cfbf;
 
-  /* ── Amber (streak / energy / warmth) ────────────────────── */
+  /* ── Ink / text ───────────────────────────────────────────── */
+  --color-ink: #1a1f1c;
+  --color-ink-soft: #4a524d;
+  --color-ink-muted: #7a8079;
+
+  /* ── Earth / clay (warm editorial accent — sparingly) ─────── */
+  --color-clay-50: #fbf2eb;
+  --color-clay-100: #f3ddcd;
+  --color-clay-200: #e7bd9f;
+  --color-clay-300: #d99d72;
+  --color-clay-400: #c2703f;
+  --color-clay-500: #a85a2d;
+  --color-clay-600: #874822;
+
+  /* ── Moss (secondary green — softer than forest) ──────────── */
+  --color-moss-50: #f3f6ed;
+  --color-moss-100: #e0e8cf;
+  --color-moss-200: #c2d1a3;
+  --color-moss-300: #9fb677;
+  --color-moss-400: #7e9a52;
+  --color-moss-500: #647f3e;
+
+  /* ── Amber (streak / energy / warmth) ─────────────────────── */
   --color-amber-50: #fffbeb;
   --color-amber-100: #fef3c7;
   --color-amber-200: #fde68a;
@@ -50,52 +74,44 @@
   --color-amber-600: #d97706;
   --color-amber-700: #b45309;
 
-  /* ── Earth / soil (grounding) ────────────────────────────── */
-  --color-earth-50: #faf6f0;
-  --color-earth-100: #f0e6d6;
-  --color-earth-200: #e0cdb0;
-  --color-earth-300: #c9a878;
-  --color-earth-400: #a8855a;
-  --color-earth-500: #8b6741;
-  --color-earth-600: #6f4f2f;
+  /* ── Semantic: Biome tiers (kept from prior system) ───────── */
+  --color-biome-seedling: #7a8079;
+  --color-biome-shoot: #fbbf24;
+  --color-biome-meadow: #458069;
+  --color-biome-canopy: #184738;
+  --color-biome-sanctuary: #8b5cf6;
 
-  /* ── Slate scale already provided by Tailwind v4 ─────────── */
+  /* ── Semantic: Stakes (consequence states, hope-forward) ──── */
+  --color-stakes-low: #458069;
+  --color-stakes-mid: #f59e0b;
+  --color-stakes-high: #c2703f;
 
-  /* ── Semantic: Biome tiers (awareness/progress states) ──── */
-  --color-biome-seedling: #94a3b8; /* slate-400 — dormant potential */
-  --color-biome-shoot: #fbbf24; /* amber-400 — first growth */
-  --color-biome-meadow: #10b981; /* emerald-500 — thriving */
-  --color-biome-canopy: #059669; /* emerald-600 — lush */
-  --color-biome-sanctuary: #8b5cf6; /* violet-500 — apex */
+  /* ── Action / focus ───────────────────────────────────────── */
+  --color-action: #2c6451;
+  --color-focus: #9b60aa;
 
-  /* ── Semantic: Stakes (consequence states, never despair) ── */
-  --color-stakes-low: #10b981; /* on track — green */
-  --color-stakes-mid: #f59e0b; /* watch — amber */
-  --color-stakes-high: #f97316; /* act now — warm orange, not red */
+  /* ── Radius scale (Cohere) ────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 30px;
+  --radius-pill: 32px;
 
-  /* ── Surface tokens (dark-mode aware via Tailwind dark:) ── */
-  --color-surface: #ffffff;
-  --color-surface-muted: #f8fafc;
+  /* ── Elevation — mostly flat; minimal, soft shadows ───────── */
+  --shadow-xs: 0 1px 2px 0 rgb(13 37 29 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(13 37 29 / 0.06), 0 1px 2px -1px rgb(13 37 29 / 0.05);
+  --shadow-md: 0 6px 16px -4px rgb(13 37 29 / 0.08), 0 2px 6px -2px rgb(13 37 29 / 0.05);
+  --shadow-lift: 0 12px 28px -8px rgb(13 37 29 / 0.12);
 
-  /* ── Radius scale ────────────────────────────────────────── */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
-
-  /* ── Elevation (shadows) ─────────────────────────────────── */
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
-  --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.06);
-
-  /* ── Motion ──────────────────────────────────────────────── */
+  /* ── Motion ───────────────────────────────────────────────── */
   --ease-biome: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 180ms;
   --duration-slow: 700ms;
 }
 
-/* Accessibility: Respect user motion preferences (always-on safety net). */
+/* Accessibility: respect reduced motion (always-on safety net). */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -107,19 +123,18 @@
   }
 }
 
-/* Focus ring consistency across browsers. */
+/* Focus ring — forest, consistent across browsers. */
 :focus-visible {
-  outline: 2px solid var(--color-emerald-500);
+  outline: 2px solid var(--color-forest-500);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
-/* Smooth scrolling (overridden for reduced-motion above). */
 html {
   scroll-behavior: smooth;
 }
 
-/* Screen-reader only utility (complements Tailwind sr-only). */
+/* Screen-reader only utility. */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -143,9 +158,18 @@ html {
   white-space: normal;
 }
 
-/* ── Reusable biome animations (defined once, applied by name) ──
- * Components opt-in via the `.animate-*` classes; the reduced-motion block
- * above neutralizes them for users who prefer less motion. */
+/* ── Mono label utility (Cohere-style uppercase technical marker) ── */
+.mono-label {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+/* ── Reusable biome animations ─────────────────────────────────
+ * Components opt in via `.animate-eco-*`; reduced-motion block above
+ * neutralizes them for users who prefer less motion. */
 @keyframes ecobutton-float {
   0%,
   100% {
@@ -166,10 +190,10 @@ html {
 @keyframes ecobutton-glow {
   0%,
   100% {
-    filter: drop-shadow(0 0 8px rgb(16 185 129 / 0.2));
+    filter: drop-shadow(0 0 8px rgb(69 128 105 / 0.2));
   }
   50% {
-    filter: drop-shadow(0 0 18px rgb(16 185 129 / 0.4));
+    filter: drop-shadow(0 0 18px rgb(69 128 105 / 0.4));
   }
 }
 @keyframes ecobutton-sway {
@@ -193,11 +217,21 @@ html {
 @keyframes ecobutton-pop-in {
   0% {
     opacity: 0;
-    transform: scale(0.9) translateY(6px);
+    transform: scale(0.97) translateY(6px);
   }
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+@keyframes ecobutton-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -218,20 +252,8 @@ html {
   animation: ecobutton-twinkle 3s var(--ease-biome) infinite;
 }
 .animate-eco-pop {
-  animation: ecobutton-pop-in var(--duration-slow) var(--ease-biome) both;
-}
-
-/* Slide-in used by toasts / celebration overlays. */
-@keyframes ecobutton-slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  animation: ecobutton-pop-in var(--duration-slow) var(--ease-out-soft) both;
 }
 .animate-slide-in {
-  animation: ecobutton-slide-in 300ms var(--ease-biome) both;
+  animation: ecobutton-slide-in var(--duration-fast) var(--ease-out-soft) both;
 }
